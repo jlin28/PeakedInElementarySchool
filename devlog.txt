@@ -1,0 +1,23 @@
+PIES DEVLOG
+Joyce Lin, Evan Khosh, Sean Zheng, Zixi Qiao
+P01: ArRESTed Development
+----------------------------
+
+* Each entry should begin with the following format: firstL -- TIMESTAMP ( e.g.: topherM -- 1999-12-31 23:59 )
+* Most recent entry at the bottom, separated from previous with a newline
+
+firstL -- TIMESTAMP (temp entry for format)
+LABEL
+* NEW CHANGES:
+    -
+    -
+    -
+* ERRORS/BUGS:
+    -
+    -
+    -
+
+joyceL -- 2025-11-29 18:16
+STATIC FILES
+* NEW CHANGES:
+    - added prelim designs for board + pieces

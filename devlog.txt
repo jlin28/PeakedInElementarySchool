@@ -39,3 +39,9 @@ INITIAL DD REVIEW
     - slight changes to database variable naming for clarity
     - imported updated design doc to repo
     - set up readme
+
+joyceL -- 2025-12-3 11:21
+GROUP IN CLASS WORK
+* NEW CHANGES:
+    - readme for keys and a preliminary requirements.txt were added
+    - keys for APIs that require them added to the keys dir

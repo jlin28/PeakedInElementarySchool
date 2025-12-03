@@ -24,6 +24,13 @@ STATIC FILES
 
 joyceL -- 2025-12-2 18:57
 INITIAL DD REVIEW
+* SUMMARY OF FEEDBACK:
+    - Negatives included: explanations of components as well as their relationships not being clear enough,
+          component map being convoluted and hard to read,
+          static files and helper functions being in the same box -- thus giving the impression that they were one and the same,
+          database names being confusing
+    - Positives included: nice organization as well as a simple site map,
+          compliments on the overall idea and name of the app
 * NEW CHANGES:
     - added more detailed explanations to components (primarily html pages)
     - moved unnamed helper functions to be under their respective python files

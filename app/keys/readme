@@ -1,0 +1,8 @@
+Rick and Morty API: provides images, characters, locations, and information about episodes. Doesn't require a key.
+Superhero API: provides images and information about superheroes.
+Merriam Webster API
+ - thesaurus API: provides synonyms for different words
+ - Spanish English API: provides translations between spanish and english words
+Chess API: provides best chess move using stockfish engine when given board positions. Doesn't require a key.
+Countries API: provides the capitals of different countries. Doesn't require a key.
+Movies API: provides images and information of movies. 

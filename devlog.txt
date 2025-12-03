@@ -21,3 +21,14 @@ joyceL -- 2025-11-29 18:16
 STATIC FILES
 * NEW CHANGES:
     - added prelim designs for board + pieces
+
+joyceL -- 2025-12-2 18:57
+INITIAL DD REVIEW
+* NEW CHANGES:
+    - added more detailed explanations to components (primarily html pages)
+    - moved unnamed helper functions to be under their respective python files
+    - updated component map to be much less convoluted and added little explanations regarding the relationship
+      each arrow represents
+    - slight changes to database variable naming for clarity
+    - imported updated design doc to repo
+    - set up readme

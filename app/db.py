@@ -46,3 +46,18 @@ def create_game_data():
 
     db.commit()
     db.close()
+
+
+#=============================QUESTIONS=============================#
+
+#return format: [[question], [answers], [correct], [image]]
+def get_question(id):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    data = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchall()
+
+    question = []
+    for item in data:

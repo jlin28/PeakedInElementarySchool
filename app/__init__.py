@@ -6,6 +6,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+from db import *
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def menu():
 
     if 'submit' in request.form:
         return redirect(url_for('game'))
-    
+
     return render_template('menu.html')
 
 @app.route('/game', methods=['GET', 'POST'])

@@ -57,7 +57,35 @@ def get_question(id):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    data = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchall()
+    data = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchone()
 
     question = []
     for item in data:
+        question += [[item]]
+
+    question[1] = question[1][0].split("%SPLIT%")
+
+    db.commit()
+    db.close()
+
+    return question
+
+
+#parameter format: question - string | answers - list of strings | correct - string | image - string
+#returns id of new question
+def make_question(question, answers, correct, image):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    id = c.execute(f'SELECT COUNT(id) FROM questions')
+
+    answers_str = '%SPLIT%'.join(answers)
+
+    c.execute(f'INSERT INTO questions VALUES ("{id}", "{answers_str}", "{correct}", "{image}")')
+
+    db.commit()
+    db.close()
+
+    return id

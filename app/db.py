@@ -37,8 +37,10 @@ def create_game_data():
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
+    c.execute("DROP TABLE IF EXISTS game")
+
     c.execute("""
-        CREATE TABLE IF NOT EXISTS game (
+        CREATE TABLE game (
             turn INTEGER PRIMARY KEY NOT NULL,
             board TEXT NOT NULL
         )"""
@@ -49,6 +51,7 @@ def create_game_data():
 
 
 #=============================QUESTIONS=============================#
+
 
 #return format: [[question], [answers], [correct], [image]]
 def get_question(id):
@@ -89,3 +92,24 @@ def make_question(question, answers, correct, image):
     db.close()
 
     return id
+
+
+#=============================GAME=============================#
+
+
+#parameter format: turn - int (0 is starting positions) | board - 2-D array
+def make_board_state(turn, board):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    board_str = "["
+    for row in board:
+        board_str += "[[" + "], [".join(row) + "]], "
+    board_str = board_str[0:-2] + "]"
+
+    c.execute(f'INSERT INTO game VALUES ("{turn}", "{board_str}"')
+
+    db.commit()
+    db.close()

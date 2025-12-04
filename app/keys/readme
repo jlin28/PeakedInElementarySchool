@@ -1,0 +1,26 @@
+API BREAKDOWN
+by PIES
+
+DOES NOT REQUIRE A KEY
+------
+Rick and Morty API
+  - provides images, characters, locations, and information about episodes.
+
+Chess API
+  - provides best chess move using stockfish engine when given board positions.
+
+Countries API
+  - provides the capitals of different countries.
+
+
+REQUIRES A KEY
+------
+Superhero API
+  - provides images and information about superheroes.
+
+Merriam Webster API
+  - Thesaurus API: provides synonyms for different words
+  - Spanish English API: provides translations between spanish and english words
+
+Movies API
+  - provides images and information of movies.

@@ -59,6 +59,11 @@ DATABASE FUNCTIONS
     - wrote questions table accessor method (get_question)
     - wrote questions table mutator method (make_question)
 
+zixiQ -- 2025-12-4 11:47
+* NEW CHANGES:
+    - created chess branch with initial functions reset and flip board
+    - created/initialized global variables init_pos and current_pos
+
 evanK -- 2025-12-4 20:48
 DATABASE FUNCTIONS
 * NEW CHANGES:

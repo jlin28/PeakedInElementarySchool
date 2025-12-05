@@ -86,20 +86,10 @@ def get_random_question():
     count = c.execute(f'SELECT COUNT(id) FROM questions')
     id = randint(1, count)
 
-    command = 'SELECT ALL FROM questions WHERE id = ?'
-    vars = (id)
-    data = c.execute(command, vars).fetchone()
-
-    question = []
-    for item in data:
-        question += [[item]]
-
-    question[1] = question[1][0].split("%SPLIT%")
-
     db.commit()
     db.close()
 
-    return question
+    return get_question(id)
 
 
 #parameter format: question - string | answers - list of strings | correct - string | image - string

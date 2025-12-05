@@ -6,6 +6,7 @@
 
 import copy
 
+# 1 = rook, 2 = knight, 3 = bishop, 4 = queen, 5 = king, 6 = pawn, 0 = empty, negative = black pieces
 init_pos = [[1,2,3,4,5,3,2,1],
             [6,6,6,6,6,6,6,6],
             [0,0,0,0,0,0,0,0],
@@ -65,6 +66,10 @@ def is_legal_square(board, r, c):
         return True
     return False
 
+def is_check():
+    global current_pos
+    return False
+
 def rook_moves(board, r, c, color):
     moves = []
     directions = [(1,0), (-1,0), (0,1), (0,-1)]
@@ -121,18 +126,18 @@ def queen_moves(board, r, c, color):
             nc += dc
     return moves
 
-# # WIP
-# def king_moves(board, r, c, color):
-#     moves = []
-#     directions = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1, 1), (-1,-1), (1,-1)]
-#
-#     for dr, dc in directions:
-#         nr, nc = r + dr, c + dc
-#         if on_board(nr, nc):
-#             if is_legal_square(board, nr, nc):
-#                 moves.append(nr, nc)
-#     return moves
-#
-# def pawn_moves(board, r, c, color):
-#     moves = []
-#     return moves
+# WIP
+def king_moves(board, r, c, color):
+    moves = []
+    directions = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1, 1), (-1,-1), (1,-1)]
+
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        if on_board(nr, nc):
+            if is_legal_square(board, nr, nc):
+                moves.append(nr, nc)
+    return moves
+
+def pawn_moves(board, r, c, color):
+    moves = []
+    return moves

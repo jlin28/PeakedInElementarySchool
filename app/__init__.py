@@ -14,6 +14,9 @@ app = Flask(__name__)
 def menu():
 
     if 'submit' in request.form:
+        create_questions()
+        create_game_data()
+
         return redirect(url_for('game'))
 
     return render_template('menu.html')

@@ -82,3 +82,10 @@ DATABASE FUNCTIONS
     - changed f strings in SQL queries to ? placeholders
     - wrote game table mutator method (make_board_state with no parameters which appends)
     - wrote questions accessor method (get_random_question)
+
+zixiQ -- 2025-12-5 11:47
+* NEW CHANGES:
+    - created functions to find legal squares for knights, bishops, and queens
+        - writing funcs for kings and pawns
+    - began is_check() function
+    - slightly refactored code

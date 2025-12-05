@@ -69,3 +69,9 @@ DATABASE FUNCTIONS
 * NEW CHANGES:
     - wrote game table accessor method (get_board_state)
     - wrote game table mutator method (make_board_state)
+
+zixiQ -- 2025-12-4 11:59
+* NEW CHANGES:
+    - began implementing legal squares for pieces
+        - rooks hopefully complete
+    - helper functions written: on_board(), get_color()

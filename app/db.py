@@ -115,7 +115,9 @@ def make_question(question, answers, correct, image):
 
     answers_str = '%SPLIT%'.join(answers)
 
-    c.execute(f'INSERT INTO questions VALUES ("{id}", "{answers_str}", "{correct}", "{image}")')
+    command = 'INSERT INTO questions VALUES (?, ?, ?, ?)'
+    vars = (id, answers_str, correct, image)
+    c.execute(command, vars)
 
     db.commit()
     db.close()
@@ -138,7 +140,9 @@ def make_board_state(turn, board):
         board_str += "[[" + "], [".join(row) + "]], "
     board_str = board_str[0:-2] + "]"
 
-    c.execute(f'INSERT INTO game VALUES ("{turn}", "{board_str}"')
+    command = 'INSERT INTO game VALUES (?, ?'
+    vars = (turn, board_str)
+    c.execute(command, vars)
 
     db.commit()
     db.close()
@@ -151,7 +155,9 @@ def get_board_state(turn):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    board_str = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchone()[0]
+    command = 'SELECT ALL FROM questions WHERE id = ?'
+    vars = (id)
+    board_str = c.execute(command, vars).fetchone()[0]
 
     board = [
         [board_str[2, 24].split(", ")],

@@ -90,8 +90,9 @@ zixiQ -- 2025-12-5 11:47
     - began is_check() function
     - slightly refactored code
 
-joyceL -- 2025-12-5 11:47
+joyceL -- 2025-12-5 12:31
 CSS AND STATIC FILES
 * NEW CHANGES:
     - Making basic setup for menu.html and added a prelim bg
     - adding images for bgs and titles
+    - added buttons + modal for settings

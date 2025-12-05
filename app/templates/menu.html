@@ -27,7 +27,18 @@ TBD
   <style>
     button {
       font-family: font;
+      font-size: 135%;
+      background: none;
+
+      border-style: solid;
+      border-width: medium;
+      border-color: black;
     }
+
+    button:hover {
+      scale: 110%;
+    }
+
     body {
       background-image: url('/static/images/day.jpg');
       background-repeat: no-repeat;
@@ -38,15 +49,36 @@ TBD
 </head>
 
 <body>
-  <div style="margin-top:10vh;" class="container">
+  <div style="margin-top:5vh;" class="container">
     <div class="container">
       <image src="/static/images/title.png" class="center">
     </div>
-    <div style="margin-top:-25px; width:50%" class="container">
-      <button class="center"> aa </button>
+    <div style="margin-top:-50px; width:50%" class="container">
+      <button class="center"> SINGLEPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button class="center"> aa </button>
+      <button class="center"> MULTIPLAYER </button>
+    </div>
+    <div style="margin-top:20px; width:50%" class="container">
+      <button type="button" class="center" data-bs-toggle="modal" data-bs-target="#settings">
+        SETTINGS
+      </button>
+    </div>
+  </div>
+
+  <div class="modal fade" id="settings" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" style="margin-left:180px" id="staticBackdropLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
     </div>
   </div>
 

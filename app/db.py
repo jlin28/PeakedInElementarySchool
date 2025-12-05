@@ -140,7 +140,29 @@ def make_board_state(turn, board):
         board_str += "[[" + "], [".join(row) + "]], "
     board_str = board_str[0:-2] + "]"
 
-    command = 'INSERT INTO game VALUES (?, ?'
+    command = 'INSERT INTO game VALUES (?, ?)'
+    vars = (turn, board_str)
+    c.execute(command, vars)
+
+    db.commit()
+    db.close()
+
+
+#parameter format: board - 2-D array
+def make_board_state(board):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    turn = c.execute(f'SELECT COUNT(turn) FROM questions')
+
+    board_str = "["
+    for row in board:
+        board_str += "[[" + "], [".join(row) + "]], "
+    board_str = board_str[0:-2] + "]"
+
+    command = 'INSERT INTO game VALUES (?, ?)'
     vars = (turn, board_str)
     c.execute(command, vars)
 

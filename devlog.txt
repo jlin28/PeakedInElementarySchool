@@ -81,3 +81,4 @@ DATABASE FUNCTIONS
 * NEW CHANGES:
     - changed f strings in SQL queries to ? placeholders
     - wrote game table mutator method (make_board_state with no parameters which appends)
+    - wrote questions accessor method (get_random_question)

@@ -89,3 +89,9 @@ zixiQ -- 2025-12-5 11:47
         - writing funcs for kings and pawns
     - began is_check() function
     - slightly refactored code
+
+joyceL -- 2025-12-5 11:47
+CSS AND STATIC FILES
+* NEW CHANGES:
+    - Making basic setup for menu.html and added a prelim bg
+    - adding images for bgs and titles

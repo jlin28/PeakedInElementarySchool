@@ -4,7 +4,7 @@
 # P01 -- ArRESTed Development
 # 12/22/25
 
-import sqlite
+import sqlite3
 
 #=============================MAKE=TABLES=============================#
 
@@ -60,7 +60,35 @@ def get_question(id):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    data = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchone()
+    command = 'SELECT ALL FROM questions WHERE id = ?'
+    vars = (id)
+    data = c.execute(command, vars).fetchone()
+
+    question = []
+    for item in data:
+        question += [[item]]
+
+    question[1] = question[1][0].split("%SPLIT%")
+
+    db.commit()
+    db.close()
+
+    return question
+
+
+#return format: [[question], [answers], [correct], [image]]
+def get_random_question():
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    count = c.execute(f'SELECT COUNT(id) FROM questions')
+    id = randint(1, count)
+
+    command = 'SELECT ALL FROM questions WHERE id = ?'
+    vars = (id)
+    data = c.execute(command, vars).fetchone()
 
     question = []
     for item in data:
@@ -81,6 +109,7 @@ def make_question(question, answers, correct, image):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
+
 
     id = c.execute(f'SELECT COUNT(id) FROM questions')
 

@@ -56,6 +56,15 @@ def get_color(piece):
 def on_board(r, c):
     return 0 <= r < 8 and 0 <= c < 8
 
+# prerequisite: r, c on board
+def is_legal_square(board, r, c):
+    target = board[r][c]
+    if target == 0:  # empty
+        return True
+    elif get_color(target) != color:  # capture square
+        return True
+    return False
+
 def rook_moves(board, r, c, color):
     moves = []
     directions = [(1,0), (-1,0), (0,1), (0,-1)]
@@ -63,13 +72,67 @@ def rook_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            target = board[nr][nc]
-            if target == 0:  # empty
-                moves.append((nr, nc))
-            else:
-                if get_color(target) != color:  # capture square
-                    moves.append((nr, nc))
+            if is_legal_square(board, nr, nc):
+                moves.append(nr, nc)
+            if board[nr, nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
             nc += dc
     return moves
+
+def knight_moves(board, r, c, color):
+    moves = []
+    directions = [(2, 1), (1, 2), (-2,1), (-1, 2), (-2, -1), (-1, -2), (2, -1), (1, -2)]
+
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        if on_board(nr, nc):
+            if is_legal_square(board, nr, nc):
+                moves.append(nr, nc)
+    return moves
+
+def bishop_moves(board, r, c, color):
+    moves = []
+    directions = [(1,1), (-1, 1), (-1,-1), (1,-1)]
+
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        while on_board(nr, nc):
+            if is_legal_square(board, nr, nc):
+                moves.append(nr, nc)
+            if board[nr, nc] != 0:
+                break  # stop sliding when hitting any piece
+            nr += dr
+            nc += dc
+    return moves
+
+def queen_moves(board, r, c, color):
+    moves = []
+    directions = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1, 1), (-1,-1), (1,-1)]
+
+    for dr, dc in directions:
+        nr, nc = r + dr, c + dc
+        while on_board(nr, nc):
+            if is_legal_square(board, nr, nc):
+                moves.append(nr, nc)
+            if board[nr, nc] != 0:
+                break  # stop sliding when hitting any piece
+            nr += dr
+            nc += dc
+    return moves
+
+# # WIP
+# def king_moves(board, r, c, color):
+#     moves = []
+#     directions = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1, 1), (-1,-1), (1,-1)]
+#
+#     for dr, dc in directions:
+#         nr, nc = r + dr, c + dc
+#         if on_board(nr, nc):
+#             if is_legal_square(board, nr, nc):
+#                 moves.append(nr, nc)
+#     return moves
+#
+# def pawn_moves(board, r, c, color):
+#     moves = []
+#     return moves

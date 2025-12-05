@@ -25,3 +25,8 @@ def menu():
 def game():
 
     return render_template('game.html')
+
+# RUN FLASK
+if __name__=='__main__':
+    app.debug = True
+    app.run()

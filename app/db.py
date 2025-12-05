@@ -4,7 +4,7 @@
 # P01 -- ArRESTed Development
 # 12/22/25
 
-import sqlite
+import sqlite3
 
 #=============================MAKE=TABLES=============================#
 

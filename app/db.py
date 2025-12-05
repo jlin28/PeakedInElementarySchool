@@ -113,3 +113,29 @@ def make_board_state(turn, board):
 
     db.commit()
     db.close()
+
+
+#return format: 2-D array
+def get_board_state(turn):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    board_str = c.execute(f'SELECT ALL FROM questions WHERE id = "{id}"').fetchone()[0]
+
+    board = [
+        [board_str[2, 24].split(", ")],
+        [board_str[28, 50].split(", ")],
+        [board_str[54, 76].split(", ")],
+        [board_str[80, 102].split(", ")],
+        [board_str[106, 128].split(", ")],
+        [board_str[132, 154].split(", ")],
+        [board_str[158, 180].split(", ")],
+        [board_str[184, 206].split(", ")],
+    ]
+
+    db.commit()
+    db.close()
+
+    return board

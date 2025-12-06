@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def menu():
-
-    if 'submit' in request.form:
+    print(request.form) # for testing purposes
+    if request.method == 'POST':
         create_questions()
         create_game_data()
 

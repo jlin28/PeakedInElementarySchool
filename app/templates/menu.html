@@ -35,8 +35,8 @@ TBD
       border-color: black;
     }
 
-    button:hover {
-      scale: 110%;
+    button:hover:not(.btn-close) {
+      transform: scale(110%);
     }
 
     body {
@@ -44,37 +44,63 @@ TBD
       background-repeat: no-repeat;
       background-size: 100vw 100vh;
     }
+
+    .modal-content {
+      border-radius: 0;
+      font-family: font;
+    }
   </style>
 
 </head>
 
 <body>
+  <form id="play" method="POST" action="/"> </form>
+
   <div style="margin-top:5vh;" class="container">
     <div class="container">
       <image src="/static/images/title.png" class="center">
     </div>
     <div style="margin-top:-50px; width:50%" class="container">
-      <button class="center"> SINGLEPLAYER </button>
+      <button type="submit" form="play" class="center" style="width:35%"> SINGLEPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button class="center"> MULTIPLAYER </button>
+      <button type="submit" form="play" class="center" style="width:35%"> MULTIPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button type="button" class="center" data-bs-toggle="modal" data-bs-target="#settings">
+      <button type="button" class="center" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
         SETTINGS
       </button>
     </div>
   </div>
 
-  <div class="modal fade" id="settings" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal fade" id="settings" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" style="margin-left:180px" id="staticBackdropLabel">Modal title</h1>
+          <h3 class="modal-title" style="margin-left:180px;" id="staticBackdropLabel">SETTINGS</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <!-- HOPEFULLY WILL BE ABLE TO DEFAULT AS CHECKED WHEN RETURNING BACK TO MENU FROM GAME -->
         <div class="modal-body">
-          ...
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ p1 }}>
+            <label for="setting1"> setting1 </label>
+            <br>
+            <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ p2 }}>
+            <label for="setting2"> setting2 </label>
+          </div>
+          <br>
+          <div>
+            difficulty &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="easy" value="easy" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary" for="easy">easy</label>
+            &nbsp&nbsp&nbsp
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="medium" value="medium" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="medium">medium</label>
+            &nbsp&nbsp&nbsp
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="hard" value="hard" autocomplete="off">
+            <label class="btn btn-outline-secondary" for="hard">hard</label>
+          </div>
         </div>
         <div class="modal-footer">
         </div>

@@ -31,5 +31,5 @@
 **2) Launch the app**
   ```
   python __init__.py
-  ctrl-click provided link in terminal OR copy-paste it into your browser
   ```
+then ctrl-click provided link in terminal OR copy-paste it into your browser

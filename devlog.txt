@@ -96,3 +96,12 @@ CSS AND STATIC FILES
     - Making basic setup for menu.html and added a prelim bg
     - adding images for bgs and titles
     - added buttons + modal for settings
+
+joyceL -- 2025-12-6 00:24
+SETTINGS
+* NEW CHANGES:
+    - Setting up modal
+      - adding some input types
+    - singleplayer + multiplayer buttons now act as submit buttons
+      - sends you to game with selected settings
+    - set up prelim install guide and launch codes

@@ -58,7 +58,7 @@ def on_board(r, c):
     return 0 <= r < 8 and 0 <= c < 8
 
 # prerequisite: r, c on board
-def is_legal_square(board, r, c):
+def is_legal_square(board, r, c, color):
     target = board[r][c]
     if target == 0:  # empty
         return True
@@ -77,8 +77,8 @@ def rook_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            if is_legal_square(board, nr, nc):
-                moves.append(nr, nc)
+            if is_legal_square(board, nr, nc, color):
+                moves.append((nr, nc))
             if board[nr, nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
@@ -92,8 +92,8 @@ def knight_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         if on_board(nr, nc):
-            if is_legal_square(board, nr, nc):
-                moves.append(nr, nc)
+            if is_legal_square(board, nr, nc, color):
+                moves.append((nr, nc))
     return moves
 
 def bishop_moves(board, r, c, color):
@@ -103,8 +103,8 @@ def bishop_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            if is_legal_square(board, nr, nc):
-                moves.append(nr, nc)
+            if is_legal_square(board, nr, nc, color):
+                moves.append((nr, nc))
             if board[nr, nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
@@ -118,8 +118,8 @@ def queen_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            if is_legal_square(board, nr, nc):
-                moves.append(nr, nc)
+            if is_legal_square(board, nr, nc, color):
+                moves.append((nr, nc))
             if board[nr, nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
@@ -134,10 +134,35 @@ def king_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         if on_board(nr, nc):
-            if is_legal_square(board, nr, nc):
-                moves.append(nr, nc)
+            if is_legal_square(board, nr, nc, color):
+                moves.append((nr, nc))
     return moves
 
 def pawn_moves(board, r, c, color):
     moves = []
+
+    direction = -1 if color == "white" else 1   # white moves upward (r decreases)
+
+    start_row = 6 if color == "white" else 1
+    enemy_color = "black" if color == "white" else "white"
+
+    # 1. Forward move (one square)
+    nr = r + direction
+    if on_board(nr, c) and board[nr][c] == 0:
+        moves.append((nr, c))
+
+        # 2. Two squares from starting position
+        nr2 = r + 2*direction
+        if r == start_row and board[nr2][c] == 0:
+            moves.append((nr2, c))
+
+    # 3. Captures (diagonals)
+    for dc in (-1, 1):
+        nc = c + dc
+        nr = r + direction
+        if on_board(nr, nc):
+            target = board[nr][nc]
+            if target != 0 and get_color(target) == enemy_color:
+                moves.append((nr, nc))
+
     return moves

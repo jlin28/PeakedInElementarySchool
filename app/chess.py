@@ -66,8 +66,65 @@ def is_legal_square(board, r, c, color):
         return True
     return False
 
-def is_check():
-    global current_pos
+# returns True if the square is attacked by any piece, tracking color
+def is_square_attacked(board, r, c, by_color):
+    # Loop through all enemy pieces
+    for rr in range(8):
+        for cc in range(8):
+            piece = board[rr][cc]
+            if piece == 0:
+                continue
+            if get_color(piece) != by_color:
+                continue  # skip non-enemy pieces
+
+            ptype = abs(piece)
+
+            # Knights
+            if ptype == 2:
+                for dr, dc in [(2,1),(1,2),(-2,1),(-1,2),(2,-1),(1,-2),(-2,-1),(-1,-2)]:
+                    if rr+dr == r and cc+dc == c:
+                        return True
+
+            # Pawns
+            if ptype == 6:
+                direction = -1 if by_color == "white" else 1
+                for dc in (-1, 1):
+                    if rr + direction == r and cc + dc == c:
+                        return True
+
+            # King
+            if ptype == 5:
+                for dr in (-1,0,1):
+                    for dc in (-1,0,1):
+                        if dr == 0 and dc == 0:
+                            continue
+                        if rr+dr == r and cc+dc == c:
+                            return True
+
+            # Sliding pieces: rook, bishop, queen
+            if ptype in (1, 3, 4):
+                if attacks_by_slider(board, rr, cc, r, c, ptype):
+                    return True
+    return False
+
+
+# if rook/bishop/queen at (rr,cc) attacks target (tr,tc)
+def attacks_by_slider(board, rr, cc, tr, tc, ptype):
+    directions = []
+    if ptype in (1,4):  # rook or queen
+        directions += [(1,0),(-1,0),(0,1),(0,-1)]
+    if ptype in (3,4):  # bishop or queen
+        directions += [(1,1),(1,-1),(-1,1),(-1,-1)]
+
+    for dr, dc in directions:
+        r, c = rr + dr, cc + dc
+        while on_board(r, c):
+            if r == tr and c == tc:
+                return True
+            if board[r][c] != 0:
+                break
+            r += dr
+            c += dc
     return False
 
 def rook_moves(board, r, c, color):
@@ -126,16 +183,29 @@ def queen_moves(board, r, c, color):
             nc += dc
     return moves
 
-# WIP
 def king_moves(board, r, c, color):
     moves = []
-    directions = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1, 1), (-1,-1), (1,-1)]
+    if color == "white":
+        enemy = "black"
+    else:
+        enemy = "white"
+
+    directions = [(1,0), (-1,0), (0,1), (0,-1),
+                  (1,1), (-1,1), (-1,-1), (1,-1)]
 
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
-        if on_board(nr, nc):
-            if is_legal_square(board, nr, nc, color):
-                moves.append((nr, nc))
+        if not on_board(nr, nc):
+            continue
+
+        if not is_legal_square(board, nr, nc, color):
+            continue
+
+        # do not move into an attacked square
+        if is_square_attacked(board, nr, nc, enemy):
+            continue
+
+        moves.append((nr, nc))
     return moves
 
 def pawn_moves(board, r, c, color):

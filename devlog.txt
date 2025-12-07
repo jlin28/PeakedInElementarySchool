@@ -105,3 +105,12 @@ SETTINGS
     - singleplayer + multiplayer buttons now act as submit buttons
       - sends you to game with selected settings
     - set up prelim install guide and launch codes
+
+joyceL -- 2025-12-6 23:02
+MORE FIGURING OUT MENU
+* NEW CHANGES:
+    - Implemented a way for settings to stay after they are set (until they are changed)
+    - organized modal a little more
+    - added audio (bgm)
+* ERRORS/BUGS:
+    - autoplay for bgm does not currently work -- waiting to test on lab computers

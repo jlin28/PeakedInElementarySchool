@@ -123,3 +123,8 @@ CHESS LOGIC
 * NEW CHANGES:
     - Added functions to find legal squares for pawns and kings
     - Added functions to check if a square is being attacked
+
+joyceL -- 2025-12-7 21:52
+BEGIN GAME.HTML
+* NEW CHANGES:
+    - put the board into the page and centered it

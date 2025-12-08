@@ -127,7 +127,7 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
             c += dc
     return False
 
-def in_check(board, king_r, king_c, color):
+def in_check(board, color):
     if color == "white":
         enemy_color == "black"
     else:
@@ -141,7 +141,6 @@ def in_check(board, king_r, king_c, color):
         return True
     return False
 
-
 def rook_moves(board, r, c, color):
     moves = []
     directions = [(1,0), (-1,0), (0,1), (0,-1)]
@@ -149,10 +148,18 @@ def rook_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            if is_legal_square(board, nr, nc, color):
-                moves.append((nr, nc))
-            if board[nr, nc] != 0:
-                break  # stop sliding when hitting any piece
+            new_board = copy.deepcopy(board)
+            new_board[r][c] = 0
+            new_board[nr][nc] = 1*color
+            if in_check(board, color):
+                if not in_check(new_board, color):
+                    moves.append((nr, nc))
+            else:
+                if is_legal_square(board, nr, nc, color):
+                    if not in_check(new_board, color):
+                        moves.append((nr, nc))
+                if board[nr, nc] != 0:
+                    break  # stop sliding when hitting any piece
             nr += dr
             nc += dc
     return moves

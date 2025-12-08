@@ -65,6 +65,12 @@ CHESS LOGIC
     - created chess branch with initial functions reset and flip board
     - created/initialized global variables init_pos and current_pos
 
+seanZ -- 2025-12-4 11:47
+API cALLING
+* NEW CHANGES:
+    - links to each api is established
+    - started data calling with json
+
 evanK -- 2025-12-4 20:48
 DATABASE FUNCTIONS
 * NEW CHANGES:
@@ -92,6 +98,12 @@ CHESS LOGIC
         - writing funcs for kings and pawns
     - began is_check() function
     - slightly refactored code
+
+seanZ -- 2025-12-5 11:47
+API cALLING
+* NEW CHANGES:
+    - separated apiCall function into different sections
+    - worked on calling and utilizing movieAPI
 
 joyceL -- 2025-12-5 12:31
 CSS AND STATIC FILES
@@ -128,3 +140,9 @@ joyceL -- 2025-12-7 21:52
 BEGIN GAME.HTML
 * NEW CHANGES:
     - put the board into the page and centered it
+
+seanZ -- 2025-12-7 11:56
+API cALLING
+* NEW CHANGES:
+    - movie API works and established selection criteria
+    - discovered quota for movie API 

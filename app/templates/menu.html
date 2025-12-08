@@ -37,7 +37,7 @@ TBD
       border-color: black;
     }
 
-    button:hover:not(.btn-close) {
+    button:hover:not(.btn-close, #audio) {
       transform: scale(110%);
     }
 
@@ -73,7 +73,11 @@ TBD
 
 <body>
   <!-- AUDIO -->
-  <audio controls autoplay loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+  <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+  <button type="button" id="audio" onclick="startAud()" style="border-style:none;">
+    <image style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+        src="/static/images/audio.png">
+  </button>
 
   <!-- FORM THAT ALL INPUTS/BUTTONS ARE LINKED TO -->
   <form id="play" method="POST" action="/"> </form>
@@ -137,7 +141,10 @@ TBD
     crossorigin="anonymous"> </script>
 
   <!-- PAGE-SPECIFIC JS -->
-  <script>
+  <script>document.getElementById('bgm').play()
+    var startAud = function() {
+      document.getElementById('bgm').play()
+    }
   </script>
 
 </body>

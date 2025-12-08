@@ -127,6 +127,21 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
             c += dc
     return False
 
+def in_check(board, king_r, king_c, color):
+    if color == "white":
+        enemy_color == "black"
+    else:
+        enemy_color == "white"
+    king_r, king_c = 0, 0
+    for i in range (len(board)):
+        for j in range (len(board[0])):
+            if abs(board[i][j]) == 5 and get_color(board[i][j]) == color:
+                king_r, king_c = i, j
+    if is_square_attacked(board, king_r, king_c, enemy_color):
+        return True
+    return False
+
+
 def rook_moves(board, r, c, color):
     moves = []
     directions = [(1,0), (-1,0), (0,1), (0,-1)]

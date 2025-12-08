@@ -60,6 +60,7 @@ DATABASE FUNCTIONS
     - wrote questions table mutator method (make_question)
 
 zixiQ -- 2025-12-4 11:47
+CHESS LOGIC
 * NEW CHANGES:
     - created chess branch with initial functions reset and flip board
     - created/initialized global variables init_pos and current_pos
@@ -71,6 +72,7 @@ DATABASE FUNCTIONS
     - wrote game table mutator method (make_board_state)
 
 zixiQ -- 2025-12-4 11:59
+CHESS LOGIC
 * NEW CHANGES:
     - began implementing legal squares for pieces
         - rooks hopefully complete
@@ -84,6 +86,7 @@ DATABASE FUNCTIONS
     - wrote questions accessor method (get_random_question)
 
 zixiQ -- 2025-12-5 11:47
+CHESS LOGIC
 * NEW CHANGES:
     - created functions to find legal squares for knights, bishops, and queens
         - writing funcs for kings and pawns
@@ -114,3 +117,9 @@ MORE FIGURING OUT MENU
     - added audio (bgm)
 * ERRORS/BUGS:
     - autoplay for bgm does not currently work -- waiting to test on lab computers
+
+zixiQ -- 2025-12-7 19:00
+CHESS LOGIC
+* NEW CHANGES:
+    - Added functions to find legal squares for pawns and kings
+    - Added functions to check if a square is being attacked

@@ -152,3 +152,8 @@ CHESS LOGIC
 * NEW CHANGES:
     - Added function to check if king is in check
     - Updated rook_moves() to return only certain moves if king is in check
+
+seanZ -- 2025-12-8 11:46
+    API CALLING
+    * NEW CHANGES:
+    - started spanish english api calling function

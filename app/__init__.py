@@ -23,23 +23,27 @@ def menu():
 
     if request.method == 'POST':
         # ADDS SETTINGS TO SESSION
-        session.clear()
-        for x,y in request.form.to_dict().items():
-            session[x] = y;
+        if 'difficulty' in request.form:
+            difficulties[int(request.form['difficulty'])] = 'checked'
+        else: difficulties[0] = 'checked'
 
-    #    create_questions()
-    #    create_game_data()
+        if 'setting1' in request.form:
+            setting1='checked'
 
-        # return redirect(url_for('game'))
+        if 'setting2' in request.form:
+            setting2='checked'
 
-    # SETS PREVIOUS SETTINGS
-    if 'difficulty' in session:
-        difficulties[int(session['difficulty'])] = 'checked'
-    else: difficulties[0] = 'checked'
-    if 'setting1' in session:
-        setting1='checked'
-    if 'setting2' in session:
-        setting2='checked'
+        if 'singleplayer' in request.form:
+            create_questions()
+            create_game_data()
+
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
+
+        if 'singleplayer' in request.form:
+            create_questions()
+            create_game_data()
+
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
 
     return render_template('menu.html',
                             dEasy = difficulties[0],
@@ -48,8 +52,8 @@ def menu():
                             placeholder1=setting1,
                             placeholder2=setting2)
 
-@app.route('/game', methods=['GET', 'POST'])
-def game():
+@app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
+def game(gamemode, difficulty):
 
     return render_template('game.html')
 

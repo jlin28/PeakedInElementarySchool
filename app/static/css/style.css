@@ -1,0 +1,10 @@
+@font-face {
+  font-family: font;
+  src: url(/static/arcadeclassic.regular.ttf);
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

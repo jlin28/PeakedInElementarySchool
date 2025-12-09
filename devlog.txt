@@ -45,3 +45,128 @@ GROUP IN CLASS WORK
 * NEW CHANGES:
     - readme for keys and a preliminary requirements.txt were added
     - keys for APIs that require them added to the keys dir
+
+evanK -- 2025-12-3 11:21
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - wrote framework for __init__.py with initial funcions and flask paths
+
+evanK -- 2025-12-4 11:47
+DATABASE FUNCTIONS
+* NEW CHANGES:
+    - created db.py to hold methods for database management
+    - wrote table creation methods (create_questions & create_game_data)
+    - wrote questions table accessor method (get_question)
+    - wrote questions table mutator method (make_question)
+
+zixiQ -- 2025-12-4 11:47
+CHESS LOGIC
+* NEW CHANGES:
+    - created chess branch with initial functions reset and flip board
+    - created/initialized global variables init_pos and current_pos
+
+seanZ -- 2025-12-4 11:47
+API cALLING
+* NEW CHANGES:
+    - links to each api is established
+    - started data calling with json
+
+evanK -- 2025-12-4 20:48
+DATABASE FUNCTIONS
+* NEW CHANGES:
+    - wrote game table accessor method (get_board_state)
+    - wrote game table mutator method (make_board_state)
+
+zixiQ -- 2025-12-4 11:59
+CHESS LOGIC
+* NEW CHANGES:
+    - began implementing legal squares for pieces
+        - rooks hopefully complete
+    - helper functions written: on_board(), get_color()
+
+evanK -- 2025-12-5 11:30
+DATABASE FUNCTIONS
+* NEW CHANGES:
+    - changed f strings in SQL queries to ? placeholders
+    - wrote game table mutator method (make_board_state with no parameters which appends)
+    - wrote questions accessor method (get_random_question)
+
+zixiQ -- 2025-12-5 11:47
+CHESS LOGIC
+* NEW CHANGES:
+    - created functions to find legal squares for knights, bishops, and queens
+        - writing funcs for kings and pawns
+    - began is_check() function
+    - slightly refactored code
+
+seanZ -- 2025-12-5 11:47
+API cALLING
+* NEW CHANGES:
+    - separated apiCall function into different sections
+    - worked on calling and utilizing movieAPI
+
+joyceL -- 2025-12-5 12:31
+CSS AND STATIC FILES
+* NEW CHANGES:
+    - Making basic setup for menu.html and added a prelim bg
+    - adding images for bgs and titles
+    - added buttons + modal for settings
+
+joyceL -- 2025-12-6 00:24
+SETTINGS
+* NEW CHANGES:
+    - Setting up modal
+      - adding some input types
+    - singleplayer + multiplayer buttons now act as submit buttons
+      - sends you to game with selected settings
+    - set up prelim install guide and launch codes
+
+joyceL -- 2025-12-6 23:02
+MORE FIGURING OUT MENU
+* NEW CHANGES:
+    - Implemented a way for settings to stay after they are set (until they are changed)
+    - organized modal a little more
+    - added audio (bgm)
+* ERRORS/BUGS:
+    - autoplay for bgm does not currently work -- waiting to test on lab computers
+
+zixiQ -- 2025-12-7 19:00
+CHESS LOGIC
+* NEW CHANGES:
+    - Added functions to find legal squares for pawns and kings
+    - Added functions to check if a square is being attacked
+
+joyceL -- 2025-12-7 21:52
+BEGIN GAME.HTML
+* NEW CHANGES:
+    - put the board into the page and centered it
+
+seanZ -- 2025-12-7 23:56
+API CALLING
+* NEW CHANGES:
+    - movie API works and established selection criteria
+    - discovered quota for movie API
+
+zixiQ -- 2025-12-8 11:43
+CHESS LOGIC
+* NEW CHANGES:
+    - Added function to check if king is in check
+    - Updated rook_moves() to return only certain moves if king is in check
+
+seanZ -- 2025-12-8 11:46
+    API CALLING
+    * NEW CHANGES:
+    - started spanish english api calling function
+
+zixiQ -- 2025-12-8 21:47
+CHESS LOGIC
+* NEW CHANGES:
+    - Added simulate_move() to check if piece can move (king is in check/pinned)
+    - Updated legal_moves() to properly filter out moves when in check/pin, reverted rook_moves() change
+    - Ran a couple of tests
+
+seanZ -- 2025-12-8 22:08
+    API CALLING
+    * NEW CHANGES:
+    - Added storing for film data in a db table in data.db
+    - Added and tested way for error handling for apiCall() in __init__.py

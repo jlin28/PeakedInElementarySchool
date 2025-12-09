@@ -55,6 +55,7 @@ def getFilm(count):
     if ID == "0000000":
         return getFilm()
     ID = "tt" + ID
+    #ID = "tt0062873" #for manually slapping in ilms
     OMDB_URL = f"https://www.omdbapi.com/?i={ID}&apikey={OMDB_KEY}"
     with urllib.request.urlopen(OMDB_URL) as response:
         raw_data = response.read()
@@ -64,8 +65,17 @@ def getFilm(count):
     if 'imdbVotes' not in data: #some ids don't work, so retry
         return getFilm(count+1)
     rating = data['imdbVotes']
-    if rating == "N/A" or int(rating.replace(',','')) < 1000: #must have good enough rating or else no one will know
+    if rating == "N/A" or int(rating.replace(',','')) < 1000: #must have good enough votes or else no one will know, series can be put in if their episode votes is high enough
         return getFilm(count+1)
+    type = data['Type']
+    if type == "episode":
+        ID = data['seriesID']
+        OMDB_URL = f"https://www.omdbapi.com/?i={ID}&apikey={OMDB_KEY}"
+        with urllib.request.urlopen(OMDB_URL) as response:
+            raw_data = response.read()
+
+        data = json.loads(raw_data)
+        print(data)
     print(str(count) + " searched")
     return data
 

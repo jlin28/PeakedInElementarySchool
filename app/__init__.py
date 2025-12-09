@@ -73,7 +73,7 @@ def game(gamemode, difficulty):
                           [1,2,3,4,5,3,2,1]])
 
     if request.method == 'POST':
-        board = get_board_state(session['turns']
+        board = get_board_state(session['turns'])
 
         if 'move' in request.form:   #Make a move
             initial_pos = (request.form['move'][0], request.form['move'][1])
@@ -90,9 +90,9 @@ def game(gamemode, difficulty):
             highlight = [pos] + legal_squares(board, pos[0], pos[1])
 
     return render_template('game.html',
-                            board = get_board_state(session['turns'])
+                            board = get_board_state(session['turns']),
                             pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'],
-                            gridlabel = ['a','b','c','d','e','f','g','h']
+                            gridlabel = ['a','b','c','d','e','f','g','h'],
                             highlighted_squares = highlight)
 
 @app.route('/test', methods=['GET', 'POST'])

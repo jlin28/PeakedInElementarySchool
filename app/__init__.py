@@ -18,6 +18,7 @@ app.secret_key = 'help'
 @app.route('/', methods=['GET', 'POST'])
 def menu():
     print(request.form) # for testing purposes
+    print(session) # for testing purposes
 
     # SETS DEFAULT SETTINGS
     difficulties = ['', '', '']

@@ -190,6 +190,9 @@ TBD
   <!-- PAGE-SPECIFIC JS -->
   <script>
     var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+    window.onload = function() {
+      document.getElementById('audio').checked = false;
+    }
 
     var Aud = function() {
       let bgm = document.getElementById('bgm');

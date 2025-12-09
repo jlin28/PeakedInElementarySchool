@@ -105,6 +105,8 @@ TBD
 
     <!-- IMAGE GRID -->
     <div id="images" class="container">
+      {% set pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'] %}
+      {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
       {% for ROW in board %}
         <div class="row">
           {% set index = loop.index0 %}

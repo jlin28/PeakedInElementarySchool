@@ -79,6 +79,39 @@ TBD
       content: url("/static/images/audio.png")
     }
 
+    /* ANIMATION */
+    .anim {
+      position: absolute;
+      left: 22%;
+      top: 60%;
+
+      background-color:red; /* FOR TESTING */
+      width:8%;
+      height:18%;
+    }
+
+    .piece {
+      width: 110%;
+      height: auto;
+      overflow: hidden;
+
+      margin-top: 20px;
+    }
+
+/*
+@keyframes myAnimation {
+ from {background-color: red;}
+ to {background-color: yellow;}
+}
+
+div {
+ width: 100px;
+ height: 100px;
+ background-color: red;
+ animation-name: myAnimation;
+ animation-duration: 4s;
+} */
+
   </style>
 
 </head>
@@ -113,6 +146,10 @@ TBD
         SETTINGS
       </button>
     </div>
+  </div>
+
+  <!-- HOLDS SPRITES FOR ANIMATIONS -->
+  <div id="anim" class="anim container">
   </div>
 
   <!-- MODAL + SETTINGS INPUTS -->
@@ -157,6 +194,8 @@ TBD
 
   <!-- PAGE-SPECIFIC JS -->
   <script>
+    var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+
     var Aud = function() {
       let bgm = document.getElementById('bgm');
       if (bgm.paused) {
@@ -166,6 +205,17 @@ TBD
         bgm.pause();
       }
     };
+
+    var spawnPiece = function() {
+      let img = document.createElement('img');
+      img.src = "/static/sprites/white/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+      img.className = "piece center";
+
+      document.getElementById('anim').appendChild(img);
+    }
+
+    setTimeout(spawnPiece, 3000);
+
   </script>
 
 </body>

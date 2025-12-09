@@ -156,17 +156,34 @@ TBD
     var selected = null;
     var validMoves = null;
 
-    var stopMove = function() {
-      for class in selected.className.split(" ") {
-
+    /*var stopMove = function() {
+      let newclass = "";
+      for c in selected.className.split(" ") {
+        if (c != 'moving') {
+          newclass += c + " ";
+        }
       }
-    }
+      window.location.replace(window.location.href);
+    }*/
 
     var select = function(position) {
       if (selected != null) {
         if position in validMoves {
-          selected.className = selected.className + " moving";
-          selected.addEventListener("animationend", stopMove);
+          // selected.className = selected.className + " moving";
+          let currentPos = selected.getBoundingClientRect();
+          let newPos = selected.getBoundingClientRect();
+
+          let translationX = newPos.left.toFixed() - currentPos.left.toFixed();
+          let translationY = newPos.bottom.toFixed() - currentPos.bottom.toFixed();
+
+          selected.animate([
+            {transform: 'translate(0, 0)'},
+            {transform: 'translate(' + translationX + ', ' + translationY + ')'}
+          ], {
+             duration: 6000;
+            }
+          );
+          //selected.addEventListener("animationend", stopMove);
         } else {
           let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = prev.className.split(" ");

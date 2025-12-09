@@ -22,5 +22,5 @@ Merriam Webster API
   - Thesaurus API: provides synonyms for different words
   - Spanish English API: provides translations between spanish and english words
 
-Movies API
-  - provides images and information of movies.
+Omdb API
+  - provides images and information of movies/films.

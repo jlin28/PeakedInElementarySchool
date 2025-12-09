@@ -141,8 +141,44 @@ BEGIN GAME.HTML
 * NEW CHANGES:
     - put the board into the page and centered it
 
-seanZ -- 2025-12-7 11:56
-API cALLING
+seanZ -- 2025-12-7 23:56
+API CALLING
 * NEW CHANGES:
     - movie API works and established selection criteria
-    - discovered quota for movie API 
+    - discovered quota for movie API
+
+zixiQ -- 2025-12-8 11:43
+CHESS LOGIC
+* NEW CHANGES:
+    - Added function to check if king is in check
+    - Updated rook_moves() to return only certain moves if king is in check
+
+seanZ -- 2025-12-8 11:46
+API CALLING
+* NEW CHANGES:
+    - started spanish english api calling function
+
+joyceL -- 2025-12-8 12:33
+AUDIO STUFFS
+* NEW CHANGES:
+    - implemented a way for audio to play in menu
+
+zixiQ -- 2025-12-8 21:47
+CHESS LOGIC
+* NEW CHANGES:
+    - Added simulate_move() to check if piece can move (king is in check/pinned)
+    - Updated legal_moves() to properly filter out moves when in check/pin, reverted rook_moves() change
+    - Ran a couple of tests
+
+seanZ -- 2025-12-8 22:08
+API CALLING
+* NEW CHANGES:
+    - Added storing for film data in a db table in data.db
+    - Added and tested way for error handling for apiCall() in __init__.py
+
+joyceL -- 2025-12-8 23:42
+GAME AND MORE AUDIO
+* NEW CHANGES:
+    - Optimized audio code a bit
+    - Worked on implementing image and buttons grid for game.html
+    - set up sprites as well as select animations

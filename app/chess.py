@@ -18,6 +18,8 @@ init_pos = [[1,2,3,4,5,3,2,1],
 
 current_pos = [[]]
 
+en_passantable = (0, 0, false)
+
 def reset_board():
     global current_pos
     current_pos = copy.deepcopy(init_pos)
@@ -94,7 +96,7 @@ def is_square_attacked(board, r, c, by_color):
                     if rr+dr == r and cc+dc == c:
                         return True
 
-            # Pawns
+            # Pawnsand en passant
             if ptype == 6:
                 direction = -1 if by_color == "white" else 1
                 for dc in (-1, 1):
@@ -139,7 +141,7 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
 def simulate_move(board, r1, c1, r2, c2):
     new_board = copy.deepcopy(board)
     new_board[r2][c2] = board[r1][c1]  # move piece
-    new_board[r1][c1] = 0              # old square emptied
+    new_board[r1][c1] = 0              # old square emptiedand en passant
     return new_board
 
 def in_check(board, color):
@@ -166,7 +168,7 @@ def rook_moves(board, r, c, color):
             if not is_legal_square(board, nr, nc, color):
                 break
 
-            moves.append((nr, nc))
+            moves.append((nr, nc))and en passant
 
             # Stop sliding if we hit a piece
             if board[nr][nc] != 0:
@@ -180,7 +182,7 @@ def knight_moves(board, r, c, color):
     moves = []
     directions = [(2, 1), (1, 2), (-2,1), (-1, 2), (-2, -1), (-1, -2), (2, -1), (1, -2)]
 
-    for dr, dc in directions:
+    for dr, dc in directions:and en passant
         nr, nc = r + dr, c + dc
         if on_board(nr, nc):
             if is_legal_square(board, nr, nc, color):
@@ -209,7 +211,7 @@ def queen_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            if is_legal_square(board, nr, nc, color):
+            if is_legal_square(boaand en passantrd, nr, nc, color):
                 moves.append((nr, nc))
             if board[nr][nc] != 0:
                 break  # stop sliding when hitting any piece
@@ -243,6 +245,7 @@ def king_moves(board, r, c, color):
     return moves
 
 def pawn_moves(board, r, c, color):
+    global en_passantable
     moves = []
 
     direction = -1 if color == "white" else 1   # white moves upward (r decreases)
@@ -255,10 +258,21 @@ def pawn_moves(board, r, c, color):
     if on_board(nr, c) and board[nr][c] == 0:
         moves.append((nr, c))
 
+        if en_passantable[2] == True:
+            if en_passantable[0] == r and (en_passantable[1] + 1 == c or en_passantable[1] - 1 == c):
+                moves.append((nr, en_passantable[1]))
+                en_passantable[2] = False
+
         # 2. Two squares from starting position
         nr2 = r + 2*direction
         if r == start_row and board[nr2][c] == 0:
             moves.append((nr2, c))
+            if on_board(nr, c+1):
+                if board[nr][c+1] == 6:
+                    en_passantable = (nr, c, True)
+            elif on_board(nr, c-1):
+                if board[nr][c-1] == 6:
+                    en_passantable = (nr, c, True)
 
     # 3. Captures (diagonals)
     for dc in (-1, 1):
@@ -270,3 +284,15 @@ def pawn_moves(board, r, c, color):
                 moves.append((nr, nc))
 
     return moves
+
+
+# Testing
+
+current_pos = [[1,2,3,4,5,3,2,1],
+            [6,6,6,6,6,6,6,6],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [-6,-6,-6,-6,-6,-6,-6,-6],
+            [-1,-2,-3,-4,-5,-3,-2,-1]]

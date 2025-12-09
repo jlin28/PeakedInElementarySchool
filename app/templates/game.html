@@ -154,12 +154,25 @@ TBD
   <!-- PAGE-SPECIFIC JS -->
   <script>
     var selected = null;
+    var validMoves = null;
+
+    var stopMove = function() {
+      for class in selected.className.split(" ") {
+
+      }
+    }
+
     var select = function(position) {
       if (selected != null) {
-        let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
-        let classnames = prev.className.split(" ");
+        if position in validMoves {
+          selected.className = selected.className + " moving";
+          selected.addEventListener("animationend", stopMove);
+        } else {
+          let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
+          let classnames = prev.className.split(" ");
 
-        prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+          prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+        }
       }
 
       let piece = document.getElementsByClassName(position)[1];
@@ -169,10 +182,13 @@ TBD
       if (sprite != null) {
         let classnames = sprite.className.split(" ");
         sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
+        // validMoves = [PLACEHOLDER BUT SHOULD RETURN AN ARRAY OF VALID MOVES]
       } else {
         selected = null;
+        // validMoves = null;
       }
     }
+
   </script>
 </body>
 

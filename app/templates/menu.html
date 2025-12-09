@@ -83,9 +83,8 @@ TBD
     .anim {
       position: absolute;
       left: 22%;
-      top: 60%;
+      top: 62%;
 
-      background-color:red; /* FOR TESTING */
       width:8%;
       height:18%;
     }
@@ -96,21 +95,17 @@ TBD
       overflow: hidden;
 
       margin-top: 20px;
+
+      animation-name: walk;
+      animation-timing-function: linear;
+      animation-duration: 6s;
     }
 
-/*
-@keyframes myAnimation {
- from {background-color: red;}
- to {background-color: yellow;}
-}
 
-div {
- width: 100px;
- height: 100px;
- background-color: red;
- animation-name: myAnimation;
- animation-duration: 4s;
-} */
+    @keyframes walk {
+      from {transform: translate(0);}
+      to {transform: translate(675%);}
+    }
 
   </style>
 
@@ -206,15 +201,24 @@ div {
       }
     };
 
+    var killChild = function() {
+      let container = document.getElementById('anim');
+      container.innerHTML = '';
+    }
+
     var spawnPiece = function() {
+      container = document.getElementById('anim');
+
       let img = document.createElement('img');
-      img.src = "/static/sprites/white/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+      img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
       img.className = "piece center";
 
-      document.getElementById('anim').appendChild(img);
+      container.appendChild(img);
+      img.addEventListener("animationend", killChild);
     }
 
     setTimeout(spawnPiece, 3000);
+    setInterval(spawnPiece, 11000);
 
   </script>
 

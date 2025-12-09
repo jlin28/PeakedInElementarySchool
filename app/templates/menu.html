@@ -11,9 +11,163 @@ TBD
 <html>
 
 <head>
+  <title> MENU </title>
+
+  <!-- CUSTOM CSS -->
+  <link rel="stylesheet"
+    type="text/css"
+    href="/static/css/style.css">
+
+  <!-- BOOTSTRAP CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous">
+
+  <!-- PAGE SPECIFIC CSS -->
+  <style>
+    /* SINGLEPLAYER, MULTIPLAYER, AND SETTINGS BUTTONS */
+    button {
+      font-family: font;
+      font-size: 135%;
+      background: none;
+
+      border-style: solid;
+      border-width: medium;
+      border-color: black;
+    }
+
+    button:hover:not(.btn-close, #audio) {
+      transform: scale(110%);
+    }
+
+    /* BACKGROUND */
+    body {
+      /* will hopefully be able to make the bg change based upon whether it is day or night real time */
+      background-image: url('/static/images/day.jpg');
+      background-repeat: no-repeat;
+      background-size: 100vw 100vh;
+    }
+
+    /* MODAL POPUP */
+    .modal-content {
+      border-radius: 0;
+      font-family: font;
+    }
+
+    .form-check-reverse {
+      float: left;
+    }
+
+    label, text {
+      font-size: 125%;
+    }
+
+    input[type=checkbox]:not(#audio) {
+      margin-top: 7px;
+      transform: scale(110%);
+    }
+
+    #audio {
+      transform: scale(5);
+      display: none;
+      margin-top: 15px;
+      margin-left: 25px;
+    }
+
+    #audio:checked + label img {
+      content: url("/static/images/audio.png")
+    }
+
+  </style>
+
 </head>
 
 <body>
+  <!-- FORM THAT ALL INPUTS/BUTTONS ARE LINKED TO -->
+  <form id="play" method="POST" action="/"> </form>
+
+  <!-- AUDIO -->
+  <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+  <audio id="buttonhov" src="/static/audio/click.mp3"> </audio>
+
+  <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
+  <label for="audio">
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+      src="/static/images/mute.png">
+  </label>
+
+  <!-- MAIN CONTENT OF PAGE-->
+  <div style="margin-top:5vh;" class="container">
+    <div class="container">
+      <image src="/static/images/title.png" class="center">
+    </div>
+    <div style="margin-top:-50px; width:50%" class="container">
+      <button type="submit" form="play" class="center options" style="width:35%"> SINGLEPLAYER </button>
+    </div>
+    <div style="margin-top:20px; width:50%" class="container">
+      <button type="submit" form="play" class="center options" style="width:35%"> MULTIPLAYER </button>
+    </div>
+    <div style="margin-top:20px; width:50%" class="container">
+      <button type="button" class="center options" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
+        SETTINGS
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL + SETTINGS INPUTS -->
+  <div class="modal fade" id="settings" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" style="margin-left:180px;" id="staticBackdropLabel">SETTINGS</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- CHECKBOX TYPE SETTINGS -->
+          <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ placeholder1 }}>
+            <label for="setting1"> setting1 </label>
+            <br>
+            <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
+            <label for="setting2"> setting2 </label>
+          </div>
+          <br><br><br>
+          <!-- RADIO TYPE SETTINGS -->
+          <div>
+            <text> difficulty &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="easy" value="0" autocomplete="off" {{ dEasy }}>
+            <label class="btn btn-outline-secondary" for="easy">easy</label>
+            &nbsp&nbsp&nbsp
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="medium" value="1" autocomplete="off" {{ dMed }}>
+            <label class="btn btn-outline-secondary" for="medium">medium</label>
+            &nbsp&nbsp&nbsp
+            <input type="radio" class="btn-check" form="play" name="difficulty" id="hard" value="2" autocomplete="off" {{ dHard }}>
+            <label class="btn btn-outline-secondary" for="hard">hard</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"> </script>
+
+  <!-- PAGE-SPECIFIC JS -->
+  <script>
+    var Aud = function() {
+      let bgm = document.getElementById('bgm');
+      if (bgm.paused) {
+        bgm.play();
+      }
+      else {
+        bgm.pause();
+      }
+    };
+  </script>
+
 </body>
 
 </html>

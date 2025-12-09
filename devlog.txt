@@ -154,9 +154,14 @@ CHESS LOGIC
     - Updated rook_moves() to return only certain moves if king is in check
 
 seanZ -- 2025-12-8 11:46
-    API CALLING
-    * NEW CHANGES:
+API CALLING
+* NEW CHANGES:
     - started spanish english api calling function
+
+joyceL -- 2025-12-8 12:33
+AUDIO STUFFS
+* NEW CHANGES:
+    - implemented a way for audio to play in menu
 
 zixiQ -- 2025-12-8 21:47
 CHESS LOGIC
@@ -166,7 +171,14 @@ CHESS LOGIC
     - Ran a couple of tests
 
 seanZ -- 2025-12-8 22:08
-    API CALLING
-    * NEW CHANGES:
+API CALLING
+* NEW CHANGES:
     - Added storing for film data in a db table in data.db
     - Added and tested way for error handling for apiCall() in __init__.py
+
+joyceL -- 2025-12-8 23:42
+GAME AND MORE AUDIO
+* NEW CHANGES:
+    - Optimized audio code a bit
+    - Worked on implementing image and buttons grid for game.html
+    - set up sprites as well as select animations

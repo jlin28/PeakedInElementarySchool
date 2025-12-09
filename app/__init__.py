@@ -57,24 +57,43 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
-    board = [[-1,-2,-3,-4,-5,-3,-2,-1],
-            [-6,-6,-6,-6,-6,-6,-6,-6],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [6,6,6,6,6,6,6,6],
-            [1,2,3,4,5,3,2,1]]
-    #if not 'turns' in session:
-    #    session['turns'] = 1;
-    #else:
-    #    session['turns'] = session['turns'] + 1
+
+    highlight = []
+
+    if not 'turns' in session:
+        session['turns'] = 0;
+
+        make_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
+                          [-6,-6,-6,-6,-6,-6,-6,-6],
+                          [0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0],
+                          [6,6,6,6,6,6,6,6],
+                          [1,2,3,4,5,3,2,1]])
+
+    if request.method == 'POST':
+        board = get_board_state(session['turns']
+
+        if 'move' in request.form:   #Make a move
+            initial_pos = (request.form['move'][0], request.form['move'][1])
+            final_pos = (request.form['move'][2], request.form['move'][3])
+
+            if final_pos in legal_squares(board, initial_pos[0], initial_pos[1]):
+                make_board_state(simulate_move(board, initial_pos[0], initial_pos[1], final_pos[0], final_pos[1]))
+
+            flip_board()
+
+        if 'select' in request.form:   #Select a piece
+            pos = (request.form ['select'][0], request.form['select'][1])
+
+            highlight = [pos] + legal_squares(board, pos[0], pos[1])
+
     return render_template('game.html',
-                            #board=get_board_state(session['turns'])
-                            board = board,
+                            board = get_board_state(session['turns'])
                             pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'],
                             gridlabel = ['a','b','c','d','e','f','g','h']
-                        )
+                            highlighted_squares = highlight)
 
 @app.route('/test', methods=['GET', 'POST'])
 def testError():

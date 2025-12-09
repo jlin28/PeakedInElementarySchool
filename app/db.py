@@ -114,6 +114,33 @@ def make_question(question, answers, correct, image):
 
     return id
 
+#=============================API DATA=============================#
+
+def add_film(data):
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS films (
+            id INTEGER PRIMARY KEY NOT NULL,
+            title TEXT NOT NULL,
+            genre TEXT NOT NULL,
+            plot TEXT NOT NULL,
+            director TEXT NOT NULL,
+            rating TEXT NOT NULL,
+            released TEXT NOT NULL
+        )"""
+    )
+
+    count = c.execute(f'SELECT COUNT(*) FROM films')
+    count = count.fetchone()[0]
+    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
+    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
+    c.execute(command, vars)
+
+    db.commit()
+    db.close()
 
 #=============================GAME=============================#
 

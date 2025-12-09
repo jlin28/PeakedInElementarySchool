@@ -2,6 +2,7 @@ import urllib.request
 import json
 import random
 from pprint import pprint
+from db import add_film
 
 #setup
 with open("keys/key_OMDb.txt", "r") as f:
@@ -24,7 +25,7 @@ COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 #gives a random set of data for specific api
 def apiCall(api):
     if api == "film":
-        data = getFilm(0)
+        data = getFilm(1)
         print("                  ")
         return data
     if api == "spanish":
@@ -59,13 +60,13 @@ def getFilm(count):
         raw_data = response.read()
 
     data = json.loads(raw_data)
-    #print(data)
+    print(data)
     if 'imdbVotes' not in data: #some ids don't work, so retry
         return getFilm(count+1)
     rating = data['imdbVotes']
     if rating == "N/A" or int(rating.replace(',','')) < 1000: #must have good enough rating or else no one will know
         return getFilm(count+1)
-    print(count + " searched")
+    print(str(count) + " searched")
     return data
 
 def getSpanish():
@@ -77,4 +78,4 @@ def getSpanish():
 
     return data
 
-pprint(apiCall("spanish"))
+#pprint(apiCall("film"))

@@ -53,8 +53,24 @@ def menu():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-
-    return render_template('game.html')
+    board = [[-1,-2,-3,-4,-5,-3,-2,-1],
+            [-6,-6,-6,-6,-6,-6,-6,-6],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [6,6,6,6,6,6,6,6],
+            [1,2,3,4,5,3,2,1]]
+    #if not 'turns' in session:
+    #    session['turns'] = 1;
+    #else:
+    #    session['turns'] = session['turns'] + 1
+    return render_template('game.html',
+                            #board=get_board_state(session['turns'])
+                            board = board,
+                            pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'],
+                            gridlabel = ['a','b','c','d','e','f','g','h']
+                        )
 
 @app.route('/test', methods=['GET', 'POST'])
 def testError():

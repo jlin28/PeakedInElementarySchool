@@ -63,9 +63,20 @@ TBD
       font-size: 125%;
     }
 
-    input[type=checkbox] {
+    input[type=checkbox]:not(#audio) {
       margin-top: 7px;
       transform: scale(110%);
+    }
+
+    #audio {
+      transform: scale(5);
+      display: none;
+      margin-top: 15px;
+      margin-left: 25px;
+    }
+
+    #audio:checked + label img {
+      content: url("/static/images/audio.png")
     }
 
   </style>
@@ -78,14 +89,13 @@ TBD
 
   <!-- AUDIO -->
   <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+  <audio id="buttonhov" src="/static/audio/click.mp3"> </audio>
 
-  <image id="mutebut" style="z-index:0;opacity:0;width:50px;height:auto;position:absolute;left:5px;top:2px"
-        src="/static/images/audio.png">
-
-  <button id="audio" onclick="Aud()" style="z-index:1;border-style:none;">
-    <image id="audiobut" style="z-index:1;width:50px;height:auto;position:absolute;left:5px;top:2px"
-        src="/static/images/mute.png">
-  </button>
+  <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
+  <label for="audio">
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+      src="/static/images/mute.png">
+  </label>
 
   <!-- MAIN CONTENT OF PAGE-->
   <div style="margin-top:5vh;" class="container">
@@ -93,13 +103,13 @@ TBD
       <image src="/static/images/title.png" class="center">
     </div>
     <div style="margin-top:-50px; width:50%" class="container">
-      <button type="submit" form="play" class="center" style="width:35%"> SINGLEPLAYER </button>
+      <button type="submit" form="play" class="center options" style="width:35%"> SINGLEPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button type="submit" form="play" class="center" style="width:35%"> MULTIPLAYER </button>
+      <button type="submit" form="play" class="center options" style="width:35%"> MULTIPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button type="button" class="center" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
+      <button type="button" class="center options" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
         SETTINGS
       </button>
     </div>
@@ -148,19 +158,14 @@ TBD
   <!-- PAGE-SPECIFIC JS -->
   <script>
     var Aud = function() {
-      if (document.getElementById('bgm').paused) {
-        document.getElementById('bgm').play();
-        document.getElementById('audio').style.opacity = 0;
-        document.getElementById('audiobut').style.opacity = 0;
-        document.getElementById('mutebut').style.opacity = 1;
+      let bgm = document.getElementById('bgm');
+      if (bgm.paused) {
+        bgm.play();
       }
       else {
-        document.getElementById('bgm').pause();
-        document.getElementById('audio').style.opacity = 1;
-        document.getElementById('audiobut').style.opacity = 1;
-        document.getElementById('mutebut').style.opacity = 0;
+        bgm.pause();
       }
-    }
+    };
   </script>
 
 </body>

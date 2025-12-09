@@ -34,18 +34,27 @@ def legal_squares(board, r, c):
     piece_type = abs(piece)
     color = get_color(piece)
 
-    if piece_type == 1:  # rook
-        return rook_moves(board, r, c, color)
-    elif piece_type == 2:  # knight
-        return knight_moves(board, r, c, color)
-    elif piece_type == 3:  # bishop
-        return bishop_moves(board, r, c, color)
-    elif piece_type == 4:  # queen
-        return queen_moves(board, r, c, color)
-    elif piece_type == 5:  # king
-        return king_moves(board, r, c, color)
-    elif piece_type == 6:  # pawn
-        return pawn_moves(board, r, c, color)
+    if piece_type == 1:
+        moves = rook_moves(board, r, c, color)
+    elif piece_type == 2:
+        moves = knight_moves(board, r, c, color)
+    elif piece_type == 3:
+        moves = bishop_moves(board, r, c, color)
+    elif piece_type == 4:
+        moves = queen_moves(board, r, c, color)
+    elif piece_type == 5:
+        moves = king_moves(board, r, c, color)
+    elif piece_type == 6:
+        moves = pawn_moves(board, r, c, color)
+
+    # filter based on checks/pins
+    legal = []
+    for nr, nc in moves:
+        new_board = simulate_move(board, r, c, nr, nc)
+        if not in_check(new_board, color):
+            legal.append((nr, nc))
+
+    return legal
 
 def get_color(piece):
     if piece > 0:
@@ -127,11 +136,17 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
             c += dc
     return False
 
+def simulate_move(board, r1, c1, r2, c2):
+    new_board = copy.deepcopy(board)
+    new_board[r2][c2] = board[r1][c1]  # move piece
+    new_board[r1][c1] = 0              # old square emptied
+    return new_board
+
 def in_check(board, color):
     if color == "white":
-        enemy_color == "black"
+        enemy_color ="black"
     else:
-        enemy_color == "white"
+        enemy_color = "white"
     king_r, king_c = 0, 0
     for i in range (len(board)):
         for j in range (len(board[0])):
@@ -148,18 +163,15 @@ def rook_moves(board, r, c, color):
     for dr, dc in directions:
         nr, nc = r + dr, c + dc
         while on_board(nr, nc):
-            new_board = copy.deepcopy(board)
-            new_board[r][c] = 0
-            new_board[nr][nc] = 1*color
-            if in_check(board, color):
-                if not in_check(new_board, color):
-                    moves.append((nr, nc))
-            else:
-                if is_legal_square(board, nr, nc, color):
-                    if not in_check(new_board, color):
-                        moves.append((nr, nc))
-                if board[nr, nc] != 0:
-                    break  # stop sliding when hitting any piece
+            if not is_legal_square(board, nr, nc, color):
+                break
+
+            moves.append((nr, nc))
+
+            # Stop sliding if we hit a piece
+            if board[nr][nc] != 0:
+                break
+
             nr += dr
             nc += dc
     return moves
@@ -184,7 +196,7 @@ def bishop_moves(board, r, c, color):
         while on_board(nr, nc):
             if is_legal_square(board, nr, nc, color):
                 moves.append((nr, nc))
-            if board[nr, nc] != 0:
+            if board[nr][nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
             nc += dc
@@ -199,7 +211,7 @@ def queen_moves(board, r, c, color):
         while on_board(nr, nc):
             if is_legal_square(board, nr, nc, color):
                 moves.append((nr, nc))
-            if board[nr, nc] != 0:
+            if board[nr][nc] != 0:
                 break  # stop sliding when hitting any piece
             nr += dr
             nc += dc

@@ -182,3 +182,11 @@ GAME AND MORE AUDIO
     - Optimized audio code a bit
     - Worked on implementing image and buttons grid for game.html
     - set up sprites as well as select animations
+
+zixiQ -- 2025-12-9 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Created a promotion function
+    - Modified pawn_moves() to start accounting for en passant
+* ERRORS/BUGS:
+    - En passant logic is incorrect and WIP, finish later

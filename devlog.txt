@@ -164,3 +164,9 @@ CHESS LOGIC
     - Added simulate_move() to check if piece can move (king is in check/pinned)
     - Updated legal_moves() to properly filter out moves when in check/pin, reverted rook_moves() change
     - Ran a couple of tests
+
+seanZ -- 2025-12-8 22:08
+    API CALLING
+    * NEW CHANGES:
+    - Added storing for film data in a db table in data.db
+    - Added and tested way for error handling for apiCall() in __init__.py

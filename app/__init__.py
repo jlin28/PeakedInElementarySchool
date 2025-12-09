@@ -42,7 +42,7 @@ def menu():
 
             return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
 
-        if 'singleplayer' in request.form:
+        if 'multiplayer' in request.form:
             create_questions()
             create_game_data()
 

@@ -285,6 +285,12 @@ def pawn_moves(board, r, c, color):
 
     return moves
 
+def promotion():
+    for i in range (len(board[0])):
+        if board[0][i] == 6:
+            return ((-4, -1, -3, -2)) # in order: queen, rook, bishop, knight
+        if board[7][i] == 6:
+            return ((4, 1, 3, 2))
 
 # Testing
 

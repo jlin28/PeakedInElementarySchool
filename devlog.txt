@@ -141,8 +141,19 @@ BEGIN GAME.HTML
 * NEW CHANGES:
     - put the board into the page and centered it
 
-seanZ -- 2025-12-7 11:56
-API cALLING
+seanZ -- 2025-12-7 23:56
+API CALLING
 * NEW CHANGES:
     - movie API works and established selection criteria
-    - discovered quota for movie API 
+    - discovered quota for movie API
+
+zixiQ -- 2025-12-8 11:43
+CHESS LOGIC
+* NEW CHANGES:
+    - Added function to check if king is in check
+    - Updated rook_moves() to return only certain moves if king is in check
+
+seanZ -- 2025-12-8 11:46
+    API CALLING
+    * NEW CHANGES:
+    - started spanish english api calling function

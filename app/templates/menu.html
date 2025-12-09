@@ -37,7 +37,7 @@ TBD
       border-color: black;
     }
 
-    button:hover:not(.btn-close) {
+    button:hover:not(.btn-close, #audio) {
       transform: scale(110%);
     }
 
@@ -67,16 +67,25 @@ TBD
       margin-top: 7px;
       transform: scale(110%);
     }
+
   </style>
 
 </head>
 
 <body>
-  <!-- AUDIO -->
-  <audio controls autoplay loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
-
   <!-- FORM THAT ALL INPUTS/BUTTONS ARE LINKED TO -->
   <form id="play" method="POST" action="/"> </form>
+
+  <!-- AUDIO -->
+  <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+
+  <image id="mutebut" style="z-index:0;opacity:0;width:50px;height:auto;position:absolute;left:5px;top:2px"
+        src="/static/images/audio.png">
+
+  <button id="audio" onclick="Aud()" style="z-index:1;border-style:none;">
+    <image id="audiobut" style="z-index:1;width:50px;height:auto;position:absolute;left:5px;top:2px"
+        src="/static/images/mute.png">
+  </button>
 
   <!-- MAIN CONTENT OF PAGE-->
   <div style="margin-top:5vh;" class="container">
@@ -138,6 +147,20 @@ TBD
 
   <!-- PAGE-SPECIFIC JS -->
   <script>
+    var Aud = function() {
+      if (document.getElementById('bgm').paused) {
+        document.getElementById('bgm').play();
+        document.getElementById('audio').style.opacity = 0;
+        document.getElementById('audiobut').style.opacity = 0;
+        document.getElementById('mutebut').style.opacity = 1;
+      }
+      else {
+        document.getElementById('bgm').pause();
+        document.getElementById('audio').style.opacity = 1;
+        document.getElementById('audiobut').style.opacity = 1;
+        document.getElementById('mutebut').style.opacity = 0;
+      }
+    }
   </script>
 
 </body>

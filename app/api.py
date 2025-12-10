@@ -92,5 +92,3 @@ def getSpanish():
     data = json.loads(raw_data)
 
     return data
-
-#pprint(apiCall("film"))

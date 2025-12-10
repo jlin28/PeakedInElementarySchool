@@ -5,6 +5,9 @@ from pprint import pprint
 from db import add_film
 
 #setup
+
+OMDB_KEY = ""
+
 with open("keys/key_spanish_english.txt", "r") as f:
     SPANISH_ENGLISH_KEY = f.read().strip()
 
@@ -21,6 +24,7 @@ COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 
 #gives a random set of data for specific api
 def apiCall(api):
+    global OMDB_KEY
     if api == "film":
         with open("keys/key_OMDb.txt", "r") as f:
             OMDB_KEY = f.read().strip()

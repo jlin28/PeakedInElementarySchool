@@ -109,7 +109,7 @@ TBD
       {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
       {% for ROW in board %}
         <div class="row">
-          {% set index = loop.index0 %}
+          {% set index = loop.index %}
           {% for COL in ROW %}
             <div class="col image {{ gridlabel[loop.index0] }}{{ index }}">
               {% if COL < 0 %}
@@ -135,7 +135,7 @@ TBD
     <div id="buttons" class="container">
       {% for ROW in board %}
         <div class="row">
-          {% set index = loop.index0 %}
+          {% set index = loop.index %}
           {% for COL in ROW %}
             <div class="col {{ gridlabel[loop.index0] }}{{ index }}">
               <button onclick="select(this.parentElement.className.split(' ')[1])"> </button>
@@ -155,55 +155,109 @@ TBD
   <script>
     var selected = null;
     var validMoves = null;
+    var moving = false;
 
-    /*var stopMove = function() {
-      let newclass = "";
-      for c in selected.className.split(" ") {
-        if (c != 'moving') {
-          newclass += c + " ";
-        }
-      }
-      window.location.replace(window.location.href);
-    }*/
+    var stopMove = function(delay, animation) {
+      setTimeout(function() {
+          animation.pause()
+
+          let sprite = document.querySelector("." + selected.className.split(" ")[1] + " img");
+          let classnames = sprite.className.split(" ");
+          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+        }, delay - 50
+      );
+
+      setTimeout(function() {
+          window.location.replace(window.location.href)
+        }, delay + 1000
+      );
+    }
 
     var select = function(position) {
       if (selected != null) {
-        if position in validMoves {
-          // selected.className = selected.className + " moving";
+        if (validMoves.includes(position)) {
+          moving = true;
+
+          let board = document.getElementById('buttons');
+          let square = document.getElementsByClassName(position)[1];
+          let sprite = document.querySelector("." + selected.className.split(" ")[1] + " img");
+          let classnames = sprite.className.split(" ");
+
           let currentPos = selected.getBoundingClientRect();
-          let newPos = selected.getBoundingClientRect();
+          let newPos = square.getBoundingClientRect();
 
-          let translationX = newPos.left.toFixed() - currentPos.left.toFixed();
-          let translationY = newPos.bottom.toFixed() - currentPos.bottom.toFixed();
+          let areaOfBoard = board.offsetWidth * board.offsetHeight;
+          let translationX = newPos.left - currentPos.left;
+          let translationY = newPos.bottom - currentPos.bottom;
+          let distance = Math.sqrt(Math.pow(translationX,2) + Math.pow(translationY,2))
 
-          selected.animate([
-            {transform: 'translate(0, 0)'},
-            {transform: 'translate(' + translationX + ', ' + translationY + ')'}
-          ], {
-             duration: 6000;
-            }
+          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/walk.gif';
+          let anim = sprite.animate(
+            [{transform: 'translate(0, 0)'}, {transform: 'translate(' + translationX + 'px, ' + translationY + 'px)'}],
+            {
+             duration: 1100 * (1 - distance/areaOfBoard),
+             iterations: 1,
+             easing: 'linear',
+           },
           );
-          //selected.addEventListener("animationend", stopMove);
-        } else {
+
+          anim.play()
+
+          if (document.querySelector("." + square.className.split(" ")[1] + " img") != null) {
+            setTimeout(function() {
+              takePiece(document.querySelector("." + square.className.split(" ")[1] + " img"))
+            },
+              1100 * (1 - distance/areaOfBoard));
+          };
+
+          stopMove(1100 * (1 - distance/areaOfBoard), anim);
+        } else if (!moving) {
           let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = prev.className.split(" ");
 
           prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
         }
       }
+      if (!moving) {
+        let piece = document.getElementsByClassName(position)[1];
+        selected = piece;
+        let sprite = document.querySelector("." + piece.className.split(" ")[1] + " img");
 
-      let piece = document.getElementsByClassName(position)[1];
-      selected = piece;
-      let sprite = document.querySelector("." + piece.className.split(" ")[1] + " img");
-
-      if (sprite != null) {
-        let classnames = sprite.className.split(" ");
-        sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
-        // validMoves = [PLACEHOLDER BUT SHOULD RETURN AN ARRAY OF VALID MOVES]
-      } else {
-        selected = null;
-        // validMoves = null;
+        if (sprite != null) {
+          let classnames = sprite.className.split(" ");
+          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
+          validMoves = ['a1', 'a2'] // temporary placeholder --> change with actual valid moves
+        } else {
+          validMoves = null;
+        }
       }
+    }
+
+    var takePiece = function(piece) {
+      let multiplier = [1,-1];
+      let randCoordx = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
+      let randCoordy = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
+      console.log(randCoordx + "," + randCoordy);
+      piece.animate(
+        [{transform: 'translate(0, 0)'},
+          {transform: 'translate(' + randCoordx + 'px, ' + randCoordy + 'px)'}],
+        {
+         duration: 2000,
+         iterations: 1,
+         easing: 'linear',
+         composite: 'add',
+       },
+      );
+
+      piece.animate(
+        [{transform: 'rotate(0)'}, {transform: 'rotate(360deg)'}],
+        {
+         duration: 250,
+         iterations: 100,
+         easing: 'linear',
+         composite: 'add',
+       },
+      );
     }
 
   </script>

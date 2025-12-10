@@ -191,6 +191,7 @@ CHESS LOGIC
 * ERRORS/BUGS:
     - En passant logic is incorrect and WIP, finish later
 
+<<<<<<< HEAD
 joyceL -- 2025-12-9 12:37
 ANIMATIONS
 * NEW CHANGES:
@@ -204,3 +205,12 @@ MORE ANIMATIONS
     - got the movement animation somewhat down
 * ERRORS/BUGS:
     - need to figure out how to have the pieces move consistently to center of square
+=======
+zixiQ -- 2025-12-9 21:15
+CHESS LOGIC
+* NEW CHANGES:
+    - Modified promotion to return all possible promotions
+    - Implemented en passant, modified simulate moves and pawn moves functions
+    - Fixed flip board (before only flipped rows, not columns)
+    - Flipped starting board orientation
+>>>>>>> 77d1c5fe83061c718c71f766e506e84559848203

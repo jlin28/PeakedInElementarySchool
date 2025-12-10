@@ -20,6 +20,8 @@ current_pos = [[]]
 
 en_passant = None
 
+castling = None
+
 def reset_board():
     global current_pos
     current_pos = copy.deepcopy(init_pos)
@@ -36,6 +38,7 @@ def flip_board():
 
 
 def legal_squares(board, r, c):
+    global en_passant
     piece = board[r][c]
     if piece == 0:
         return []
@@ -145,16 +148,28 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
             c += dc
     return False
 
-def simulate_move(board, r1, c1, r2, c2, en_passant_state):
+def simulate_move(board, r1, c1, r2, c2, en_passant_state, castle_state):
     piece = board[r1][c1]
     new_board = copy.deepcopy(board)
     new_en_passant = None  # gets reset every move unless replaced
+    new_castling = None
 
     # En passant capture
     if en_passant_state is not None:
         target_r, target_c, pawn_r, pawn_c = en_passant_state
         if (r2, c2) == (target_r, target_c) and abs(piece) == 6:
             new_board[pawn_r][pawn_c] = 0  # remove captured pawn
+
+    # Castling
+    if castle_state is not None:
+        target_king_r, target_king_c, target_rook_c, target_rook_r, rook_r, rook_c = castle_state
+        if (r2, c2) == (target_king_r, target_king_c) and abs(piece) == 5:
+            new_board[rook_r][rook_c] = 0
+            # New rook position
+            if c2 == 6:
+                new_board[r2][c2-1] = 1
+            elif c2 == 2:
+                new_board[r2][c2+1] = 1
 
     # Move piece normally
     new_board[r2][c2] = piece

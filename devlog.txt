@@ -212,3 +212,15 @@ MORE ANIMATIONS
     - got the movement animation somewhat down
 * ERRORS/BUGS:
     - need to figure out how to have the pieces move consistently to center of square
+
+zixiQ -- 2025-12-10 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Implementing castling functionality
+    - Modified simulate move for castling
+
+seanZ -- 2025-12-10 11:46
+API STUFF
+* NEW CHANGES:
+    - made episodes called to spit out series instead
+    - fixed key interruptions and deletions error handling

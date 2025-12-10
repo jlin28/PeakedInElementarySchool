@@ -190,3 +190,9 @@ CHESS LOGIC
     - Modified pawn_moves() to start accounting for en passant
 * ERRORS/BUGS:
     - En passant logic is incorrect and WIP, finish later
+
+zixiQ -- 2025-12-9 21:07
+CHESS LOGIC
+* NEW CHANGES:
+    - Modified promotion to return all possible promotions
+    - Implemented en passant, modified simulate moves and pawn moves functions

@@ -7,24 +7,19 @@ from db import add_film
 #setup
 
 OMDB_KEY = ""
+SPANISH_ENGLISH_KEY = ""
+SUPERHERO_KEY = ""
+THESAURUS_KEY = ""
 
-with open("keys/key_spanish_english.txt", "r") as f:
-    SPANISH_ENGLISH_KEY = f.read().strip()
-
-with open("keys/key_Superhero.txt", "r") as f:
-    SUPERHERO_KEY = f.read().strip()
-
-with open("keys/key_thesaurus.txt", "r") as f:
-    THESAURUS_KEY = f.read().strip()
-
-SUPERHERO_URL = f"https://www.superheroapi.com/api.php/{SUPERHERO_KEY}/1"
-THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/test?key={THESAURUS_KEY}"
 RICK_AND_MORTY_URL = "https://rickandmortyapi.com/api"
 COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 
 #gives a random set of data for specific api
 def apiCall(api):
     global OMDB_KEY
+    global SPANISH_ENGLISH_KEY
+    global SUPERHERO_KEY
+    global THESAURUS_KEY
     if api == "film":
         with open("keys/key_OMDb.txt", "r") as f:
             OMDB_KEY = f.read().strip()
@@ -32,11 +27,18 @@ def apiCall(api):
         print("                  ")
         return data
     if api == "spanish":
+        with open("keys/key_spanish_english.txt", "r") as f:
+            SPANISH_ENGLISH_KEY = f.read().strip()
         data = getSpanish()
         return data[3]
     if api == "superhero":
-        url = SUPERHERO_URL
+        with open("keys/key_Superhero.txt", "r") as f:
+            SUPERHERO_KEY = f.read().strip()
+        url = SUPERHERO_URL = f"https://www.superheroapi.com/api.php/{SUPERHERO_KEY}/1"
     if api == "thesaurus":
+        with open("keys/key_thesaurus.txt", "r") as f:
+            THESAURUS_KEY = f.read().strip()
+        THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/test?key={THESAURUS_KEY}"
         url = THESAURUS_URL
     if api == "rick":
         url = RICK_AND_MORTY_URL

@@ -197,3 +197,10 @@ ANIMATIONS
     - fixed small audio issue
     - created randomized animation for menu.html
     - beginning movement logic (animations) for game.html
+
+joyceL -- 2025-12-9 21:34
+MORE ANIMATIONS
+* NEW CHANGES:
+    - got the movement animation somewhat down
+* ERRORS/BUGS:
+    - need to figure out how to have the pieces move consistently to center of square

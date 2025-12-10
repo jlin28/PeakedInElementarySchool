@@ -60,7 +60,7 @@ def get_question(id):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    command = 'SELECT ALL FROM questions WHERE id = ?'
+    command = 'SELECT * FROM questions WHERE id = ?'
     vars = (id)
     data = c.execute(command, vars).fetchone()
 
@@ -152,10 +152,10 @@ def make_board_state(turn, board):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    board_str = "["
+    board_rows = []
     for row in board:
-        board_str += "[[" + "], [".join(row) + "]], "
-    board_str = board_str[0:-2] + "]"
+        board_rows.append("%COL%".join(map(str, row)))
+    board_str = "%ROW%".join(board_rows)
 
     command = 'INSERT INTO game VALUES (?, ?)'
     vars = (turn, board_str)
@@ -166,13 +166,13 @@ def make_board_state(turn, board):
 
 
 #parameter format: board - 2-D array
-def make_board_state(board):
+def add_board_state(board):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    turn = c.execute(f'SELECT COUNT(turn) FROM questions')
+    turn = c.execute('SELECT COUNT(turn) FROM game').fetchone()[0] + 1
 
     db.commit()
     db.close()
@@ -187,20 +187,14 @@ def get_board_state(turn):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    command = 'SELECT ALL FROM questions WHERE id = ?'
-    vars = (id)
+    command = 'SELECT board FROM game WHERE turn = ?'
+    vars = (str(turn))
     board_str = c.execute(command, vars).fetchone()[0]
 
-    board = [
-        [board_str[2, 24].split(", ")],
-        [board_str[28, 50].split(", ")],
-        [board_str[54, 76].split(", ")],
-        [board_str[80, 102].split(", ")],
-        [board_str[106, 128].split(", ")],
-        [board_str[132, 154].split(", ")],
-        [board_str[158, 180].split(", ")],
-        [board_str[184, 206].split(", ")],
-    ]
+    board = []
+    board_rows = board_str.split("%ROW%")
+    for row in board_rows:
+        board.append(map(int, row.split("%COL%")))
 
     db.commit()
     db.close()

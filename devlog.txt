@@ -182,3 +182,33 @@ GAME AND MORE AUDIO
     - Optimized audio code a bit
     - Worked on implementing image and buttons grid for game.html
     - set up sprites as well as select animations
+
+zixiQ -- 2025-12-9 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Created a promotion function
+    - Modified pawn_moves() to start accounting for en passant
+* ERRORS/BUGS:
+    - En passant logic is incorrect and WIP, finish later
+
+joyceL -- 2025-12-9 12:37
+ANIMATIONS
+* NEW CHANGES:
+    - fixed small audio issue
+    - created randomized animation for menu.html
+    - beginning movement logic (animations) for game.html
+
+zixiQ -- 2025-12-9 21:15
+CHESS LOGIC
+* NEW CHANGES:
+    - Modified promotion to return all possible promotions
+    - Implemented en passant, modified simulate moves and pawn moves functions
+    - Fixed flip board (before only flipped rows, not columns)
+    - Flipped starting board orientation
+
+joyceL -- 2025-12-9 21:34
+MORE ANIMATIONS
+* NEW CHANGES:
+    - got the movement animation somewhat down
+* ERRORS/BUGS:
+    - need to figure out how to have the pieces move consistently to center of square

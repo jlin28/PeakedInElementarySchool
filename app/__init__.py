@@ -18,6 +18,7 @@ app.secret_key = 'help'
 @app.route('/', methods=['GET', 'POST'])
 def menu():
     print(request.form) # for testing purposes
+    print(session) # for testing purposes
 
     # SETS DEFAULT SETTINGS
     difficulties = ['', '', '']
@@ -33,7 +34,7 @@ def menu():
     #    create_questions()
     #    create_game_data()
 
-        # return redirect(url_for('game'))
+        return redirect(url_for('game'))
 
     # SETS PREVIOUS SETTINGS
     if 'difficulty' in session:
@@ -68,8 +69,6 @@ def game():
     return render_template('game.html',
                             #board=get_board_state(session['turns'])
                             board = board,
-                            pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'],
-                            gridlabel = ['a','b','c','d','e','f','g','h']
                         )
 
 @app.route('/test', methods=['GET', 'POST'])

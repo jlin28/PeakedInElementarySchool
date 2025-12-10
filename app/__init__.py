@@ -62,13 +62,24 @@ def game():
             [0,0,0,0,0,0,0,0],
             [6,6,6,6,6,6,6,6],
             [1,2,3,4,5,3,2,1]]
+    validarr = ''
+    gridlabel = ['a','b','c','d','e','f','g','h']
+
     #if not 'turns' in session:
     #    session['turns'] = 1;
     #else:
     #    session['turns'] = session['turns'] + 1
+
+    if request.method == 'POST':
+        print(request.headers)
+        if 'select' in request.headers:
+            print(gridlabel.index(request.headers['select'][0]))
+
+
     return render_template('game.html',
                             #board=get_board_state(session['turns'])
                             board = board,
+                            #validarr=validarr,
                         )
 
 @app.route('/test', methods=['GET', 'POST'])

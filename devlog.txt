@@ -191,8 +191,10 @@ CHESS LOGIC
 * ERRORS/BUGS:
     - En passant logic is incorrect and WIP, finish later
 
-zixiQ -- 2025-12-9 21:07
+zixiQ -- 2025-12-9 21:15
 CHESS LOGIC
 * NEW CHANGES:
     - Modified promotion to return all possible promotions
     - Implemented en passant, modified simulate moves and pawn moves functions
+    - Fixed flip board (before only flipped rows, not columns)
+    - Flipped starting board orientation

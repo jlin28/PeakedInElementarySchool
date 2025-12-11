@@ -225,6 +225,11 @@ API STUFF
     - made episodes called to spit out series instead
     - fixed key interruptions and deletions error handling
 
+zixiQ -- 2025-12-10 21:00
+CHESS LOGIC
+* NEW CHANGES:
+    - Implemented castling, fixed en passant issue
+
 joyceL -- 2025-12-10 21:12
 SETTING UP INTERACTIONS BETWEEN FE AND BE
 * NEW CHANGES:

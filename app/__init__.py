@@ -121,10 +121,17 @@ def game(gamemode, difficulty):
             return validarr[1:]
 
         if 'move' in data:
+            positions = data['move'].split("+");
+
             session['turns'] = session['turns'] + 1
             turn += 1
-
-            board = get_board_state(turn)
+            print(positions) # testing purposes
+            make_board_state(turn,
+                simulate_move(board,
+                    int(positions[0][1]), gridlabel.index(positions[0][0]),
+                    int(positions[1][1]), gridlabel.index(positions[1][0])
+                )
+            )
 
     return render_template('game.html',
                                 board = board,

@@ -184,6 +184,10 @@ TBD
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
+          xhttp.open('POST', window.location.href, true);
+          xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
+          xhttp.send();
+
           moving = true;
           unhighlightLegalSquares(validMoves);
 

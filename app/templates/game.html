@@ -45,7 +45,7 @@ TBD
     }
 
     /* GRID STYLING */
-    #images, #buttons {
+    #images, #buttons, #glow {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -65,12 +65,16 @@ TBD
     }
 
     /* Z INDEXES */
-    #images {
+    #glow {
       z-index: 1;
     }
 
-    #buttons {
+    #images {
       z-index: 2;
+    }
+
+    #buttons {
+      z-index: 3;
     }
 
     /* IMAGES GRID */
@@ -103,6 +107,22 @@ TBD
     <!-- IMAGE -->
     <image src="/static/images/board.png" class="board">
 
+      <!-- GLOW GRID -->
+      <div id="glow" class="container">
+        {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
+        {% for ROW in board %}
+          <div class="row">
+            {% set index = loop.index0 %}
+            {% for COL in ROW %}
+              <div class="col glow {{ gridlabel[loop.index0] }}{{ index }}">
+                <p></p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
     <!-- IMAGE GRID -->
     <div id="images" class="container">
       {% set pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'] %}
@@ -129,6 +149,7 @@ TBD
 
     <!-- BUTTON GRID -->
     <div id="buttons" class="container">
+      {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
       {% for ROW in board %}
         <div class="row">
           {% set index = loop.index0 %}
@@ -314,15 +335,15 @@ TBD
       xhttp.open('GET', window.location.href, true);
       xhttp.send();
       for (square of arr) {
-        console.log('col image ' + square);
-        document.getElementsByClassName('col image ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.8)';
+        console.log('col glow ' + square);
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
       }
     }
 
     var unhighlightLegalSquares = function(arr) {
       validMoves = null;
       for (square of arr) {
-        document.getElementsByClassName('col image ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
       }
     }
   </script>

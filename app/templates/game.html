@@ -166,9 +166,10 @@ TBD
     var select = function(position) {
       let xhttp = new XMLHttpRequest();
 
-      if (selected != null) {
+      if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
           moving = true;
+          unhighlightLegalSquares(validMoves);
 
           let board = document.getElementById('buttons');
           let square = document.getElementsByClassName(position)[1];
@@ -216,6 +217,7 @@ TBD
         let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
         let classnames = prev.className.split(" ");
 
+        unhighlightLegalSquares(validMoves);
         prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
         }
       }
@@ -224,13 +226,6 @@ TBD
         xhttp.setRequestHeader("select", position);
         xhttp.send();
 
-        // checks if xhttp request is done and there were no errors (200 -- ok request) !!
-    //    xhttp.onreadystatechange = function() {
-      //    if (this.readyState == 4 && this.status == 200) {
-        //    validMoves = {{ validarr }};
-        //  }
-      //  }
-
         let piece = document.getElementsByClassName(position)[1];
         selected = piece;
         let sprite = document.querySelector("." + piece.className.split(" ")[1] + " img");
@@ -238,9 +233,13 @@ TBD
         if (sprite != null) {
           let classnames = sprite.className.split(" ");
           sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
-          validMoves = ['a2', 'a1'] // temporary placeholder --> change with actual valid moves
-        } else {
-          validMoves = null;
+          // checks if xhttp request is done and there were no errors (200 -- ok request) !!
+          xhttp.onload = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              validMoves = this.response.split(',');
+            }
+            highlightLegalSquares(validMoves);
+          }
         }
       }
     }
@@ -286,10 +285,12 @@ TBD
 
       let childs = document.getElementById('images').children;
       let board = {{ board }};
+      let gridrow = 0;
 
       for (row of board) {
+        let squares = childs[gridrow]
         for (let col = 0; col < row.length; col++) {
-          let image = childs[col].querySelector("." + childs[col].className.split(" ")[1] + " img");
+          let image = document.querySelector("." + squares[col].className.split(" ")[1] + " img");
 
           if (image != null) {
             if (row[col] != 0) {
@@ -300,10 +301,10 @@ TBD
 
               classnames[3] = pieces[Math.abs(row[col]) - 1];
               image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-            } else { childs[col].removeChild(image) };
-          } else if (image = null && row[col] != 0) {
+            } else { squares[col].removeChild(image) };
+          } else if (row[col] != 0) {
             let color;
-            let newChild = childs[col].appendChild(document.createElement('img'));
+            let newChild = squares[col].appendChild(document.createElement('img'));
             let type = pieces[Math.abs(row[col]) - 1];
 
             if (row[col] < 0) { color = 'black' };
@@ -314,9 +315,26 @@ TBD
             newChild.alt = type;
           }
         }
+        gridrow++;
       }
     }
 
+    var highlightLegalSquares = function(arr) {
+      let xhttp = new XMLHttpRequest();
+      xhttp.open('GET', window.location.href, true);
+      xhttp.send();
+      for (square of arr) {
+        console.log('col image ' + square);
+        document.getElementsByClassName('col image ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.8)';
+      }
+    }
+
+    var unhighlightLegalSquares = function(arr) {
+      validMoves = null;
+      for (square of arr) {
+        document.getElementsByClassName('col image ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+      }
+    }
   </script>
 </body>
 

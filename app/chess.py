@@ -64,7 +64,7 @@ def legal_squares(board, r, c, en_passant_state):
     # filter based on checks/pins
     legal = []
     for nr, nc in moves:
-        new_board = simulate_move(board, r, c, nr, nc, en_passant_state)[0]
+        new_board = simulate_move(board, r, c, nr, nc, en_passant_state, castling_state)[0]
         if not in_check(new_board, color):
             legal.append((nr, nc))
 

@@ -77,21 +77,20 @@ def game():
     else:
        player = 'black'
 
-    validarr = []
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     if request.method == 'POST':
         data = request.headers
         if 'select' in data:
+            validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
-
-            #for x,y in legal_squares(board, position[1], position[0]):
-            #    validarr.append(gridlabel[x]+y)
+            for x,y in legal_squares(board, position[1], position[0], en_passant):
+                validarr = validarr + ',' + gridlabel[y]+str(x)
+            return validarr[1:];
 
     return render_template('game.html',
                             board=board,
                             player=player,
-                            validarr=validarr,
                         )
 
 @app.route('/test', methods=['GET', 'POST'])

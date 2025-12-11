@@ -99,7 +99,6 @@ def testError():
     ######### FOR ERROR HANDLING TESTING PURPOSES ####################
     try:
         data = apiCall("film")
-        add_film(data)
         return data
     except Exception as e:
         print(f"An unexpected error occured: {e}")

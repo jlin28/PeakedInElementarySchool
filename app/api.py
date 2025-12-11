@@ -3,6 +3,8 @@ import json
 import random
 from pprint import pprint
 from db import add_film
+from nltk import words
+import random
 
 #setup
 
@@ -24,6 +26,7 @@ def apiCall(api):
         with open("keys/key_OMDb.txt", "r") as f:
             OMDB_KEY = f.read().strip()
         data = getFilm(1)
+        add_film(data)
         print("                  ")
         return data
     if api == "spanish":
@@ -85,10 +88,14 @@ def getFilm(count):
     return data
 
 def getSpanish():
-    SPANISH_ENGLISH_URL = f"https://dictionaryapi.com/api/v3/references/spanish/json/test?key={SPANISH_ENGLISH_KEY}"
+    random_word = random.choice(words.words())
+    print(random_word)
+    SPANISH_ENGLISH_URL = f"https://dictionaryapi.com/api/v3/references/spanish/json/{random_word}?key={SPANISH_ENGLISH_KEY}"
     with urllib.request.urlopen(SPANISH_ENGLISH_URL) as response:
         raw_data = response.read()
 
     data = json.loads(raw_data)
 
     return data
+
+apiCall("spanish")

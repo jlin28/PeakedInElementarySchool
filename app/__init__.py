@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 from datetime import time
 from db import *
+from chess import *
 from pprint import pprint
 from api import apiCall
 from db import add_film
@@ -18,6 +19,7 @@ app.secret_key = 'help'
 @app.route('/', methods=['GET', 'POST'])
 def menu():
     print(request.form) # for testing purposes
+    print(session) # for testing purposes
 
     # SETS DEFAULT SETTINGS
     difficulties = ['', '', '']
@@ -40,7 +42,7 @@ def menu():
             create_questions()
             create_game_data()
 
-            session['turns'] = 1;
+            session['turns'] = 1
             add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
                              [-6,-6,-6,-6,-6,-6,-6,-6],
                              [0,0,0,0,0,0,0,0],
@@ -56,7 +58,7 @@ def menu():
             create_questions()
             create_game_data()
 
-            session['turns'] = 1;
+            session['turns'] = 1
             add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
                              [-6,-6,-6,-6,-6,-6,-6,-6],
                              [0,0,0,0,0,0,0,0],
@@ -78,6 +80,7 @@ def menu():
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
 
+    '''
     highlight = []
 
     if request.method == 'POST':
@@ -96,12 +99,38 @@ def game(gamemode, difficulty):
             pos = (request.form ['select'][0], request.form['select'][1])
 
             highlight = [pos] + legal_squares(board, pos[0], pos[1])
+    '''
+
+    turn = session['turns']
+    board = get_board_state(turn)
+
+    if session['turns'] % 2 != 0:
+       player = 'white'
+    else:
+       player = 'black'
+
+    gridlabel = ['a','b','c','d','e','f','g','h']
+
+    if request.method == 'POST':
+        data = request.headers
+
+        if 'select' in data:
+            validarr = ""
+            position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
+            for x,y in legal_squares(board, position[1], position[0], en_passant):
+                validarr = validarr + ',' + gridlabel[y]+str(x)
+            return validarr[1:]
+
+        if 'move' in data:
+            session['turns'] = session['turns'] + 1
+            turn += 1
+
+            board = get_board_state(turn)
 
     return render_template('game.html',
-                            board = get_board_state(session['turns']),
-                            pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'],
-                            gridlabel = ['a','b','c','d','e','f','g','h'],
-                            highlighted_squares = highlight)
+                                board = board,
+                                player = player,
+                          )
 
 @app.route('/test', methods=['GET', 'POST'])
 def testError():

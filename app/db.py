@@ -194,7 +194,7 @@ def get_board_state(turn):
     board = []
     board_rows = board_str.split("%ROW%")
     for row in board_rows:
-        board.append(map(int, row.split("%COL%")))
+        board.append(list(map(int, row.split("%COL%"))))
 
     db.commit()
     db.close()

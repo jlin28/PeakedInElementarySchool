@@ -182,3 +182,61 @@ GAME AND MORE AUDIO
     - Optimized audio code a bit
     - Worked on implementing image and buttons grid for game.html
     - set up sprites as well as select animations
+
+zixiQ -- 2025-12-9 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Created a promotion function
+    - Modified pawn_moves() to start accounting for en passant
+* ERRORS/BUGS:
+    - En passant logic is incorrect and WIP, finish later
+
+joyceL -- 2025-12-9 12:37
+ANIMATIONS
+* NEW CHANGES:
+    - fixed small audio issue
+    - created randomized animation for menu.html
+    - beginning movement logic (animations) for game.html
+
+zixiQ -- 2025-12-9 21:15
+CHESS LOGIC
+* NEW CHANGES:
+    - Modified promotion to return all possible promotions
+    - Implemented en passant, modified simulate moves and pawn moves functions
+    - Fixed flip board (before only flipped rows, not columns)
+    - Flipped starting board orientation
+
+joyceL -- 2025-12-9 21:34
+MORE ANIMATIONS
+* NEW CHANGES:
+    - got the movement animation somewhat down
+* ERRORS/BUGS:
+    - need to figure out how to have the pieces move consistently to center of square
+
+zixiQ -- 2025-12-10 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Implementing castling functionality
+    - Modified simulate move for castling
+
+seanZ -- 2025-12-10 11:46
+API STUFF
+* NEW CHANGES:
+    - made episodes called to spit out series instead
+    - fixed key interruptions and deletions error handling
+
+zixiQ -- 2025-12-10 21:00
+CHESS LOGIC
+* NEW CHANGES:
+    - Implemented castling, fixed en passant issue
+
+joyceL -- 2025-12-10 21:12
+SETTING UP INTERACTIONS BETWEEN FE AND BE
+* NEW CHANGES:
+    - Implemented veryyyyyyyy basic ajax call
+    - made it so that pieces move to proper places inside each square
+    - set up a resetBoard() based on input from flask
+    - rewrote stopMove() to account for ajax addition and change to walk animation
+    - beginning highlightLegalSquares functions
+* ERRORS/BUGS:
+    - background-color for squares has overflow that's bad

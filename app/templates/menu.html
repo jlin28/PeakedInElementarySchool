@@ -79,6 +79,34 @@ TBD
       content: url("/static/images/audio.png")
     }
 
+    /* ANIMATION */
+    .anim {
+      position: absolute;
+      left: 22%;
+      top: 62%;
+
+      width:8%;
+      height:18%;
+    }
+
+    .piece {
+      width: 110%;
+      height: auto;
+      overflow: hidden;
+
+      margin-top: 20px;
+
+      animation-name: walk;
+      animation-timing-function: linear;
+      animation-duration: 6s;
+    }
+
+
+    @keyframes walk {
+      from {transform: translate(0);}
+      to {transform: translate(675%);}
+    }
+
   </style>
 
 </head>
@@ -89,7 +117,6 @@ TBD
 
   <!-- AUDIO -->
   <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
-  <audio id="buttonhov" src="/static/audio/click.mp3"> </audio>
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
   <label for="audio">
@@ -113,6 +140,10 @@ TBD
         SETTINGS
       </button>
     </div>
+  </div>
+
+  <!-- HOLDS SPRITES FOR ANIMATIONS -->
+  <div id="anim" class="anim container">
   </div>
 
   <!-- MODAL + SETTINGS INPUTS -->
@@ -157,6 +188,11 @@ TBD
 
   <!-- PAGE-SPECIFIC JS -->
   <script>
+    var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+    window.onload = function() {
+      document.getElementById('audio').checked = false;
+    }
+
     var Aud = function() {
       let bgm = document.getElementById('bgm');
       if (bgm.paused) {
@@ -166,6 +202,23 @@ TBD
         bgm.pause();
       }
     };
+
+    var spawnPiece = function() {
+      container = document.getElementById('anim');
+
+      let img = document.createElement('img');
+      img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+      img.className = "piece center";
+
+      container.appendChild(img);
+      img.addEventListener("animationend", function() {
+        container.removeChild(img);
+      });
+    }
+
+    setTimeout(spawnPiece, 3000);
+    setInterval(spawnPiece, 11000);
+
   </script>
 
 </body>

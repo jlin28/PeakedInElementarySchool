@@ -97,7 +97,7 @@ TBD
   </style>
 </head>
 
-<body style="background-color:#D1C0A8">
+<body style="background-color:#D1C0A8; overflow:hidden">
   <!-- BOARD -->
   <div class="container">
     <!-- IMAGE -->
@@ -109,7 +109,7 @@ TBD
       {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
       {% for ROW in board %}
         <div class="row">
-          {% set index = loop.index %}
+          {% set index = loop.index0 %}
           {% for COL in ROW %}
             <div class="col image {{ gridlabel[loop.index0] }}{{ index }}">
               {% if COL < 0 %}
@@ -120,10 +120,6 @@ TBD
                 <img class="center white piece {{ pieces[COL|abs - 1] }}"
                       src="/static/sprites/white/{{ pieces[COL - 1] }}/idle.png"
                       alt="{{ pieces[COL - 1]}}">
-              <!-- TESTING PURPOSES -->
-              {% else %}
-                {{ gridlabel[loop.index0] }}{{ index }}
-              <!-- -->
               {% endif %}
             </div>
           {% endfor %}
@@ -135,7 +131,7 @@ TBD
     <div id="buttons" class="container">
       {% for ROW in board %}
         <div class="row">
-          {% set index = loop.index %}
+          {% set index = loop.index0 %}
           {% for COL in ROW %}
             <div class="col {{ gridlabel[loop.index0] }}{{ index }}">
               <button onclick="select(this.parentElement.className.split(' ')[1])"> </button>
@@ -157,19 +153,13 @@ TBD
     var validMoves = null;
     var moving = false;
 
-    var stopMove = function(delay, animation) {
+    var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
-          animation.pause()
-
-          let sprite = document.querySelector("." + selected.className.split(" ")[1] + " img");
-          let classnames = sprite.className.split(" ");
-          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-        }, delay - 50
-      );
-
-      setTimeout(function() {
-          window.location.replace(window.location.href)
-        }, delay + 1000
+          moving = false;
+          sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
+          selected = null;
+          resetBoard();
+        }, delay
       );
     }
 
@@ -182,42 +172,51 @@ TBD
 
           let board = document.getElementById('buttons');
           let square = document.getElementsByClassName(position)[1];
+          let takenPiece = document.querySelector("." + square.className.split(" ")[1] + " img");
+          if (takenPiece == null) {
+            takenPiece = square.appendChild(document.createElement('img'));
+            takenPiece.src = "/static/sprites/white/rook/idle.png";
+            takenPiece.className = 'center piece';
+            takenPiece.style.opacity = '0';
+          }
+
           let sprite = document.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = sprite.className.split(" ");
 
-          let currentPos = selected.getBoundingClientRect();
-          let newPos = square.getBoundingClientRect();
+          let currentPos = sprite.getBoundingClientRect();
+          let newPos = takenPiece.getBoundingClientRect();
 
           let areaOfBoard = board.offsetWidth * board.offsetHeight;
           let translationX = newPos.left - currentPos.left;
-          let translationY = newPos.bottom - currentPos.bottom;
-          let distance = Math.sqrt(Math.pow(translationX,2) + Math.pow(translationY,2))
+          let translationY = newPos.top - currentPos.top;
+          let distance = Math.sqrt(Math.pow(translationX,2) + Math.pow(translationY,2));
+
+          let animTime = 1100 * (1 - distance/areaOfBoard);
 
           sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/walk.gif';
           let anim = sprite.animate(
             [{transform: 'translate(0, 0)'}, {transform: 'translate(' + translationX + 'px, ' + translationY + 'px)'}],
             {
-             duration: 1100 * (1 - distance/areaOfBoard),
+             duration: animTime,
              iterations: 1,
              easing: 'linear',
+             fill: 'forwards',
            },
           );
 
           anim.play()
 
-          if (document.querySelector("." + square.className.split(" ")[1] + " img") != null) {
-            setTimeout(function() {
-              takePiece(document.querySelector("." + square.className.split(" ")[1] + " img"))
-            },
-              1100 * (1 - distance/areaOfBoard));
-          };
+          setTimeout(function() {
+            takePiece(document.querySelector("." + square.className.split(" ")[1] + " img"))
+          },
+            animTime);
 
-          stopMove(1100 * (1 - distance/areaOfBoard), anim);
+          stopMove(animTime, sprite, classnames);
         } else if (!moving) {
-          let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
-          let classnames = prev.className.split(" ");
+        let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
+        let classnames = prev.className.split(" ");
 
-          prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+        prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
         }
       }
       if (!moving) {
@@ -228,7 +227,7 @@ TBD
         // checks if xhttp request is done and there were no errors (200 -- ok request) !!
     //    xhttp.onreadystatechange = function() {
       //    if (this.readyState == 4 && this.status == 200) {
-        //    validMoves =
+        //    validMoves = {{ validarr }};
         //  }
       //  }
 
@@ -239,7 +238,7 @@ TBD
         if (sprite != null) {
           let classnames = sprite.className.split(" ");
           sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
-          validMoves = ['a1', 'a2'] // temporary placeholder --> change with actual valid moves
+          validMoves = ['a2', 'a1'] // temporary placeholder --> change with actual valid moves
         } else {
           validMoves = null;
         }
@@ -247,30 +246,75 @@ TBD
     }
 
     var takePiece = function(piece) {
-      let multiplier = [1,-1];
-      let randCoordx = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
-      let randCoordy = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
-      console.log(randCoordx + "," + randCoordy);
-      piece.animate(
-        [{transform: 'translate(0, 0)'},
-          {transform: 'translate(' + randCoordx + 'px, ' + randCoordy + 'px)'}],
-        {
-         duration: 2000,
-         iterations: 1,
-         easing: 'linear',
-         composite: 'add',
-       },
-      );
+      if (piece.style.opacity != '0') {
+        let multiplier = [1,-1];
+        let randCoordx = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
+        let randCoordy = (Math.floor(Math.random() * 2000) + 1000) * multiplier[Math.floor(Math.random()*2)];
 
-      piece.animate(
-        [{transform: 'rotate(0)'}, {transform: 'rotate(360deg)'}],
-        {
-         duration: 250,
-         iterations: 100,
-         easing: 'linear',
-         composite: 'add',
-       },
-      );
+        piece.animate(
+          [{transform: 'translate(0, 0)'},
+            {transform: 'translate(' + randCoordx + 'px, ' + randCoordy + 'px)'}],
+          {
+           duration: 2000,
+           iterations: 1,
+           easing: 'linear',
+           composite: 'add',
+         },
+        );
+
+        piece.animate(
+          [{transform: 'rotate(0)'}, {transform: 'rotate(360deg)'}],
+          {
+           duration: 250,
+           iterations: 100,
+           easing: 'linear',
+           composite: 'add',
+         },
+        );
+
+        setTimeout(function() {
+          piece.parentNode.removeChild(piece);
+        }, 2000);
+      } else {
+        piece.parentNode.removeChild(piece);
+      }
+    }
+
+    var resetBoard = function() {
+      let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+      let gridlabel = ['a','b','c','d','e','f','g','h'];
+
+      let childs = document.getElementById('images').children;
+      let board = {{ board }};
+
+      for (row of board) {
+        for (let col = 0; col < row.length; col++) {
+          let image = childs[col].querySelector("." + childs[col].className.split(" ")[1] + " img");
+
+          if (image != null) {
+            if (row[col] != 0) {
+              let classnames = image.className.split(' ');
+
+              if (row[col] < 0) { classnames[1] = 'black' };
+              if (row[col] > 0) { classnames[1] = 'white' };
+
+              classnames[3] = pieces[Math.abs(row[col]) - 1];
+              image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+            } else { childs[col].removeChild(image) };
+          } else if (image = null && row[col] != 0) {
+            let color;
+            let newChild = childs[col].appendChild(document.createElement('img'));
+            let type = pieces[Math.abs(row[col]) - 1];
+
+            if (row[col] < 0) { color = 'black' };
+            if (row[col] > 0) { color = 'white' };
+
+            newChild.className = "center " + color + " piece " + type;
+            newChild.src = '/static/sprites/' + color + '/' + type + '/idle.png';
+            newChild.alt = type;
+          }
+        }
+      }
     }
 
   </script>

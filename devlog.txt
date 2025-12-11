@@ -224,3 +224,11 @@ API STUFF
 * NEW CHANGES:
     - made episodes called to spit out series instead
     - fixed key interruptions and deletions error handling
+
+joyceL -- 2025-12-10 21:12
+SETTING UP INTERACTIONS BETWEEN FE AND BE
+* NEW CHANGES:
+    - Implemented veryyyyyyyy basic ajax call
+    - made it so that pieces move to proper places inside each square
+    - set up a resetBoard() based on input from flask
+    - rewrote stopMove() to account for ajax addition and change to walk animation

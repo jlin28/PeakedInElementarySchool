@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 from datetime import time
 from db import *
+from chess import *
 from pprint import pprint
 from api import apiCall
 from db import add_film
@@ -54,6 +55,7 @@ def menu():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
+    session.clear() # testing purposes
     board = [[-1,-2,-3,-4,-5,-3,-2,-1],
             [-6,-6,-6,-6,-6,-6,-6,-6],
             [0,0,0,0,0,0,0,0],
@@ -62,24 +64,34 @@ def game():
             [0,0,0,0,0,0,0,0],
             [6,6,6,6,6,6,6,6],
             [1,2,3,4,5,3,2,1]]
-    validarr = ''
+    if not 'turns' in session:
+        session['turns'] = 1;
+    else:
+        session['turns'] = session['turns'] + 1
+
+    turn = session['turns']
+    #board = get_board_state(turn)
+
+    if turn % 2 != 0:
+       player = 'white'
+    else:
+       player = 'black'
+
+    validarr = []
     gridlabel = ['a','b','c','d','e','f','g','h']
 
-    #if not 'turns' in session:
-    #    session['turns'] = 1;
-    #else:
-    #    session['turns'] = session['turns'] + 1
-
     if request.method == 'POST':
-        print(request.headers)
-        if 'select' in request.headers:
-            print(gridlabel.index(request.headers['select'][0]))
+        data = request.headers
+        if 'select' in data:
+            position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
 
+            #for x,y in legal_squares(board, position[1], position[0]):
+            #    validarr.append(gridlabel[x]+y)
 
     return render_template('game.html',
-                            #board=get_board_state(session['turns'])
-                            board = board,
-                            #validarr=validarr,
+                            board=board,
+                            player=player,
+                            validarr=validarr,
                         )
 
 @app.route('/test', methods=['GET', 'POST'])

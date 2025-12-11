@@ -117,7 +117,6 @@ TBD
 
   <!-- AUDIO -->
   <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
-  <audio id="buttonhov" src="/static/audio/click.mp3"> </audio>
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
   <label for="audio">
@@ -204,11 +203,6 @@ TBD
       }
     };
 
-    var killChild = function() {
-      let container = document.getElementById('anim');
-      container.innerHTML = '';
-    }
-
     var spawnPiece = function() {
       container = document.getElementById('anim');
 
@@ -217,7 +211,9 @@ TBD
       img.className = "piece center";
 
       container.appendChild(img);
-      img.addEventListener("animationend", killChild);
+      img.addEventListener("animationend", function() {
+        container.removeChild(img);
+      });
     }
 
     setTimeout(spawnPiece, 3000);

@@ -39,10 +39,11 @@ def flip_board():
         new_board.append(new_row)
     current_pos = new_board
 
+# must capture king to win game (no checkmates), stalemates still possible and draw if king vs king (+ knight/bishop)
 def game_over(board):
     global en_passant
     king_count = 0
-    pieces = 0
+    non_rook_queen_pieces = 0
     color = None
     for i in range (len(board)):
         for j in range (len(board[0])):
@@ -51,9 +52,11 @@ def game_over(board):
                 color = get_color(board[i][j])
                 if not legal_squares(board, i, j, en_passant) and not in_check(board, color): # stalemate
                     return (True, "gray") # gray means draw
+            if board[i][j] != abs(1) and board[i][j] != abs(4):
+                non_rook_queen_pieces += 1
     if king_count == 1:
         return (True, color) # game is over, color is the color of the side that won
-    if king_count == 2 and pieces = 2: # only two kings left
+    if king_count == 2 and non_rook_queen_pieces <= 3: # only two kings left or two kings and a knight/bishop
         return (True, "gray") # gray means draw
     return (False, color)
 

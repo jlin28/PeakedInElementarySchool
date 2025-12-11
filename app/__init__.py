@@ -10,7 +10,7 @@ from datetime import time
 from db import *
 from chess import *
 from pprint import pprint
-from api import apiCall
+# from api import apiCall
 
 app = Flask(__name__)
 app.secret_key = 'help'

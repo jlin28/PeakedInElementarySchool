@@ -20,9 +20,9 @@ current_pos = [[]]
 
 en_passant = None
 
-castling_state = {"white_kingside": True, 
-                  "white_queenside": True, 
-                  "black_kingside": True, 
+castling_state = {"white_kingside": True,
+                  "white_queenside": True,
+                  "black_kingside": True,
                   "black_queenside": True}
 
 def reset_board():
@@ -39,6 +39,23 @@ def flip_board():
         new_board.append(new_row)
     current_pos = new_board
 
+def game_over(board):
+    global en_passant
+    king_count = 0
+    pieces = 0
+    color = None
+    for i in range (len(board)):
+        for j in range (len(board[0])):
+            if board[i][j] == abs(5):
+                king_count += 1
+                color = get_color(board[i][j])
+                if not legal_squares(board, i, j, en_passant) and not in_check(board, color): # stalemate
+                    return (True, "gray") # gray means draw
+    if king_count == 1:
+        return (True, color) # game is over, color is the color of the side that won
+    if king_count == 2 and pieces = 2: # only two kings left
+        return (True, "gray") # gray means draw
+    return (False, color)
 
 def legal_squares(board, r, c, en_passant_state):
     piece = board[r][c]
@@ -310,7 +327,7 @@ def king_moves(board, r, c, color, castling_state = None):
             continue
 
         moves.append((nr, nc))
-    
+
     # Castling
     if castling_state is not None:
         if color == "white":
@@ -383,11 +400,4 @@ def promotions(board):
     return all_promotions
 
 # Testing
-current_pos = [[-1,-2,-3,-4,-5,-3,-2,-1],
-            [-6,-6,-6,-6,-6,-6,-6,-6],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [6,6,6,6,6,6,6,6],
-            [1,2,3,4,5,3,2,1]]
+current_pos = init_pos

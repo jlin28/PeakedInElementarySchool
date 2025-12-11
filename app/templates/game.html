@@ -292,17 +292,7 @@ TBD
         for (let col = 0; col < row.length; col++) {
           let image = document.querySelector("." + squares[col].className.split(" ")[1] + " img");
 
-          if (image != null) {
-            if (row[col] != 0) {
-              let classnames = image.className.split(' ');
-
-              if (row[col] < 0) { classnames[1] = 'black' };
-              if (row[col] > 0) { classnames[1] = 'white' };
-
-              classnames[3] = pieces[Math.abs(row[col]) - 1];
-              image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-            } else { squares[col].removeChild(image) };
-          } else if (row[col] != 0) {
+          if (image == null && row[col] != 0) {
             let color;
             let newChild = squares[col].appendChild(document.createElement('img'));
             let type = pieces[Math.abs(row[col]) - 1];

@@ -178,6 +178,7 @@ TBD
       setTimeout(function() {
           moving = false;
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
+          sprite.parentNode.removeChild(sprite);
           selected = null;
           resetBoard();
         }, delay
@@ -194,7 +195,7 @@ TBD
 
           let board = document.getElementById('buttons');
           let square = document.getElementsByClassName(position)[1];
-          let takenPiece = document.querySelector("." + square.className.split(" ")[1] + " img");
+          let takenPiece = square.querySelector("." + square.className.split(" ")[1] + " img");
           if (takenPiece == null) {
             takenPiece = square.appendChild(document.createElement('img'));
             takenPiece.src = "/static/sprites/white/rook/idle.png";
@@ -202,7 +203,7 @@ TBD
             takenPiece.style.opacity = '0';
           }
 
-          let sprite = document.querySelector("." + selected.className.split(" ")[1] + " img");
+          let sprite = selected.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = sprite.className.split(" ");
 
           let currentPos = sprite.getBoundingClientRect();
@@ -229,13 +230,13 @@ TBD
           anim.play()
 
           setTimeout(function() {
-            takePiece(document.querySelector("." + square.className.split(" ")[1] + " img"))
+            takePiece(square.querySelector("." + square.className.split(" ")[1] + " img"))
           },
             animTime);
 
           stopMove(animTime, sprite, classnames);
         } else if (!moving) {
-        let prev = document.querySelector("." + selected.className.split(" ")[1] + " img");
+        let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
         let classnames = prev.className.split(" ");
 
         unhighlightLegalSquares(validMoves);
@@ -249,7 +250,7 @@ TBD
 
         let piece = document.getElementsByClassName(position)[1];
         selected = piece;
-        let sprite = document.querySelector("." + piece.className.split(" ")[1] + " img");
+        let sprite = piece.querySelector("." + piece.className.split(" ")[1] + " img");
 
         if (sprite != null) {
           let classnames = sprite.className.split(" ");
@@ -309,11 +310,12 @@ TBD
       let gridrow = 0;
 
       for (row of board) {
-        let squares = childs[gridrow]
+        let squares = childs[gridrow].children;
         for (let col = 0; col < row.length; col++) {
-          let image = document.querySelector("." + squares[col].className.split(" ")[1] + " img");
+          let image = squares[col].querySelector("." + squares[col].className.split(" ")[1] + " img");
 
           if (image == null && row[col] != 0) {
+            console.log('bb');
             let color;
             let newChild = squares[col].appendChild(document.createElement('img'));
             let type = pieces[Math.abs(row[col]) - 1];
@@ -335,8 +337,9 @@ TBD
       xhttp.open('GET', window.location.href, true);
       xhttp.send();
       for (square of arr) {
-        console.log('col glow ' + square);
-        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+        if (square != '') {
+          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+        }
       }
     }
 

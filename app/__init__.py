@@ -11,7 +11,6 @@ from db import *
 from chess import *
 from pprint import pprint
 from api import apiCall
-from db import add_film
 
 app = Flask(__name__)
 app.secret_key = 'help'

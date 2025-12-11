@@ -20,6 +20,11 @@ current_pos = [[]]
 
 en_passant = None
 
+castling_state = {"white_kingside": True, 
+                  "white_queenside": True, 
+                  "black_kingside": True, 
+                  "black_queenside": True}
+
 def reset_board():
     global current_pos
     current_pos = copy.deepcopy(init_pos)
@@ -35,7 +40,7 @@ def flip_board():
     current_pos = new_board
 
 
-def legal_squares(board, r, c):
+def legal_squares(board, r, c, en_passant_state):
     piece = board[r][c]
     if piece == 0:
         return []
@@ -52,14 +57,14 @@ def legal_squares(board, r, c):
     elif piece_type == 4:
         moves = queen_moves(board, r, c, color)
     elif piece_type == 5:
-        moves = king_moves(board, r, c, color)
+        moves = king_moves(board, r, c, color, castling_state)
     elif piece_type == 6:
-        moves = pawn_moves(board, r, c, color)
+        moves = pawn_moves(board, r, c, color, en_passant_state)
 
     # filter based on checks/pins
     legal = []
     for nr, nc in moves:
-        new_board, en_passant = simulate_move(board, r, c, nr, nc, en_passant)
+        new_board = simulate_move(board, r, c, nr, nc, en_passant_state)[0]
         if not in_check(new_board, color):
             legal.append((nr, nc))
 
@@ -145,10 +150,11 @@ def attacks_by_slider(board, rr, cc, tr, tc, ptype):
             c += dc
     return False
 
-def simulate_move(board, r1, c1, r2, c2, en_passant_state):
+def simulate_move(board, r1, c1, r2, c2, en_passant_state, castling_state):
     piece = board[r1][c1]
     new_board = copy.deepcopy(board)
     new_en_passant = None  # gets reset every move unless replaced
+    new_castling = copy.deepcopy(castling_state)
 
     # En passant capture
     if en_passant_state is not None:
@@ -156,16 +162,55 @@ def simulate_move(board, r1, c1, r2, c2, en_passant_state):
         if (r2, c2) == (target_r, target_c) and abs(piece) == 6:
             new_board[pawn_r][pawn_c] = 0  # remove captured pawn
 
+    # King castling in simulate_move
+    if abs(piece) == 5:
+        if c2 - c1 == 2:  # kingside
+            new_board[r1][7] = 0
+            new_board[r1][c1 + 1] = 1 if piece > 0 else -1  # rook moves next to king
+        elif c2 - c1 == -2:  # queenside
+            new_board[r1][0] = 0
+            new_board[r1][c1 - 1] = 1 if piece > 0 else -1
+
     # Move piece normally
+    potential_captured_piece = new_board[r2][c2]
     new_board[r2][c2] = piece
     new_board[r1][c1] = 0
+
+    # Update castling rights
+    if abs(piece) == 5:  # king moved
+        if piece > 0:
+            new_castling["white_kingside"] = False
+            new_castling["white_queenside"] = False
+        else:
+            new_castling["black_kingside"] = False
+            new_castling["black_queenside"] = False
+
+    elif abs(piece) == 1:  # rook moved
+        if r1 == 7 and c1 == 0:
+            new_castling["white_queenside"] = False
+        elif r1 == 7 and c1 == 7:
+            new_castling["white_kingside"] = False
+        elif r1 == 0 and c1 == 0:
+            new_castling["black_queenside"] = False
+        elif r1 == 0 and c1 == 7:
+            new_castling["black_kingside"] = False
+
+    elif abs(potential_captured_piece) == 1:   # rook captured
+        if r2 == 7 and c2 == 0:
+            new_castling["white_queenside"] = False
+        elif r2 == 7 and c2 == 7:
+            new_castling["white_kingside"] = False
+        elif r2 == 0 and c2 == 0:
+            new_castling["black_queenside"] = False
+        elif r2 == 0 and c2 == 7:
+            new_castling["black_kingside"] = False
 
     # Check if new en passant state should be created
     if abs(piece) == 6 and abs(r2 - r1) == 2:
         passed_square = ((r1 + r2) // 2, c1)
         new_en_passant = (passed_square[0], passed_square[1], r2, c1)
 
-    return new_board, new_en_passant
+    return new_board, new_en_passant, new_castling
 
 def in_check(board, color):
     if color == "white":
@@ -242,7 +287,7 @@ def queen_moves(board, r, c, color):
             nc += dc
     return moves
 
-def king_moves(board, r, c, color):
+def king_moves(board, r, c, color, castling_state = None):
     moves = []
     if color == "white":
         enemy = "black"
@@ -265,10 +310,32 @@ def king_moves(board, r, c, color):
             continue
 
         moves.append((nr, nc))
+    
+    # Castling
+    if castling_state is not None:
+        if color == "white":
+            row = 7
+            if castling_state.get("white_kingside", False):
+                if board[row][5] == 0 and board[row][6] == 0:
+                    if not is_square_attacked(board, row, 4, enemy) and not is_square_attacked(board, row, 5, enemy) and not is_square_attacked(board, row, 6, enemy):
+                        moves.append((row, 6))  # kingside castling
+            if castling_state.get("white_queenside", False):
+                if board[row][1] == 0 and board[row][2] == 0 and board[row][3] == 0:
+                    if not is_square_attacked(board, row, 4, enemy) and not is_square_attacked(board, row, 3, enemy) and not is_square_attacked(board, row, 2, enemy):
+                        moves.append((row, 2))  # queenside castling
+        else:
+            row = 0
+            if castling_state.get("black_kingside", False):
+                if board[row][5] == 0 and board[row][6] == 0:
+                    if not is_square_attacked(board, row, 4, enemy) and not is_square_attacked(board, row, 5, enemy) and not is_square_attacked(board, row, 6, enemy):
+                        moves.append((row, 6))
+            if castling_state.get("black_queenside", False):
+                if board[row][1] == 0 and board[row][2] == 0 and board[row][3] == 0:
+                    if not is_square_attacked(board, row, 4, enemy) and not is_square_attacked(board, row, 3, enemy) and not is_square_attacked(board, row, 2, enemy):
+                        moves.append((row, 2))
     return moves
 
-def pawn_moves(board, r, c, color):
-    global en_passant
+def pawn_moves(board, r, c, color, en_passant_state):
     moves = []
 
     direction = -1 if color == "white" else 1
@@ -295,8 +362,8 @@ def pawn_moves(board, r, c, color):
                 moves.append((nr, nc))
 
     # En passant
-    if en_passant is not None:
-        target_r, target_c, pawn_r, pawn_c = en_passant
+    if en_passant_state is not None:
+        target_r, target_c, pawn_r, pawn_c = en_passant_state
 
         # must be next to en-passantable pawn
         if pawn_r == r and abs(pawn_c - c) == 1:
@@ -316,7 +383,6 @@ def promotions(board):
     return all_promotions
 
 # Testing
-
 current_pos = [[-1,-2,-3,-4,-5,-3,-2,-1],
             [-6,-6,-6,-6,-6,-6,-6,-6],
             [0,0,0,0,0,0,0,0],

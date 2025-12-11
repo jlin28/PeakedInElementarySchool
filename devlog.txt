@@ -240,3 +240,7 @@ SETTING UP INTERACTIONS BETWEEN FE AND BE
     - beginning highlightLegalSquares functions
 * ERRORS/BUGS:
     - background-color for squares has overflow that's bad
+
+zixiQ -- 2025-12-11 11:45
+* NEW CHANGES:
+    - Implementing game over, no checkmates (king must be captured) but stalemates are possible

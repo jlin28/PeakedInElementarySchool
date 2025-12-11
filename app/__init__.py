@@ -40,11 +40,31 @@ def menu():
             create_questions()
             create_game_data()
 
+            session['turns'] = 1;
+            add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
+                             [-6,-6,-6,-6,-6,-6,-6,-6],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [6,6,6,6,6,6,6,6],
+                             [1,2,3,4,5,3,2,1]])
+
             return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
 
         if 'multiplayer' in request.form:
             create_questions()
             create_game_data()
+
+            session['turns'] = 1;
+            add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
+                             [-6,-6,-6,-6,-6,-6,-6,-6],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [6,6,6,6,6,6,6,6],
+                             [1,2,3,4,5,3,2,1]])
 
             return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
 
@@ -59,18 +79,6 @@ def menu():
 def game(gamemode, difficulty):
 
     highlight = []
-
-    if not 'turns' in session:
-        session['turns'] = 1;
-
-        add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
-                         [-6,-6,-6,-6,-6,-6,-6,-6],
-                         [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
-                         [0,0,0,0,0,0,0,0],
-                         [6,6,6,6,6,6,6,6],
-                         [1,2,3,4,5,3,2,1]])
 
     if request.method == 'POST':
         board = get_board_state(session['turns'])

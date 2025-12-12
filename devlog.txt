@@ -264,3 +264,9 @@ API
 * NEW CHANGES:
     - rick and morty API and superhero API calling implemented
     - Spanish and Thesaurus API requires word list(will add later)
+
+zixiQ -- 2025-12-12 11:45
+HTML RENDERING
+* NEW CHANGES:
+    - Relearning a little JS
+    - Implementing rendering a new pop up when a move is made for trivia

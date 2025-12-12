@@ -10,8 +10,7 @@ from datetime import time
 from db import *
 from chess import *
 from pprint import pprint
-from api import apiCall
-from db import add_film
+# from api import apiCall
 
 app = Flask(__name__)
 app.secret_key = 'help'
@@ -28,23 +27,47 @@ def menu():
 
     if request.method == 'POST':
         # ADDS SETTINGS TO SESSION
-        session.clear()
-        for x,y in request.form.to_dict().items():
-            session[x] = y;
+        if 'difficulty' in request.form:
+            difficulties[int(request.form['difficulty'])] = 'checked'
+        else: difficulties[0] = 'checked'
 
-    #    create_questions()
-    #    create_game_data()
+        if 'setting1' in request.form:
+            setting1='checked'
 
-        return redirect(url_for('game'))
+        if 'setting2' in request.form:
+            setting2='checked'
 
-    # SETS PREVIOUS SETTINGS
-    if 'difficulty' in session:
-        difficulties[int(session['difficulty'])] = 'checked'
-    else: difficulties[0] = 'checked'
-    if 'setting1' in session:
-        setting1='checked'
-    if 'setting2' in session:
-        setting2='checked'
+        if 'singleplayer' in request.form:
+            create_questions()
+            create_game_data()
+
+            session['turns'] = 1
+            add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
+                             [-6,-6,-6,-6,-6,-6,-6,-6],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [6,6,6,6,6,6,6,6],
+                             [1,2,3,4,5,3,2,1]])
+
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
+
+        if 'multiplayer' in request.form:
+            create_questions()
+            create_game_data()
+
+            session['turns'] = 1
+            add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
+                             [-6,-6,-6,-6,-6,-6,-6,-6],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [0,0,0,0,0,0,0,0],
+                             [6,6,6,6,6,6,6,6],
+                             [1,2,3,4,5,3,2,1]])
+
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
 
     return render_template('menu.html',
                             dEasy = difficulties[0],
@@ -53,26 +76,34 @@ def menu():
                             placeholder1=setting1,
                             placeholder2=setting2)
 
-@app.route('/game', methods=['GET', 'POST'])
-def game():
-    session.clear() # testing purposes
-    board = [[-1,-2,-3,-4,-5,-3,-2,-1],
-            [-6,-6,-6,-6,-6,-6,-6,-6],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [6,6,6,6,6,6,6,6],
-            [1,2,3,4,5,3,2,1]]
-    if not 'turns' in session:
-        session['turns'] = 1;
-    else:
-        session['turns'] = session['turns'] + 1
+@app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
+def game(gamemode, difficulty):
+
+    '''
+    highlight = []
+
+    if request.method == 'POST':
+        board = get_board_state(session['turns'])
+
+        if 'move' in request.form:   #Make a move
+            initial_pos = (request.form['move'][0], request.form['move'][1])
+            final_pos = (request.form['move'][2], request.form['move'][3])
+
+            if final_pos in legal_squares(board, initial_pos[0], initial_pos[1]):
+                make_board_state(simulate_move(board, initial_pos[0], initial_pos[1], final_pos[0], final_pos[1]))
+
+            flip_board()
+
+        if 'select' in request.form:   #Select a piece
+            pos = (request.form ['select'][0], request.form['select'][1])
+
+            highlight = [pos] + legal_squares(board, pos[0], pos[1])
+    '''
 
     turn = session['turns']
-    #board = get_board_state(turn)
+    board = get_board_state(turn)
 
-    if turn % 2 != 0:
+    if session['turns'] % 2 != 0:
        player = 'white'
     else:
        player = 'black'
@@ -81,17 +112,35 @@ def game():
 
     if request.method == 'POST':
         data = request.headers
+
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
             for x,y in legal_squares(board, position[1], position[0], en_passant):
                 validarr = validarr + ',' + gridlabel[y]+str(x)
-            return validarr[1:];
+            return validarr[1:]
 
+        if 'move' in data:
+            positions = data['move'].split("+");
+
+            session['turns'] = session['turns'] + 1
+            turn += 1
+            print(positions) # testing purposes
+
+            make_board_state(turn,
+                simulate_move(board,
+                    int(positions[0][1]), gridlabel.index(positions[0][0]),
+                    int(positions[1][1]), gridlabel.index(positions[1][0]),
+                    None,
+                    castling_state
+                )[0]
+            )
+
+    print(get_board_state(turn))
     return render_template('game.html',
-                            board=board,
-                            player=player,
-                        )
+                                board = get_board_state(turn),
+                                player = player,
+                          )
 
 @app.route('/test', methods=['GET', 'POST'])
 def testError():

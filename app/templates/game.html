@@ -38,21 +38,14 @@ TBD
       height:auto;
     }
 
-    #images, .row { /* TESTING PURPOSES */
-      border-style: solid;
-      border-width: thin;
-      border-color: red;
-    }
-
     /* GRID STYLING */
     #images, #buttons, #glow {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50.5%);
-      border-color: blue; /* TESTING PURPOSES */
 
-      width: clamp(100px, 505px,505px);
+      width: clamp(100px, 500px,500px);
       height: clamp(100px, 500px,500px);
     }
 
@@ -61,7 +54,8 @@ TBD
     }
 
     .col {
-      width: clamp(10px, 50px,50px);
+        width: clamp(10px, 50px,50px);
+      height: 100%;
     }
 
     /* Z INDEXES */
@@ -190,6 +184,10 @@ TBD
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
+          xhttp.open('POST', window.location.href, true);
+          xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
+          xhttp.send();
+
           moving = true;
           unhighlightLegalSquares(validMoves);
 

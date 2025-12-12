@@ -423,6 +423,3 @@ def promotions(board):
         if board[7][i] == -6:
             all_promotions.append((7, i, (4, 1, 3, 2)))
     return all_promotions
-
-# Testing
-current_pos = init_pos

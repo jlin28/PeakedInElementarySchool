@@ -167,6 +167,7 @@ TBD
     var selected = null;
     var validMoves = null;
     var moving = false;
+    var newBoard = null;
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
@@ -174,8 +175,7 @@ TBD
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           sprite.parentNode.removeChild(sprite);
           selected = null;
-          spinBoard();
-          setTimeout(resetBoard(), 2000);
+          resetBoard();
         }, delay
       );
     }
@@ -188,6 +188,12 @@ TBD
           xhttp.open('POST', window.location.href, true);
           xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
           xhttp.send();
+
+          xhttp.onload = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              newBoard = JSON.parse(this.response);
+            }
+          }
 
           moving = true;
           unhighlightLegalSquares(validMoves);
@@ -326,11 +332,15 @@ TBD
     }
 
     var resetBoard = function() {
+      let xhttp = new XMLHttpRequest();
+      xhttp.open('GET', window.location.href, true);
+      xhttp.send();
+
       let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
       let gridlabel = ['a','b','c','d','e','f','g','h'];
 
       let childs = document.getElementById('images').children;
-      let board = {{ board }};
+      let board = newBoard;
       let gridrow = 0;
 
       for (row of board) {
@@ -339,7 +349,6 @@ TBD
           let image = squares[col].querySelector("." + squares[col].className.split(" ")[1] + " img");
 
           if (image == null && row[col] != 0) {
-            console.log('bb');
             let color;
             let newChild = squares[col].appendChild(document.createElement('img'));
             let type = pieces[Math.abs(row[col]) - 1];

@@ -259,7 +259,6 @@ CHESS LOGIC
 * NEW CHANGES:
     - Game over implemented with stalemate logic fixed
 
-<<<<<<< HEAD
 seanZ -- 2025-12-12 11:45
 API
 * NEW CHANGES:
@@ -278,11 +277,3 @@ ANIMATIONS + TURNS
     - Turns now alternate
     - changed spin board to curtains animation
     - must be the current player to select piece
-=======
-joyceL -- 2025-12-12 12:35
-ANIMATIONS + TURNS
-* NEW CHANGES:
-    - Turns now alternate
-    - changed spin board to curtains animation
-    - must be the current player to select piece
->>>>>>> bc58a70cb289ab870f875b897540ad588b03e363

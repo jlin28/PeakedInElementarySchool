@@ -258,3 +258,8 @@ zixiQ -- 2025-12-11 23:30
 CHESS LOGIC
 * NEW CHANGES:
     - Game over implemented with stalemate logic fixed
+
+seanZ -- 2025-12-12 11:33
+API
+* NEW CHANGES:
+    - SPANISH_ENGLISH and superhero API calling implemented

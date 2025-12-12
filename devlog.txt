@@ -259,7 +259,8 @@ CHESS LOGIC
 * NEW CHANGES:
     - Game over implemented with stalemate logic fixed
 
-seanZ -- 2025-12-12 11:33
+seanZ -- 2025-12-12 11:45
 API
 * NEW CHANGES:
-    - SPANISH_ENGLISH and superhero API calling implemented
+    - rick and morty API and superhero API calling implemented
+    - Spanish and Thesaurus API requires word list(will add later)

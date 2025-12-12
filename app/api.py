@@ -12,7 +12,6 @@ OMDB_KEY = ""
 SPANISH_ENGLISH_KEY = ""
 SUPERHERO_KEY = ""
 THESAURUS_KEY = ""
-
 RICK_AND_MORTY_URL = "https://rickandmortyapi.com/api"
 COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 
@@ -45,7 +44,7 @@ def apiCall(api):
         THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/test?key={THESAURUS_KEY}"
         url = THESAURUS_URL
     if api == "rick":
-        url = RICK_AND_MORTY_URL
+        return getPickle()
     if api == "country":
         url = COUNTRIES_URL
 
@@ -106,4 +105,12 @@ def getHero():
     data = json.loads(raw_data)
     return data
 
-print(apiCall("superhero"))
+def getPickle():
+    ID = random.randint(0,827)
+    RICK_URL = f"https://rickandmortyapi.com/api/character/{ID}"
+    with urllib.request.urlopen(RICK_URL) as response:
+        raw_data = response.read()
+    data = json.loads(raw_data)
+    return data
+
+print(apiCall("rick"))

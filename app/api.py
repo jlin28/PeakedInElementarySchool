@@ -1,7 +1,5 @@
 import urllib.request
 import json
-import nltk
-import random
 from pprint import pprint
 from db import add_film
 import random

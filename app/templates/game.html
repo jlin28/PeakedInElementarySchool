@@ -252,13 +252,17 @@ TBD
 
         if (sprite != null) {
           let classnames = sprite.className.split(" ");
-          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
-          // checks if xhttp request is done and there were no errors (200 -- ok request) !!
-          xhttp.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              validMoves = this.response.split(',');
+          if ("{{ player }}" == classnames[1]) {
+            sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
+            // checks if xhttp request is done and there were no errors (200 -- ok request) !!
+            xhttp.onload = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                validMoves = this.response.split(',');
+              }
+              highlightLegalSquares(validMoves);
             }
-            highlightLegalSquares(validMoves);
+          } else {
+            selected = null;
           }
         }
       }

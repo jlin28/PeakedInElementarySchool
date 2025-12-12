@@ -133,6 +133,9 @@ def game(gamemode, difficulty):
                 )
             )
 
+            board = get_board_state(turn)
+            return board
+
     return render_template('game.html',
                                 board = board,
                                 player = player,

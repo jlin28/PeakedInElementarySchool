@@ -97,9 +97,9 @@ TBD
 
 <body style="background-color:#D1C0A8; overflow:hidden">
   <!-- BOARD -->
-  <div class="container" id="main">
+  <div class="container">
     <!-- IMAGE -->
-    <image src="/static/images/board.png" class="board">
+    <image src="/static/images/board.png" id="main" class="board">
 
       <!-- GLOW GRID -->
       <div id="glow" class="container">
@@ -306,10 +306,15 @@ TBD
 
     var spinBoard = function() {
       board = document.getElementById('main');
-      board.style.marginTop = '480px';
+      console.log(window.innerWidth/2);
+      board.style.transformOrigin = (parent.offsetWidth/2) + 'px ' + (parent.offsetHeight/2) + 'px';
+
+      let baseRotationFactor = 1
+      if ("{{ player }}" == 'white') { let baseRotationFactor = 0; }
 
       board.animate(
-        [{transform: 'rotate(0)'}, {transform: 'rotate(180deg)'}],
+        [{transform: 'rotate(' + (180 * baseRotationFactor) + 'deg)'},
+          {transform: 'rotate(' + (180 + (180 * baseRotationFactor)) + 'deg)'}],
         {
           duration: 2000,
           iterations: 1,
@@ -317,7 +322,7 @@ TBD
         }
       );
 
-      board.style.transform = 'rotate(180deg)';
+      board.style.transform = 'rotate(' + (180 * baseRotationFactor) + 'deg)';
     }
 
     var resetBoard = function() {

@@ -103,11 +103,6 @@ def game(gamemode, difficulty):
     turn = session['turns']
     board = get_board_state(turn)
 
-    if session['turns'] % 2 != 0:
-       player = 'white'
-    else:
-       player = 'black'
-
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     if request.method == 'POST':
@@ -140,8 +135,7 @@ def game(gamemode, difficulty):
 
     print(get_board_state(turn))
     return render_template('game.html',
-                                board = get_board_state(turn),
-                                player = player,
+                                board = get_board_state(turn)
                           )
 
 @app.route('/test', methods=['GET', 'POST'])

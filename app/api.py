@@ -1,9 +1,9 @@
 import urllib.request
 import json
+import nltk
 import random
 from pprint import pprint
 from db import add_film
-#from nltk import words
 import random
 
 #setup
@@ -33,11 +33,12 @@ def apiCall(api):
         with open("keys/key_spanish_english.txt", "r") as f:
             SPANISH_ENGLISH_KEY = f.read().strip()
         data = getSpanish()
-        return data[3]
+        return data
     if api == "superhero":
         with open("keys/key_Superhero.txt", "r") as f:
             SUPERHERO_KEY = f.read().strip()
-        url = SUPERHERO_URL = f"https://www.superheroapi.com/api.php/{SUPERHERO_KEY}/1"
+        data = getHero()
+        return data
     if api == "thesaurus":
         with open("keys/key_thesaurus.txt", "r") as f:
             THESAURUS_KEY = f.read().strip()
@@ -88,14 +89,21 @@ def getFilm(count):
     return data
 
 def getSpanish():
-    random_word = random.choice(words.words())
-    print(random_word)
+    random_word = "blue"
     SPANISH_ENGLISH_URL = f"https://dictionaryapi.com/api/v3/references/spanish/json/{random_word}?key={SPANISH_ENGLISH_KEY}"
     with urllib.request.urlopen(SPANISH_ENGLISH_URL) as response:
         raw_data = response.read()
 
     data = json.loads(raw_data)
 
+    return data[0]
+
+def getHero():
+    ID = random.randint(0,732)
+    SUPERHERO_URL = f"https://www.superheroapi.com/api.php/{SUPERHERO_KEY}/{ID}"
+    with urllib.request.urlopen(SUPERHERO_URL) as response:
+        raw_data = response.read()
+    data = json.loads(raw_data)
     return data
 
-apiCall("spanish")
+print(apiCall("superhero"))

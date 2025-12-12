@@ -126,15 +126,19 @@ def game(gamemode, difficulty):
             session['turns'] = session['turns'] + 1
             turn += 1
             print(positions) # testing purposes
+
             make_board_state(turn,
                 simulate_move(board,
                     int(positions[0][1]), gridlabel.index(positions[0][0]),
-                    int(positions[1][1]), gridlabel.index(positions[1][0])
-                )
+                    int(positions[1][1]), gridlabel.index(positions[1][0]),
+                    None,
+                    castling_state
+                )[0]
             )
 
+    print(get_board_state(turn))
     return render_template('game.html',
-                                board = board,
+                                board = get_board_state(turn),
                                 player = player,
                           )
 

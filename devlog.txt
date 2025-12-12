@@ -242,6 +242,7 @@ SETTING UP INTERACTIONS BETWEEN FE AND BE
     - background-color for squares has overflow that's bad
 
 zixiQ -- 2025-12-11 11:45
+CHESS LOGIC
 * NEW CHANGES:
     - Implementing game over, no checkmates (king must be captured) but stalemates are possible
 
@@ -252,3 +253,8 @@ SETTING UP MOREEEEEEEE INTERACTIONS BETWEEN FE AND BE
 * ERRORS/BUGS:
     - Error when trying to run make_board_state
     - Error when importing api.py
+
+zixiQ -- 2025-12-11 23:30
+CHESS LOGIC
+* NEW CHANGES:
+    - Game over implemented with stalemate logic fixed

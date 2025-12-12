@@ -258,3 +258,10 @@ zixiQ -- 2025-12-11 23:30
 CHESS LOGIC
 * NEW CHANGES:
     - Game over implemented with stalemate logic fixed
+
+joyceL -- 2025-12-12 12:35
+ANIMATIONS + TURNS
+* NEW CHANGES:
+    - Turns now alternate
+    - changed spin board to curtains animation
+    - must be the current player to select piece

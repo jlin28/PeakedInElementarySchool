@@ -79,29 +79,10 @@ def menu():
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
 
-    '''
-    highlight = []
-
-    if request.method == 'POST':
-        board = get_board_state(session['turns'])
-
-        if 'move' in request.form:   #Make a move
-            initial_pos = (request.form['move'][0], request.form['move'][1])
-            final_pos = (request.form['move'][2], request.form['move'][3])
-
-            if final_pos in legal_squares(board, initial_pos[0], initial_pos[1]):
-                make_board_state(simulate_move(board, initial_pos[0], initial_pos[1], final_pos[0], final_pos[1]))
-
-            flip_board()
-
-        if 'select' in request.form:   #Select a piece
-            pos = (request.form ['select'][0], request.form['select'][1])
-
-            highlight = [pos] + legal_squares(board, pos[0], pos[1])
-    '''
+    global current_pos
 
     turn = session['turns']
-    board = get_board_state(turn)
+    current_pos = get_board_state(turn)
 
     if session['turns'] % 2 != 0:
        player = 'white'
@@ -116,7 +97,7 @@ def game(gamemode, difficulty):
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
-            for x,y in legal_squares(board, position[1], position[0], en_passant):
+            for x,y in legal_squares(current_pos, position[1], position[0], en_passant):
                 validarr = validarr + ',' + gridlabel[y]+str(x)
             return validarr[1:]
 
@@ -127,18 +108,18 @@ def game(gamemode, difficulty):
             turn += 1
             print(positions) # testing purposes
 
-            make_board_state(turn,
-                simulate_move(board,
-                    int(positions[0][1]), gridlabel.index(positions[0][0]),
-                    int(positions[1][1]), gridlabel.index(positions[1][0]),
-                    None,
-                    castling_state
-                )[0]
-            )
+            current_pos = simulate_move(current_pos,
+                            int(positions[0][1]), gridlabel.index(positions[0][0]),
+                            int(positions[1][1]), gridlabel.index(positions[1][0]),
+                            None,
+                            castling_state
+                          )[0]
+            flip_board()
+            add_board_state(current_pos)
 
-    print(get_board_state(turn))
+    print(current_pos)
     return render_template('game.html',
-                                board = get_board_state(turn),
+                                board = current_pos,
                                 player = player,
                           )
 

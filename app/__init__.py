@@ -79,27 +79,6 @@ def menu():
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
 
-    '''
-    highlight = []
-
-    if request.method == 'POST':
-        board = get_board_state(session['turns'])
-
-        if 'move' in request.form:   #Make a move
-            initial_pos = (request.form['move'][0], request.form['move'][1])
-            final_pos = (request.form['move'][2], request.form['move'][3])
-
-            if final_pos in legal_squares(board, initial_pos[0], initial_pos[1]):
-                make_board_state(simulate_move(board, initial_pos[0], initial_pos[1], final_pos[0], final_pos[1]))
-
-            flip_board()
-
-        if 'select' in request.form:   #Select a piece
-            pos = (request.form ['select'][0], request.form['select'][1])
-
-            highlight = [pos] + legal_squares(board, pos[0], pos[1])
-    '''
-
     turn = session['turns']
     board = get_board_state(turn)
 

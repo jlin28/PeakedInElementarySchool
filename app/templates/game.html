@@ -84,7 +84,7 @@ TBD
     /* BUTTONS GRID */
     button {
       position: absolute;
-      z-index: 2;
+      z-index: 3;
       margin-left: -12px;
       background: none;
       border-style: none;
@@ -92,10 +92,48 @@ TBD
       width: clamp(10px, 61px,61px);
       height: 12.52%;
     }
+
+    /* CURTAINS */
+    #curtainleft {
+      position: absolute;
+      z-index: 4;
+
+      /* testing purposes */
+      background-color: red;
+      opacity: 0.2;
+
+      left:-50%;
+
+      width: 50%;
+      height: 100%;
+    }
+
+    #curtainright {
+      position: absolute;
+      z-index: 4;
+
+      /* testing purposes */
+      background-color: blue;
+      opacity: 0.2;
+
+      right:-50%;
+
+      width: 50%;
+      height: 100%;
+    }
   </style>
 </head>
 
 <body style="background-color:#D1C0A8; overflow:hidden">
+  <!-- CURTAINS -->
+  <div id='curtainleft'>
+    <br>
+  </div>
+
+  <div id='curtainright'>
+    <br>
+  </div>
+
   <!-- BOARD -->
   <div class="container">
     <!-- IMAGE -->
@@ -179,9 +217,9 @@ TBD
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           sprite.parentNode.removeChild(sprite);
           selected = null;
-          // curtains();
-          // setTimeout(resetBoard(), 2000);
-          resetBoard();
+          curtainsAnim();
+
+          setTimeout(resetBoard(), 1550);
         }, delay
       );
     }
@@ -316,8 +354,31 @@ TBD
       }
     }
 
-    var curtains = function() {
-      // curtains instead
+    var curtainsAnim = function() {
+      let left = document.getElementById('curtainleft');
+      let right = document.getElementById('curtainright');
+
+      left.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(' + window.innerWidth/2 + 'px)'}],
+        {
+          duration: 1550,
+          iterations: 1,
+          easing: 'linear',
+          fill: 'forwards',
+        }
+      );
+
+      right.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(-' + window.innerWidth/2 + 'px)'}],
+        {
+          duration: 1550,
+          iterations: 1,
+          easing: 'linear',
+          fill: 'forwards',
+        }
+      );
+
+      // animation.onfinish = secondAnimation
     }
 
     var resetBoard = function() {

@@ -97,7 +97,7 @@ TBD
 
 <body style="background-color:#D1C0A8; overflow:hidden">
   <!-- BOARD -->
-  <div class="container">
+  <div class="container" id="main">
     <!-- IMAGE -->
     <image src="/static/images/board.png" class="board">
 
@@ -174,7 +174,8 @@ TBD
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           sprite.parentNode.removeChild(sprite);
           selected = null;
-          resetBoard();
+          spinBoard();
+          setTimeout(resetBoard(), 2000);
         }, delay
       );
     }
@@ -301,6 +302,22 @@ TBD
       } else {
         piece.parentNode.removeChild(piece);
       }
+    }
+
+    var spinBoard = function() {
+      board = document.getElementById('main');
+      board.style.marginTop = '480px';
+
+      board.animate(
+        [{transform: 'rotate(0)'}, {transform: 'rotate(180deg)'}],
+        {
+          duration: 2000,
+          iterations: 1,
+          easing: 'ease-out',
+        }
+      );
+
+      board.style.transform = 'rotate(180deg)';
     }
 
     var resetBoard = function() {

@@ -20,9 +20,9 @@ current_pos = [[]]
 
 en_passant = None
 
-castling_state = {"white_kingside": True, 
-                  "white_queenside": True, 
-                  "black_kingside": True, 
+castling_state = {"white_kingside": True,
+                  "white_queenside": True,
+                  "black_kingside": True,
                   "black_queenside": True}
 
 def reset_board():
@@ -39,6 +39,48 @@ def flip_board():
         new_board.append(new_row)
     current_pos = new_board
 
+# must capture king to win game (no checkmates), stalemates still possible and draw if king vs king (+ knight/bishop)
+# color to move is used to check stalemate, white or black
+def game_over(board, color_to_move = None):
+    global en_passant
+    
+    king_count = 0
+    winner_color = None
+    non_rook_queen_pieces = 0
+    
+    # Count non-rook/queen pieces and also kings specifically
+    for r in range(8):
+        for c in range(8):
+            piece = board[r][c]
+            if abs(piece) == 5:
+                king_count += 1
+                winner_color = get_color(piece)
+            if piece != 0 and abs(piece) != 1 and abs(piece) != 4:
+                non_rook_queen_pieces += 1
+
+    # If a king was captured, the remaining king's side wins
+    if king_count == 1:
+        return (True, winner_color)
+
+    # Draw from insufficient material
+    if king_count == 2 and non_rook_queen_pieces <= 3:
+        return (True, "gray") # winner color is gray for draws
+
+    # Stalemate if side to move has no legal moves
+    has_legal_move = False
+    for r in range(8):
+        for c in range(8):
+            if get_color(board[r][c]) == color_to_move:
+                if legal_squares(board, r, c, en_passant):
+                    has_legal_move = True
+                    break
+        if has_legal_move:
+            break
+    if not has_legal_move:
+        return (True, "gray") # draw
+
+    # Game is not over
+    return (False, None)
 
 def legal_squares(board, r, c, en_passant_state):
     piece = board[r][c]
@@ -310,7 +352,7 @@ def king_moves(board, r, c, color, castling_state = None):
             continue
 
         moves.append((nr, nc))
-    
+
     # Castling
     if castling_state is not None:
         if color == "white":
@@ -381,13 +423,3 @@ def promotions(board):
         if board[7][i] == -6:
             all_promotions.append((7, i, (4, 1, 3, 2)))
     return all_promotions
-
-# Testing
-current_pos = [[-1,-2,-3,-4,-5,-3,-2,-1],
-            [-6,-6,-6,-6,-6,-6,-6,-6],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0],
-            [6,6,6,6,6,6,6,6],
-            [1,2,3,4,5,3,2,1]]

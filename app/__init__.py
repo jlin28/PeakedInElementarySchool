@@ -162,3 +162,6 @@ def error_page():
 if __name__=='__main__':
     app.debug = True
     app.run()
+
+def trivia_pop_up():
+    return None

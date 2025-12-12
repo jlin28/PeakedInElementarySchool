@@ -114,7 +114,8 @@ def game(gamemode, difficulty):
 
     print(get_board_state(turn))
     return render_template('game.html',
-                                board = get_board_state(turn)
+                                board = get_board_state(turn),
+                                turn = turn,
                           )
 
 @app.route('/test', methods=['GET', 'POST'])

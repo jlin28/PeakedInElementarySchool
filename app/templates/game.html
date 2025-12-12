@@ -206,7 +206,7 @@ TBD
     var validMoves = null;
     var moving = false;
     var newBoard = null;
-    var turn = 1;
+    var turn = {{ turn }};
 
     var colors = ['black', 'white']
 
@@ -217,9 +217,12 @@ TBD
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           sprite.parentNode.removeChild(sprite);
           selected = null;
-          curtainsAnim();
+          curtains(false);
+          resetBoard();
 
-          setTimeout(resetBoard(), 1550);
+          setTimeout( function() {
+            curtains(true);
+          }, 1750);
         }, delay
       );
     }
@@ -354,12 +357,16 @@ TBD
       }
     }
 
-    var curtainsAnim = function() {
+    var curtains = function(isReversed) {
       let left = document.getElementById('curtainleft');
       let right = document.getElementById('curtainright');
+      let winWidth = window.innerWidth/2;
 
-      left.animate(
-        [{transform: 'translate(0)'}, {transform: 'translate(' + window.innerWidth/2 + 'px)'}],
+      left.style.display = 'block';
+      right.style.display = 'block';
+
+      let leftA = left.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(' + winWidth + 'px)'}],
         {
           duration: 1550,
           iterations: 1,
@@ -368,8 +375,8 @@ TBD
         }
       );
 
-      right.animate(
-        [{transform: 'translate(0)'}, {transform: 'translate(-' + window.innerWidth/2 + 'px)'}],
+      let rightA = right.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(-' + winWidth + 'px)'}],
         {
           duration: 1550,
           iterations: 1,
@@ -378,7 +385,18 @@ TBD
         }
       );
 
-      // animation.onfinish = secondAnimation
+      if (isReversed) {
+        leftA.reverse();
+        rightA.reverse();
+
+        setTimeout(function() {
+          left.style.display = 'none';
+          right.style.display = 'none';
+        }, 1550);
+      } else {
+        leftA.play();
+        rightA.play();
+      }
     }
 
     var resetBoard = function() {

@@ -78,7 +78,6 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
-
     turn = session['turns']
     board = get_board_state(turn)
 
@@ -100,18 +99,16 @@ def game(gamemode, difficulty):
             session['turns'] = session['turns'] + 1
             turn += 1
 
-            make_board_state(turn,
-                simulate_move(board,
-                    int(positions[0][1]), gridlabel.index(positions[0][0]),
-                    int(positions[1][1]), gridlabel.index(positions[1][0]),
-                    None,
-                    castling_state
-                )[0]
-            )
+            set_board(simulate_move(board,
+                int(positions[0][1]), gridlabel.index(positions[0][0]),
+                int(positions[1][1]), gridlabel.index(positions[1][0]),
+                None,
+                castling_state
+            )[0])
 
+            make_board_state(turn, flip_board())
             return get_board_state(turn)
 
-    print(get_board_state(turn))
     return render_template('game.html',
                                 board = get_board_state(turn),
                                 turn = turn,

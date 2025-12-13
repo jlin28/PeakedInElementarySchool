@@ -39,11 +39,11 @@ def flip_board():
         new_board.append(new_row)
     current_pos = new_board
 
-    return new_board
+    # return new_board
 
-def set_board(board):
-    global current_pos
-    current_pos = board
+# def set_board(board):
+#     global current_pos
+#     current_pos = board
 
 # must capture king to win game (no checkmates), stalemates still possible and draw if king vs king (+ knight/bishop)
 # color to move is used to check stalemate, white or black

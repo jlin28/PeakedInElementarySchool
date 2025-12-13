@@ -226,12 +226,12 @@ TBD
               } else if (turn % 2 == 0) {
                 document.getElementById('main').src = "/static/images/boardflip.png";
               };
-            }, 1550
+            }, 1750
           );
           setTimeout( function() {
               curtains(true);
               moving = false;
-            }, 1800
+            }, 1950
           );
         }, delay
       );
@@ -361,7 +361,7 @@ TBD
 
         setTimeout(function() {
           piece.parentNode.removeChild(piece);
-        }, 2000);
+        }, 1750);
       } else {
         piece.parentNode.removeChild(piece);
       }
@@ -378,7 +378,7 @@ TBD
       let leftA = left.animate(
         [{transform: 'translate(0)'}, {transform: 'translate(' + winWidth + 'px)'}],
         {
-          duration: 1550,
+          duration: 1750,
           iterations: 1,
           easing: 'linear',
           fill: 'forwards',
@@ -388,7 +388,7 @@ TBD
       let rightA = right.animate(
         [{transform: 'translate(0)'}, {transform: 'translate(-' + winWidth + 'px)'}],
         {
-          duration: 1550,
+          duration: 1750,
           iterations: 1,
           easing: 'linear',
           fill: 'forwards',
@@ -402,7 +402,7 @@ TBD
         setTimeout(function() {
           left.style.display = 'none';
           right.style.display = 'none';
-        }, 1500);
+        }, 1740);
       } else {
         leftA.play();
         rightA.play();

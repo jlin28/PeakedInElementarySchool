@@ -99,7 +99,6 @@ def game(gamemode, difficulty):
 
             session['turns'] = session['turns'] + 1
             turn += 1
-            print(positions) # testing purposes
 
             make_board_state(turn,
                 simulate_move(board,

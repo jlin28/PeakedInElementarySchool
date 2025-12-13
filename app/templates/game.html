@@ -54,7 +54,7 @@ TBD
     }
 
     .col {
-        width: clamp(10px, 50px,50px);
+      width: clamp(10px, 50px,50px);
       height: 100%;
     }
 
@@ -98,9 +98,9 @@ TBD
       position: absolute;
       z-index: 4;
 
-      /* testing purposes */
-      background-color: red;
-      opacity: 0.2;
+      background-image: url('/static/images/halfcurtain.jpg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
 
       left:-50%;
 
@@ -112,9 +112,9 @@ TBD
       position: absolute;
       z-index: 4;
 
-      /* testing purposes */
-      background-color: blue;
-      opacity: 0.2;
+      background-image: url('/static/images/halfcurtain.jpg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
 
       right:-50%;
 
@@ -212,17 +212,27 @@ TBD
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
-          moving = false;
           turn = turn + 1;
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
-          sprite.parentNode.removeChild(sprite);
           selected = null;
           curtains(false);
-          resetBoard();
 
           setTimeout( function() {
-            curtains(true);
-          }, 1750);
+            sprite.parentNode.removeChild(sprite);
+            resetBoard();
+
+              if (turn > 1 && turn % 2 != 0) {
+                document.getElementById('main').src = "/static/images/board.png";
+              } else if (turn % 2 == 0) {
+                document.getElementById('main').src = "/static/images/boardflip.png";
+              };
+            }, 1550
+          );
+          setTimeout( function() {
+              curtains(true);
+              moving = false;
+            }, 1800
+          );
         }, delay
       );
     }
@@ -392,7 +402,7 @@ TBD
         setTimeout(function() {
           left.style.display = 'none';
           right.style.display = 'none';
-        }, 1550);
+        }, 1500);
       } else {
         leftA.play();
         rightA.play();

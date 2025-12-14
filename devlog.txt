@@ -283,3 +283,10 @@ FLIPPING AND CURTAINS
 * NEW CHANGES:
     - Finished up board flipping in FEF
     - Completed curtains animation
+
+zixiQ -- 2025-12-13 20:20
+CHESS LOGIC
+* NEW CHANGES:
+    - Reworked flip_board() to get_display_board() to separate display and internal boards
+    - Added functions to convert from display coordinates to internal coordinates and vice versa
+    - Updated reset_board() to reset globals

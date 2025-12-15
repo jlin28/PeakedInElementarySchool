@@ -5,30 +5,39 @@
 # 12/22/25
 
 import sqlite3
+from api import apiCall
+import random
 
 #=============================MAKE=TABLES=============================#
 
-
 # questions
-def create_questions():
+def create_questions(count):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-
+    #c.execute("DROP TABLE questions")
     c.execute("""
         CREATE TABLE IF NOT EXISTS questions (
             id INTEGER PRIMARY KEY NOT NULL,
+            type TEXT NOT NULL,
             image TEXT,
             question TEXT NOT NULL,
             answers TEXT NOT NULL,
             correct TEXT NOT NULL
         )"""
     )
-
     db.commit()
     db.close()
 
+    types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
+    type = random.randint(len(types))
+    type = "film"
+    for i in range(count):
+        if type == "film":
+            data = apiCall(type)
+            add_film(data)
+            #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
 
 # game
 def create_game_data():
@@ -106,7 +115,7 @@ def make_question(question, answers, correct, image):
     answers_str = '%SPLIT%'.join(answers)
 
     command = 'INSERT INTO questions VALUES (?, ?, ?, ?)'
-    vars = (id, answers_str, correct, image)
+    vars = (id, type, image, question, answers_str, correct)
     c.execute(command, vars)
 
     db.commit()

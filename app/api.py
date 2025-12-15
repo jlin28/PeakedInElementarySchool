@@ -6,6 +6,16 @@ import random
 
 #setup
 
+with open("static/words/spanish.txt", "r") as file:
+    spanish_words = file.read().split(",")
+
+with open("static/words/thesaurus.txt", "r") as file:
+    thesaurus_words = file.read().split(",")
+
+with open("static/words/countries.txt", "r") as file:
+    countries = file.read().split(",")
+
+
 OMDB_KEY = ""
 SPANISH_ENGLISH_KEY = ""
 SUPERHERO_KEY = ""
@@ -39,19 +49,15 @@ def apiCall(api):
     if api == "thesaurus":
         with open("keys/key_thesaurus.txt", "r") as f:
             THESAURUS_KEY = f.read().strip()
-        THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/test?key={THESAURUS_KEY}"
-        url = THESAURUS_URL
+        data = getThesaurus()
+        return data
     if api == "rick":
         return getPickle()
     if api == "country":
-        url = COUNTRIES_URL
+        return getCountry()
 
-    with urllib.request.urlopen(url) as response:
-        raw_data = response.read()
-
-    data = json.loads(raw_data)
-
-    return data
+    raise ParameterError("wrong parameter used")
+    return ""
 
 def getFilm(count):
     ID = ""
@@ -86,7 +92,9 @@ def getFilm(count):
     return data
 
 def getSpanish():
-    random_word = "blue"
+    ID = random.randint(0,935)
+    random_word = spanish_words[ID].strip()
+    #print(random_word)
     SPANISH_ENGLISH_URL = f"https://dictionaryapi.com/api/v3/references/spanish/json/{random_word}?key={SPANISH_ENGLISH_KEY}"
     with urllib.request.urlopen(SPANISH_ENGLISH_URL) as response:
         raw_data = response.read()
@@ -94,6 +102,18 @@ def getSpanish():
     data = json.loads(raw_data)
 
     return data[0]
+
+def getThesaurus():
+    ID = random.randint(0,561)
+    random_word = thesaurus_words[ID].strip()
+    #print(random_word)
+    THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/{random_word}?key={THESAURUS_KEY}"
+    with urllib.request.urlopen(THESAURUS_URL) as response:
+        raw_data = response.read()
+
+    data = json.loads(raw_data)
+
+    return data
 
 def getHero():
     ID = random.randint(0,732)
@@ -111,4 +131,14 @@ def getPickle():
     data = json.loads(raw_data)
     return data
 
-print(apiCall("rick"))
+def getCountry():
+    ID = random.randint(0, 193)
+    random_country = countries[ID].strip()
+    #print(random_country)
+    COUNTRY_URL = f"https://restcountries.com/v3.1/name/{random_country}"
+    with urllib.request.urlopen(COUNTRY_URL) as response:
+        raw_data = response.read()
+    data = json.loads(raw_data)
+    return data
+
+print(apiCall("country"))

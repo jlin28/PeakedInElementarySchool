@@ -80,8 +80,9 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
+
     turn = session['turns']
-    board = get_board_state(turn)
+    current_pos = get_board_state(turn)
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 

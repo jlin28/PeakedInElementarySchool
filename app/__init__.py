@@ -136,6 +136,32 @@ def game(gamemode, difficulty):
                                 turn = turn,
                           )
 
+@app.route('/result/<string:winner>', methods=['GET', 'POST'])
+
+
+
+def result(winner):
+    turn = 0
+
+    if request.method == 'POST':
+        data = request.headers
+
+        if 'next_board' in data:
+            turn += 1
+            return get_board_state(turn)
+
+        if 'previous_board' in data:
+            turn -= 1
+            return get_board_state(turn)
+
+        if 'play' in data:
+            return redirect(url_for('menu'))
+
+    return render_template('result.html',
+                            winner = winner,
+                            board = get_board_state(turn)
+                        )
+
 @app.route('/test', methods=['GET', 'POST'])
 def testError():
 

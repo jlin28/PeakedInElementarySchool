@@ -61,7 +61,7 @@ def get_question(id):
     c = db.cursor()
 
     command = 'SELECT * FROM questions WHERE id = ?'
-    vars = (id)
+    vars = (id,)
     data = c.execute(command, vars).fetchone()
 
     question = []
@@ -188,7 +188,7 @@ def get_board_state(turn):
     c = db.cursor()
 
     command = 'SELECT board FROM game WHERE turn = ?'
-    vars = (str(turn))
+    vars = (str(turn),)
     board_str = c.execute(command, vars).fetchone()[0]
 
     board = []

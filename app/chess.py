@@ -26,28 +26,57 @@ castling_state = {"white_kingside": True,
                   "black_queenside": True}
 
 def reset_board():
-    global current_pos
+    global current_pos, en_passant, castling_state
     current_pos = copy.deepcopy(init_pos)
+    en_passant = None
+    castling_state = {
+        "white_kingside": True,
+        "white_queenside": True,
+        "black_kingside": True,
+        "black_queenside": True
+    }
 
-def flip_board():
-    global current_pos
-    new_board = []
+# perspective = white or black
+def get_display_board(board, perspective="white"):
+    # display board can be flipped but internal logic stays from POV
+    # with white at the bottom for legal_squares
+    if perspective == "white":
+        return board
+
+    # black's perspective: rotate 180°
+    flipped = []
     for r in range(7, -1, -1):
-        new_row = []
+        row = []
         for c in range(7, -1, -1):
-            new_row.append(current_pos[r][c])
-        new_board.append(new_row)
-    current_pos = new_board
+            row.append(board[r][c])
+        flipped.append(row)
+    return flipped
+
+def display_to_internal(r, c, perspective):
+    if perspective == "white":
+        return r, c
+    return 7 - r, 7 - c
+
+def internal_to_display(r, c, perspective):
+    if perspective == "white":
+        return r, c
+    return 7 - r, 7 - c
+
+    # return new_board
+
+# def set_board(board):
+#     global current_pos
+#     current_pos = board
 
 # must capture king to win game (no checkmates), stalemates still possible and draw if king vs king (+ knight/bishop)
 # color to move is used to check stalemate, white or black
 def game_over(board, color_to_move = None):
     global en_passant
-    
+
     king_count = 0
     winner_color = None
     non_rook_queen_pieces = 0
-    
+
     # Count non-rook/queen pieces and also kings specifically
     for r in range(8):
         for c in range(8):
@@ -70,8 +99,10 @@ def game_over(board, color_to_move = None):
     has_legal_move = False
     for r in range(8):
         for c in range(8):
+            if color_to_move is None:
+                return (False, None)
             if get_color(board[r][c]) == color_to_move:
-                if legal_squares(board, r, c, en_passant):
+                if legal_squares(board, r, c, en_passant): # if moves exist
                     has_legal_move = True
                     break
         if has_legal_move:
@@ -150,7 +181,7 @@ def is_square_attacked(board, r, c, by_color):
                     if rr+dr == r and cc+dc == c:
                         return True
 
-            # Pawnsand en passant
+            # Pawns
             if ptype == 6:
                 direction = -1 if by_color == "white" else 1
                 for dc in (-1, 1):

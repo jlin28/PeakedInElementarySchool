@@ -54,7 +54,7 @@ TBD
     }
 
     .col {
-        width: clamp(10px, 50px,50px);
+      width: clamp(10px, 50px,50px);
       height: 100%;
     }
 
@@ -84,7 +84,7 @@ TBD
     /* BUTTONS GRID */
     button {
       position: absolute;
-      z-index: 2;
+      z-index: 3;
       margin-left: -12px;
       background: none;
       border-style: none;
@@ -92,14 +92,52 @@ TBD
       width: clamp(10px, 61px,61px);
       height: 12.52%;
     }
+
+    /* CURTAINS */
+    #curtainleft {
+      position: absolute;
+      z-index: 4;
+
+      background-image: url('/static/images/halfcurtain.jpg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+
+      left:-50%;
+
+      width: 50%;
+      height: 100%;
+    }
+
+    #curtainright {
+      position: absolute;
+      z-index: 4;
+
+      background-image: url('/static/images/halfcurtain.jpg');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+
+      right:-50%;
+
+      width: 50%;
+      height: 100%;
+    }
   </style>
 </head>
 
 <body style="background-color:#D1C0A8; overflow:hidden">
+  <!-- CURTAINS -->
+  <div id='curtainleft'>
+    <br>
+  </div>
+
+  <div id='curtainright'>
+    <br>
+  </div>
+
   <!-- BOARD -->
   <div class="container">
     <!-- IMAGE -->
-    <image src="/static/images/board.png" class="board">
+    <image src="/static/images/board.png" id="main" class="board">
 
       <!-- GLOW GRID -->
       <div id="glow" class="container">
@@ -167,14 +205,34 @@ TBD
     var selected = null;
     var validMoves = null;
     var moving = false;
+    var newBoard = null;
+    var turn = {{ turn }};
+
+    var colors = ['black', 'white']
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
-          moving = false;
+          turn = turn + 1;
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
-          sprite.parentNode.removeChild(sprite);
           selected = null;
-          resetBoard();
+          curtains(false);
+
+          setTimeout( function() {
+            sprite.parentNode.removeChild(sprite);
+            resetBoard();
+
+              if (turn > 1 && turn % 2 != 0) {
+                document.getElementById('main').src = "/static/images/board.png";
+              } else if (turn % 2 == 0) {
+                document.getElementById('main').src = "/static/images/boardflip.png";
+              };
+            }, 1750
+          );
+          setTimeout( function() {
+              curtains(true);
+              moving = false;
+            }, 1950
+          );
         }, delay
       );
     }
@@ -187,6 +245,12 @@ TBD
           xhttp.open('POST', window.location.href, true);
           xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
           xhttp.send();
+
+          xhttp.onload = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              newBoard = JSON.parse(this.response);
+            }
+          }
 
           moving = true;
           unhighlightLegalSquares(validMoves);
@@ -252,13 +316,17 @@ TBD
 
         if (sprite != null) {
           let classnames = sprite.className.split(" ");
-          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
-          // checks if xhttp request is done and there were no errors (200 -- ok request) !!
-          xhttp.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              validMoves = this.response.split(',');
+          if (colors[turn%2] == classnames[1]) {
+            sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
+            // checks if xhttp request is done and there were no errors (200 -- ok request) !!
+            xhttp.onload = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                validMoves = this.response.split(',');
+              }
+              highlightLegalSquares(validMoves);
             }
-            highlightLegalSquares(validMoves);
+          } else {
+            selected = null;
           }
         }
       }
@@ -293,18 +361,64 @@ TBD
 
         setTimeout(function() {
           piece.parentNode.removeChild(piece);
-        }, 2000);
+        }, 1750);
       } else {
         piece.parentNode.removeChild(piece);
       }
     }
 
+    var curtains = function(isReversed) {
+      let left = document.getElementById('curtainleft');
+      let right = document.getElementById('curtainright');
+      let winWidth = window.innerWidth/2;
+
+      left.style.display = 'block';
+      right.style.display = 'block';
+
+      let leftA = left.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(' + winWidth + 'px)'}],
+        {
+          duration: 1750,
+          iterations: 1,
+          easing: 'linear',
+          fill: 'forwards',
+        }
+      );
+
+      let rightA = right.animate(
+        [{transform: 'translate(0)'}, {transform: 'translate(-' + winWidth + 'px)'}],
+        {
+          duration: 1750,
+          iterations: 1,
+          easing: 'linear',
+          fill: 'forwards',
+        }
+      );
+
+      if (isReversed) {
+        leftA.reverse();
+        rightA.reverse();
+
+        setTimeout(function() {
+          left.style.display = 'none';
+          right.style.display = 'none';
+        }, 1740);
+      } else {
+        leftA.play();
+        rightA.play();
+      }
+    }
+
     var resetBoard = function() {
+      let xhttp = new XMLHttpRequest();
+      xhttp.open('GET', window.location.href, true);
+      xhttp.send();
+
       let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
       let gridlabel = ['a','b','c','d','e','f','g','h'];
 
       let childs = document.getElementById('images').children;
-      let board = {{ board }};
+      let board = newBoard;
       let gridrow = 0;
 
       for (row of board) {
@@ -312,8 +426,19 @@ TBD
         for (let col = 0; col < row.length; col++) {
           let image = squares[col].querySelector("." + squares[col].className.split(" ")[1] + " img");
 
-          if (image == null && row[col] != 0) {
-            console.log('bb');
+          if (image != null) {
+            if (row[col] != 0) {
+              let classnames = image.className.split(' ');
+
+              if (row[col] < 0) { classnames[1] = 'black' };
+              if (row[col] > 0) { classnames[1] = 'white' };
+
+              classnames[3] = pieces[Math.abs(row[col]) - 1];
+
+              image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+              image.className = classnames.join(' ');
+            } else { squares[col].removeChild(image) };
+          } else if (row[col] != 0) {
             let color;
             let newChild = squares[col].appendChild(document.createElement('img'));
             let type = pieces[Math.abs(row[col]) - 1];

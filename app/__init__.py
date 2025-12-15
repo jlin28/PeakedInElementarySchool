@@ -79,15 +79,8 @@ def menu():
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
 
-    global current_pos
-
     turn = session['turns']
     current_pos = get_board_state(turn)
-
-    if session['turns'] % 2 != 0:
-       player = 'white'
-    else:
-       player = 'black'
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 
@@ -106,21 +99,20 @@ def game(gamemode, difficulty):
 
             session['turns'] = session['turns'] + 1
             turn += 1
-            print(positions) # testing purposes
 
-            current_pos = simulate_move(current_pos,
-                            int(positions[0][1]), gridlabel.index(positions[0][0]),
-                            int(positions[1][1]), gridlabel.index(positions[1][0]),
-                            None,
-                            castling_state
-                          )[0]
-            flip_board()
-            add_board_state(current_pos)
+            set_board(simulate_move(board,
+                int(positions[0][1]), gridlabel.index(positions[0][0]),
+                int(positions[1][1]), gridlabel.index(positions[1][0]),
+                None,
+                castling_state
+            )[0])
 
-    print(current_pos)
+            make_board_state(turn, flip_board())
+            return get_board_state(turn)
+
     return render_template('game.html',
-                                board = current_pos,
-                                player = player,
+                                board = get_board_state(turn),
+                                turn = turn,
                           )
 
 @app.route('/test', methods=['GET', 'POST'])

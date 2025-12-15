@@ -296,3 +296,10 @@ API CALLING
 * NEW CHANGES:
     - All APIS are implemented in apiCall()
     - Added text files in static/words for apiCall()
+
+zixiQ -- 2025-12-15 11:45
+CHESS LOGIC
+* NEW CHANGES:
+    - Created function to check if in checkmate, not game over
+# ERRORS/BUGS:
+    - Found an sqlite query bug but Evan already fixed this period lol

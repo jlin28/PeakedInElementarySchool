@@ -137,10 +137,8 @@ def game(gamemode, difficulty):
                           )
 
 @app.route('/result/<string:winner>', methods=['GET', 'POST'])
-
-
-
 def result(winner):
+
     turn = 0
 
     if request.method == 'POST':
@@ -148,13 +146,16 @@ def result(winner):
 
         if 'next_board' in data:
             turn += 1
+
             return get_board_state(turn)
 
         if 'previous_board' in data:
             turn -= 1
+
             return get_board_state(turn)
 
         if 'play' in data:
+
             return redirect(url_for('menu'))
 
     return render_template('result.html',

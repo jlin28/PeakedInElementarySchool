@@ -290,3 +290,9 @@ CHESS LOGIC
     - Reworked flip_board() to get_display_board() to separate display and internal boards
     - Added functions to convert from display coordinates to internal coordinates and vice versa
     - Updated reset_board() to reset globals
+
+seanZ -- 2025-12-14 22:01
+API CALLING
+* NEW CHANGES:
+    - All APIS are implemented in apiCall()
+    - Added text files in static/words for apiCall()

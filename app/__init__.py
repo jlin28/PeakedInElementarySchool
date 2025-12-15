@@ -27,19 +27,17 @@ def menu():
 
     if request.method == 'POST':
         # ADDS SETTINGS TO SESSION
-        data = request.headers
-
-        if 'difficulty' in data:
+        if 'difficulty' in request.form:
             difficulties[int(request.form['difficulty'])] = 'checked'
         else: difficulties[0] = 'checked'
 
-        if 'setting1' in data:
+        if 'setting1' in request.form:
             setting1='checked'
 
-        if 'setting2' in data:
+        if 'setting2' in request.form:
             setting2='checked'
 
-        if 'singleplayer' in data:
+        if 'singleplayer' in request.form:
             reset_board()
             create_questions()
             create_game_data()
@@ -56,7 +54,7 @@ def menu():
 
             return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
 
-        if 'multiplayer' in data:
+        if 'multiplayer' in request.form:
             reset_board()
             create_questions()
             create_game_data()

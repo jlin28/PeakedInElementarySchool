@@ -459,17 +459,27 @@ TBD
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', window.location.href, true);
       xhttp.send();
-      for (square of arr) {
-        if (square != '') {
-          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+      if (arr.length > 1) {
+        for (square of arr) {
+          if (square != '') {
+            document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+          }
         }
+      } else {
+        let original = selected.className.split(' ')[2]
+        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
 
     var unhighlightLegalSquares = function(arr) {
       validMoves = null;
-      for (square of arr) {
-        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+      if (arr.length > 1) {
+        for (square of arr) {
+          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+        }
+      } else {
+        let original = selected.className.split(' ')[2]
+        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
   </script>

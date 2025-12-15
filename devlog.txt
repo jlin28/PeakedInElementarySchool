@@ -303,3 +303,12 @@ CHESS LOGIC
     - Created function to check if in checkmate, not game over
 # ERRORS/BUGS:
     - Found an sqlite query bug but Evan already fixed this period lol
+
+joyceL -- 2025-12-15 12:34
+FLIPPING AND CURTAINS
+* NEW CHANGES:
+    - Chess piecs change properly
+    - Fixed issue with legal squares highlighting
+    - Now if there are no legal moves, piece will be highlighted with red
+    - Fixed display issue with board
+    - added audio to game.html

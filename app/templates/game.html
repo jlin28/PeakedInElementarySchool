@@ -233,6 +233,13 @@ TBD
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      if (turn > 1 && turn % 2 != 0) {
+        document.getElementById('main').style.transform = "translate(-50%, -50%)";
+        document.getElementById('main').src = "/static/images/board.png";
+      } else if (turn % 2 == 0) {
+        document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
+        document.getElementById('main').src = "/static/images/boardflip.png";
+      };
     }
 
     var Aud = function() {
@@ -257,8 +264,10 @@ TBD
             resetBoard();
 
               if (turn > 1 && turn % 2 != 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50%)";
                 document.getElementById('main').src = "/static/images/board.png";
               } else if (turn % 2 == 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
                 document.getElementById('main').src = "/static/images/boardflip.png";
               };
             }, 1750

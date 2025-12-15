@@ -121,6 +121,18 @@ TBD
       width: 50%;
       height: 100%;
     }
+
+    /* AUDIO */
+    #audio {
+      transform: scale(5);
+      display: none;
+      margin-top: 15px;
+      margin-left: 25px;
+    }
+
+    #audio:checked + label img {
+      content: url("/static/images/audio.png")
+    }
   </style>
 </head>
 
@@ -133,6 +145,15 @@ TBD
   <div id='curtainright'>
     <br>
   </div>
+
+  <!-- AUDIO -->
+  <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
+
+  <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
+  <label for="audio">
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+      src="/static/images/mute.png">
+  </label>
 
   <!-- BOARD -->
   <div class="container">
@@ -209,6 +230,20 @@ TBD
     var turn = {{ turn }};
 
     var colors = ['black', 'white']
+
+    window.onload = function() {
+      document.getElementById('audio').checked = false;
+    }
+
+    var Aud = function() {
+      let bgm = document.getElementById('bgm');
+      if (bgm.paused) {
+        bgm.play();
+      }
+      else {
+        bgm.pause();
+      }
+    };
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {

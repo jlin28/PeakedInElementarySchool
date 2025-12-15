@@ -27,17 +27,19 @@ def menu():
 
     if request.method == 'POST':
         # ADDS SETTINGS TO SESSION
-        if 'difficulty' in request.form:
+        data = request.headers
+
+        if 'difficulty' in data:
             difficulties[int(request.form['difficulty'])] = 'checked'
         else: difficulties[0] = 'checked'
 
-        if 'setting1' in request.form:
+        if 'setting1' in data:
             setting1='checked'
 
-        if 'setting2' in request.form:
+        if 'setting2' in data:
             setting2='checked'
 
-        if 'singleplayer' in request.form:
+        if 'singleplayer' in data:
             reset_board()
             create_questions()
             create_game_data()
@@ -54,7 +56,7 @@ def menu():
 
             return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
 
-        if 'multiplayer' in request.form:
+        if 'multiplayer' in data:
             reset_board()
             create_questions()
             create_game_data()
@@ -137,10 +139,15 @@ def game(gamemode, difficulty):
                           )
 
 @app.route('/result/<string:winner>', methods=['GET', 'POST'])
+<<<<<<< HEAD
 
 
 
 def result(winner):
+=======
+def result(winner):
+
+>>>>>>> 25b9037b9e53ee824e13add553bf8f746f8c1247
     turn = 0
 
     if request.method == 'POST':
@@ -148,13 +155,25 @@ def result(winner):
 
         if 'next_board' in data:
             turn += 1
+<<<<<<< HEAD
+=======
+
+>>>>>>> 25b9037b9e53ee824e13add553bf8f746f8c1247
             return get_board_state(turn)
 
         if 'previous_board' in data:
             turn -= 1
+<<<<<<< HEAD
             return get_board_state(turn)
 
         if 'play' in data:
+=======
+
+            return get_board_state(turn)
+
+        if 'play' in data:
+
+>>>>>>> 25b9037b9e53ee824e13add553bf8f746f8c1247
             return redirect(url_for('menu'))
 
     return render_template('result.html',

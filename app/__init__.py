@@ -38,6 +38,7 @@ def menu():
             setting2='checked'
 
         if 'singleplayer' in request.form:
+            reset_board()
             create_questions()
             create_game_data()
 
@@ -54,6 +55,7 @@ def menu():
             return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
 
         if 'multiplayer' in request.form:
+            reset_board()
             create_questions()
             create_game_data()
 
@@ -89,8 +91,15 @@ def game(gamemode, difficulty):
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
-            for x,y in legal_squares(board, position[1], position[0], en_passant):
-                validarr = validarr + ',' + gridlabel[y]+str(x)
+            if turn % 2 == 0:
+                position[0] = 7 - position[0]
+                position[1] = 7 - position[1]
+
+            for x,y in legal_squares(get_display_board(get_internal_board()), position[1], position[0], en_passant):
+                if turn % 2 != 0:
+                    validarr = validarr + ',' + gridlabel[y]+str(x)
+                else:
+                    validarr = validarr + ',' + gridlabel[7-y]+str(7-x)
             return validarr[1:]
 
         if 'move' in data:
@@ -99,14 +108,26 @@ def game(gamemode, difficulty):
             session['turns'] = session['turns'] + 1
             turn += 1
 
-            set_board(simulate_move(board,
-                int(positions[0][1]), gridlabel.index(positions[0][0]),
-                int(positions[1][1]), gridlabel.index(positions[1][0]),
-                None,
-                castling_state
-            )[0])
+            if turn % 2 == 0:
+                color = 'black'
+                newBoard = simulate_move(get_display_board(get_internal_board()),
+                    int(positions[0][1]), gridlabel.index(positions[0][0]),
+                    int(positions[1][1]), gridlabel.index(positions[1][0]),
+                    None,
+                    castling_state
+                )[0]
+            else:
+                color = 'white'
+                newBoard = simulate_move(get_display_board(get_internal_board()),
+                    7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
+                    7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
+                    None,
+                    castling_state
+                )[0]
 
-            make_board_state(turn, flip_board())
+            set_board(newBoard)
+
+            make_board_state(turn, get_display_board(newBoard, color))
             return get_board_state(turn)
 
     return render_template('game.html',

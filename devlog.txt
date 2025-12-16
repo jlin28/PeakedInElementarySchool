@@ -312,3 +312,10 @@ FLIPPING AND CURTAINS
     - Now if there are no legal moves, piece will be highlighted with red
     - Fixed display issue with board
     - added audio to game.html
+
+joyceL -- 2025-12-15 20:49
+ANIMATIONS AND SETTINGS
+* NEW CHANGES:
+    - Made it so that settings are added to session
+    - Added a trivia categories section to settings
+    - fixed menu screen repeat spawnPiece call issue

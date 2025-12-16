@@ -319,3 +319,9 @@ ANIMATIONS AND SETTINGS
     - Made it so that settings are added to session
     - Added a trivia categories section to settings
     - fixed menu screen repeat spawnPiece call issue
+
+zixiQ -- 2025-12-15 23:11
+CHESS LOGIC AND TRIVIA
+* NEW CHANGES:
+    - Fixed in_checkmate() function
+    - Implementing pop up for trivia in chess

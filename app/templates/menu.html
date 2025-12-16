@@ -231,16 +231,18 @@ TBD
     }
 
     var spawnPiece = function() {
-      container = document.getElementById('anim');
+      let container = document.getElementById('anim');
 
-      let img = document.createElement('img');
-      img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
-      img.className = "piece center";
+      if (container.children.length == 0) {
+        let img = document.createElement('img');
+        img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+        img.className = "piece center";
 
-      container.appendChild(img);
-      img.addEventListener("animationend", function() {
-        container.removeChild(img);
-      });
+        container.appendChild(img);
+        img.addEventListener("animationend", function() {
+          container.removeChild(img);
+        })
+      };
     }
 
     setTimeout(spawnPiece, 3000);

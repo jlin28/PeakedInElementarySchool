@@ -136,9 +136,11 @@ def game(gamemode, difficulty):
             turn += 1
 
             color = ''
+            color_to_move = ''
 
             if turn % 2 == 0:
                 color = 'black'
+                color_to_move = 'white'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     int(positions[0][1]), gridlabel.index(positions[0][0]),
                     int(positions[1][1]), gridlabel.index(positions[1][0]),
@@ -147,6 +149,7 @@ def game(gamemode, difficulty):
                 )[0]
             else:
                 color = 'white'
+                color_to_move = 'black'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
                     7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
@@ -158,21 +161,14 @@ def game(gamemode, difficulty):
 
             make_board_state(turn, get_display_board(newBoard, color))
 
-            if abs(get_board_state(turn-1)[int(positions[0][1])][gridlabel.index(positions[0][0])]) == 5:
-                return redirect(url_for('result', winner=color))
+            gameover = game_over(get_board_state(turn), color_to_move)
+            if gameover[0]:
+                return redirect(url_for('result', winner=game_over[1]))
 
-            return get_board_state(turn)
+            incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+            if incheckmate[0]:
+                return get_board_state(turn) #tell them theyre in checkmate somehow
 
-        if 'checkmate' in data:
-            session['turns'] = session['turns'] + 1
-            turn += 1
-
-            if turn % 2 == 0:
-                color = 'black'
-            else:
-                color = 'white'
-
-            make_board_state(turn, get_display_board(get_board_state(turn-1), color))
             return get_board_state(turn)
 
     return render_template('game.html',
@@ -186,7 +182,7 @@ def result(winner):
     turn = 0
 
     if request.method == 'POST':
-        data = request.headers
+        data = request.form
 
         if 'next_board' in data:
             turn += 1

@@ -325,3 +325,14 @@ CHESS LOGIC AND TRIVIA
 * NEW CHANGES:
     - Fixed in_checkmate() function
     - Implementing pop up for trivia in chess
+
+seanZ -- 2025-12-16 11:42
+QUESTIONS
+* NEW CHANGES:
+    - Worked on questions for films(the toughest one)
+
+zixiQ -- 2025-12-16 11:45
+TRIVIA OVERLAY
+* NEW CHANGES:
+    - Implementing trivia pop up when a move is selected
+    - Tested and background shows

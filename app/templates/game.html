@@ -219,7 +219,7 @@ TBD
       display:none;
       position:fixed;
       top:0; left:0;
-      width:100%; height:100%;
+      width:300%; height:300%;
       background:rgba(0,0,0,0.6);
       z-index:1000;
       justify-content:center;
@@ -230,8 +230,12 @@ TBD
       background:#f4f1ea;
       padding:25px;
       border-radius:10px;
-      width:400px;
+      width:500px;
+      height: 500px;
       text-align:center;
+      display:flex;
+      align-items: center;
+      justify-content: center;
     ">
     <h3 id="triviaQuestion"></h3>
     <div id="triviaAnswers" style="margin-top:15px;"></div>
@@ -320,11 +324,14 @@ TBD
           xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
           xhttp.send();
 
+          showTrivia(triviaQuestions);
+
           xhttp.onload = function() {
             if (this.readyState == 4 && this.status == 200) {
               newBoard = JSON.parse(this.response);
             }
           }
+
 
           moving = true;
           unhighlightLegalSquares(validMoves);
@@ -564,6 +571,8 @@ TBD
       const qEl = document.getElementById("triviaQuestion");
       const answersEl = document.getElementById("triviaAnswers");
 
+      overlay.style.display = "block";
+
       qEl.innerText = questionObj.question;
       answersEl.innerHTML = "";
 
@@ -584,8 +593,8 @@ TBD
         answersEl.appendChild(btn);
       });
 
-  overlay.style.display = "flex";
-}
+      overlay.style.display = "flex";
+    }
 
   </script>
 </body>

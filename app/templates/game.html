@@ -214,6 +214,31 @@ TBD
         </div>
       {% endfor %}
     </div>
+
+    <div id="triviaOverlay" style="
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.6);
+      z-index:1000;
+      justify-content:center;
+      align-items:center;
+    ">
+
+    <div style="
+      background:#f4f1ea;
+      padding:25px;
+      border-radius:10px;
+      width:400px;
+      text-align:center;
+    ">
+    <h3 id="triviaQuestion"></h3>
+    <div id="triviaAnswers" style="margin-top:15px;"></div>
+  </div>
+
+</div>
+
   </div>
 
   <!-- BOOTSTRAP JS -->
@@ -230,6 +255,9 @@ TBD
     var turn = {{ turn }};
 
     var colors = ['black', 'white']
+
+    const triviaQuestions = {{ trivia | tojson }};
+    var triviaActive = false;
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
@@ -283,6 +311,8 @@ TBD
 
     var select = function(position) {
       let xhttp = new XMLHttpRequest();
+
+      if (triviaActive) return;  // ignore clicks while trivia is showing
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
@@ -526,6 +556,37 @@ TBD
         document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
+
+    function showTrivia(questionObj, callback = null) {
+      triviaActive = true;
+
+      const overlay = document.getElementById("triviaOverlay");
+      const qEl = document.getElementById("triviaQuestion");
+      const answersEl = document.getElementById("triviaAnswers");
+
+      qEl.innerText = questionObj.question;
+      answersEl.innerHTML = "";
+
+      questionObj.answers.forEach((ans, idx) => {
+        const btn = document.createElement("button");
+        btn.innerText = ans;
+        btn.style.display = "block";
+        btn.style.margin = "8px auto";
+        btn.style.padding = "8px 16px";
+
+        btn.onclick = function () {
+          triviaActive = false;
+          overlay.style.display = "none";
+          const correct = (idx === questionObj.correct);
+          if (callback) callback(correct);
+        };
+
+        answersEl.appendChild(btn);
+      });
+
+  overlay.style.display = "flex";
+}
+
   </script>
 </body>
 

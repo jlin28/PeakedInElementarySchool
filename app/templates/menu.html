@@ -44,7 +44,6 @@ TBD
     /* BACKGROUND */
     body {
       /* will hopefully be able to make the bg change based upon whether it is day or night real time */
-      background-image: url('/static/images/day.jpg');
       background-repeat: no-repeat;
       background-size: 100vw 100vh;
     }
@@ -127,7 +126,7 @@ TBD
   <!-- MAIN CONTENT OF PAGE-->
   <div style="margin-top:5vh;" class="container">
     <div class="container">
-      <image src="/static/images/title.png" class="center">
+      <image src="/static/images/title.png" id="title" class="center">
     </div>
     <div style="margin-top:-50px; width:50%" class="container">
       <button type="submit" form="play" name="singleplayer" value="singleplayer" class="center" style="width:35%"> SINGLEPLAYER </button>
@@ -162,6 +161,9 @@ TBD
             <br>
             <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
             <label for="setting2"> setting2 </label>
+            <br>
+            <input class="form-check-input" type="checkbox" onclick="location.reload()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
+            <label for="reverseTime"> reversed time </label>
           </div>
           <br><br><br> <hr>
           <!-- RADIO TYPE SETTINGS -->
@@ -201,15 +203,21 @@ TBD
     var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
     var categories = {{ categories|tojson }};
     var selected = {{ selected|tojson }};
+    var time = {{ time }};
+    var alreadyReversed = "{{ reverseStatus }}";
+    var color;
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+
+      reverseTime();
+
       for (cat of categories) {
         if (selected.length == 0 || selected.includes(cat)) {
           document.getElementById(cat).checked = true;
         }
-      }
-    }
+      };
+    };
 
     var Aud = function() {
       let bgm = document.getElementById('bgm');
@@ -219,6 +227,31 @@ TBD
       else {
         bgm.pause();
       }
+    };
+
+    var reverseTime = function() {
+      if (document.getElementById('reverseTime').checked) {
+        if (time == 1) {
+          document.body.style.backgroundImage = "url('/static/images/night.jpg')";
+          color = 'white';
+          // document.getElementById("title").src = '/static/images/ntitle.png'
+          // document.getElementsByClassName('button')
+        } else {
+          document.body.style.backgroundImage = "url('/static/images/day.jpg')";
+          // document.getElementById("title").src = '/static/images/title.png'
+          color = 'black';
+        }
+      } else {
+        if (time == 0) {
+          document.body.style.backgroundImage = "url('/static/images/night.jpg')";
+          color = 'white';
+          // document.getElementById("title").src = '/static/images/ntitle.png'
+        } else {
+          document.body.style.backgroundImage = "url('/static/images/day.jpg')";
+          // document.getElementById("title").src = '/static/images/title.png'
+          color = 'black';
+        }
+      };
     };
 
     var checkboxes = function() {
@@ -237,7 +270,7 @@ TBD
 
       if (container.children.length == 0) {
         let img = document.createElement('img');
-        img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+        img.src = "/static/sprites/" + color + "/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
         img.className = "piece center";
 
         container.appendChild(img);

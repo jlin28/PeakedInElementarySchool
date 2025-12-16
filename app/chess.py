@@ -62,11 +62,13 @@ def internal_to_display(r, c, perspective):
         return r, c
     return 7 - r, 7 - c
 
-    # return new_board
+def set_board(board):
+    global current_pos
+    current_pos = board
 
-# def set_board(board):
-#     global current_pos
-#     current_pos = board
+def get_internal_board():
+    global current_pos
+    return current_pos
 
 # must capture king to win game (no checkmates), stalemates still possible and draw if king vs king (+ knight/bishop)
 # color to move is used to check stalemate, white or black
@@ -112,6 +114,18 @@ def game_over(board, color_to_move = None):
 
     # Game is not over
     return (False, None)
+
+# Not game over, but checks if a king is in check and they have no legal moves
+def in_checkmate(board, color_to_move):
+    global en_passant
+    if not in_check(board, color_to_move):
+        return False, color_to_move
+    for r in range(len(board)):
+        for c in range(len(board[0])):
+            if get_color(board[r][c]) == color_to_move:
+                if legal_squares(board, r, c, en_passant):
+                    return False, color_to_move
+    return True, color_to_move
 
 def legal_squares(board, r, c, en_passant_state):
     piece = board[r][c]

@@ -10,8 +10,36 @@ import random
 
 #=============================MAKE=TABLES=============================#
 
+#films
+def add_film(data):
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS films (
+            id INTEGER PRIMARY KEY NOT NULL,
+            title TEXT NOT NULL,
+            genre TEXT NOT NULL,
+            plot TEXT NOT NULL,
+            director TEXT NOT NULL,
+            rating TEXT NOT NULL,
+            released TEXT NOT NULL
+        )"""
+    )
+
+    count = c.execute(f'SELECT COUNT(*) FROM films')
+    count = count.fetchone()[0]
+    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
+    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
+    c.execute(command, vars)
+
+    db.commit()
+    db.close()
+
+
 # questions
-def create_questions(count):
+def create_questions(count,cache):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
@@ -27,18 +55,37 @@ def create_questions(count):
             correct TEXT NOT NULL
         )"""
     )
-    db.commit()
-    db.close()
 
     types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
-    type = random.randint(len(types))
+    type = random.randint(0,len(types))
     type = "film"
     for i in range(count):
         if type == "film":
-            data = apiCall(type)
-            add_film(data)
-            #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
+            if cache == False:
+                data = apiCall(type)
+                add_film(data)
+            total = c.execute("SELECT COUNT(*) FROM films")
+            total = total.fetchone()[0] - 1
+            answers = []
+            if cache == False:
+                answers = [data['Director']]
+            while len(answers) < 4:
+                random_id = random.randint(0,total)
+                command = "SELECT director FROM films WHERE id = ?"
+                vars = (random_id,)
+                director = c.execute(command, vars).fetchone()[0]
+                if director != "N/A" and director not in answers:
+                    answers.append(director)
+            print(answers)
 
+
+            #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
+                if random_id not in tried_ids:
+                    tried_ids.append(tried_ids)
+    db.commit()
+    db.close()
+
+create_questions(1, True)
 # game
 def create_game_data():
 
@@ -59,7 +106,8 @@ def create_game_data():
     db.close()
 
 
-#=============================QUESTIONS=============================#
+#=============================QUESTIONS===========                if random_id not in tried_ids:
+                    tried_ids.append(tried_ids)==================#
 
 
 #return format: [[question], [answers], [correct], [image]]
@@ -71,7 +119,8 @@ def get_question(id):
 
     command = 'SELECT * FROM questions WHERE id = ?'
     vars = (id,)
-    data = c.execute(command, vars).fetchone()
+    data = c.execute(command, vars).fetchone()                if random_id not in tried_ids:
+                    tried_ids.append(tried_ids)
 
     question = []
     for item in data:
@@ -103,7 +152,7 @@ def get_random_question():
 
 #parameter format: question - string | answers - list of strings | correct - string | image - string
 #returns id of new question
-def make_question(question, answers, correct, image):
+def make_question(question, type, answers, correct, image):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
@@ -122,34 +171,6 @@ def make_question(question, answers, correct, image):
     db.close()
 
     return id
-
-#=============================API DATA=============================#
-
-def add_film(data):
-    DB_FILE="data.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS films (
-            id INTEGER PRIMARY KEY NOT NULL,
-            title TEXT NOT NULL,
-            genre TEXT NOT NULL,
-            plot TEXT NOT NULL,
-            director TEXT NOT NULL,
-            rating TEXT NOT NULL,
-            released TEXT NOT NULL
-        )"""
-    )
-
-    count = c.execute(f'SELECT COUNT(*) FROM films')
-    count = count.fetchone()[0]
-    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
-    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
-    c.execute(command, vars)
-
-    db.commit()
-    db.close()
 
 #=============================GAME=============================#
 

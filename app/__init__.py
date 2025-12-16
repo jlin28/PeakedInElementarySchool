@@ -135,6 +135,8 @@ def game(gamemode, difficulty):
             session['turns'] = session['turns'] + 1
             turn += 1
 
+            color = ''
+
             if turn % 2 == 0:
                 color = 'black'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
@@ -155,6 +157,22 @@ def game(gamemode, difficulty):
             set_board(newBoard)
 
             make_board_state(turn, get_display_board(newBoard, color))
+
+            if abs(get_board_state(turn-1)[int(positions[0][1])][gridlabel.index(positions[0][0])]) == 5:
+                return redirect(url_for('result', winner=color))
+
+            return get_board_state(turn)
+
+        if 'checkmate' in data:
+            session['turns'] = session['turns'] + 1
+            turn += 1
+
+            if turn % 2 == 0:
+                color = 'black'
+            else:
+                color = 'white'
+
+            make_board_state(turn, get_display_board(get_board_state(turn-1), color))
             return get_board_state(turn)
 
     return render_template('game.html',

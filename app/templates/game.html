@@ -121,6 +121,18 @@ TBD
       width: 50%;
       height: 100%;
     }
+
+    /* AUDIO */
+    #audio {
+      transform: scale(5);
+      display: none;
+      margin-top: 15px;
+      margin-left: 25px;
+    }
+
+    #audio:checked + label img {
+      content: url("/static/images/audio.png")
+    }
   </style>
 </head>
 
@@ -133,6 +145,15 @@ TBD
   <div id='curtainright'>
     <br>
   </div>
+
+  <!-- AUDIO -->
+  <audio loop id="bgm" src="/static/audio/gameBGM.mp3"> </audio>
+
+  <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
+  <label for="audio">
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+      src="/static/images/mute.png">
+  </label>
 
   <!-- BOARD -->
   <div class="container">
@@ -210,6 +231,27 @@ TBD
 
     var colors = ['black', 'white']
 
+    window.onload = function() {
+      document.getElementById('audio').checked = false;
+      if (turn > 1 && turn % 2 != 0) {
+        document.getElementById('main').style.transform = "translate(-50%, -50%)";
+        document.getElementById('main').src = "/static/images/board.png";
+      } else if (turn % 2 == 0) {
+        document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
+        document.getElementById('main').src = "/static/images/boardflip.png";
+      };
+    }
+
+    var Aud = function() {
+      let bgm = document.getElementById('bgm');
+      if (bgm.paused) {
+        bgm.play();
+      }
+      else {
+        bgm.pause();
+      }
+    };
+
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
           turn = turn + 1;
@@ -222,8 +264,10 @@ TBD
             resetBoard();
 
               if (turn > 1 && turn % 2 != 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50%)";
                 document.getElementById('main').src = "/static/images/board.png";
               } else if (turn % 2 == 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
                 document.getElementById('main').src = "/static/images/boardflip.png";
               };
             }, 1750
@@ -459,17 +503,27 @@ TBD
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', window.location.href, true);
       xhttp.send();
-      for (square of arr) {
-        if (square != '') {
-          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+      if (arr.length > 1) {
+        for (square of arr) {
+          if (square != '') {
+            document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
+          }
         }
+      } else {
+        let original = selected.className.split(' ')[2]
+        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
 
     var unhighlightLegalSquares = function(arr) {
       validMoves = null;
-      for (square of arr) {
-        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+      if (arr.length > 1) {
+        for (square of arr) {
+          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+        }
+      } else {
+        let original = selected.className.split(' ')[2]
+        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
   </script>

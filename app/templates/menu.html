@@ -59,7 +59,7 @@ TBD
       float: left;
     }
 
-    label, text {
+    label, text, p {
       font-size: 125%;
     }
 
@@ -163,10 +163,10 @@ TBD
             <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
             <label for="setting2"> setting2 </label>
           </div>
-          <br><br><br>
+          <br><br><br> <hr>
           <!-- RADIO TYPE SETTINGS -->
           <div>
-            <text> difficulty &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
+            <text> DIFFICULTY &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
             <input type="radio" class="btn-check" form="play" name="difficulty" id="easy" value="0" autocomplete="off" {{ dEasy }}>
             <label class="btn btn-outline-secondary" for="easy">easy</label>
             &nbsp&nbsp&nbsp
@@ -176,6 +176,16 @@ TBD
             <input type="radio" class="btn-check" form="play" name="difficulty" id="hard" value="2" autocomplete="off" {{ dHard }}>
             <label class="btn btn-outline-secondary" for="hard">hard</label>
           </div>
+          <hr>
+          <div>
+            <p> TRIVIA &nbsp&nbsp CATEGORIES </p>
+            {% for cat in categories %}
+              <input type="checkbox" class="btn-check" onclick="checkboxes()" form="play" name="{{ cat }}" id="{{ cat }}">
+              <label class="btn btn-outline-secondary" for="{{ cat }}">{{ cat }}</label>
+              &nbsp&nbsp&nbsp
+            {% endfor %}
+          </div>
+          <br>
         </div>
       </div>
     </div>
@@ -189,8 +199,16 @@ TBD
   <!-- PAGE-SPECIFIC JS -->
   <script>
     var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+    var categories = {{ categories|tojson }};
+    var selected = {{ selected|tojson }};
+
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      for (cat of categories) {
+        if (selected.length == 0 || selected.includes(cat)) {
+          document.getElementById(cat).checked = true;
+        }
+      }
     }
 
     var Aud = function() {
@@ -203,17 +221,30 @@ TBD
       }
     };
 
+    var checkboxes = function() {
+      oneCheck = false;
+      for (cat of categories) {
+        if (document.getElementById(cat).checked) {
+          oneCheck = true;
+          break;
+        }
+      };
+      if (!oneCheck) { document.getElementById("movies").checked = true};
+    }
+
     var spawnPiece = function() {
-      container = document.getElementById('anim');
+      let container = document.getElementById('anim');
 
-      let img = document.createElement('img');
-      img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
-      img.className = "piece center";
+      if (container.children.length == 0) {
+        let img = document.createElement('img');
+        img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+        img.className = "piece center";
 
-      container.appendChild(img);
-      img.addEventListener("animationend", function() {
-        container.removeChild(img);
-      });
+        container.appendChild(img);
+        img.addEventListener("animationend", function() {
+          container.removeChild(img);
+        })
+      };
     }
 
     setTimeout(spawnPiece, 3000);

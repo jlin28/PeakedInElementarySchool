@@ -134,10 +134,6 @@ def legal_squares(board, r, c, en_passant_state):
 
     piece_type = abs(piece)
     color = get_color(piece)
-    print('in chess.py:')
-    print(board)
-    print(piece_type)
-    print(color)
 
     if piece_type == 1:
         moves = rook_moves(board, r, c, color)
@@ -159,8 +155,6 @@ def legal_squares(board, r, c, en_passant_state):
         if not in_check(new_board, color):
             legal.append((nr, nc))
 
-    print('legal: ')
-    print(legal)
     return legal
 
 def get_color(piece):

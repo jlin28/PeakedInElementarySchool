@@ -59,7 +59,7 @@ TBD
       float: left;
     }
 
-    label, text {
+    label, text, p {
       font-size: 125%;
     }
 
@@ -166,7 +166,7 @@ TBD
           <br><br><br> <hr> <br>
           <!-- RADIO TYPE SETTINGS -->
           <div>
-            <text> difficulty &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
+            <text> DIFFICULTY &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
             <input type="radio" class="btn-check" form="play" name="difficulty" id="easy" value="0" autocomplete="off" {{ dEasy }}>
             <label class="btn btn-outline-secondary" for="easy">easy</label>
             &nbsp&nbsp&nbsp
@@ -178,7 +178,11 @@ TBD
           </div>
           <br> <hr> <br>
           <div>
-            <!-- inputs here -->
+            <p> TRIVIA &nbsp&nbsp CATEGORIES </p>
+            {% for cat in categories %}
+              <input type="checkbox" class="btn-check" onclick="checkboxes()" form="play" name="{{ cat }}" id="{{ cat }}">
+              <label class="btn btn-outline-secondary" for="{{ cat }}">{{ cat }}</label>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -193,8 +197,16 @@ TBD
   <!-- PAGE-SPECIFIC JS -->
   <script>
     var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+    var categories = {{ categories|tojson }};
+    var selected = {{ selected|tojson }};
+
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      for (cat of categories) {
+        if (selected.length == 0 || selected.includes(cat)) {
+          document.getElementById(cat).checked = true;
+        }
+      }
     }
 
     var Aud = function() {
@@ -206,6 +218,17 @@ TBD
         bgm.pause();
       }
     };
+
+    var checkboxes = function() {
+      oneCheck = false;
+      for (cat of categories) {
+        if (document.getElementById(cat).checked) {
+          oneCheck = true;
+          break;
+        }
+      };
+      if (!oneCheck) { document.getElementById("movies").checked = true};
+    }
 
     var spawnPiece = function() {
       container = document.getElementById('anim');

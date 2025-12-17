@@ -70,7 +70,7 @@ def getFilm(count):
         raw_data = response.read()
 
     data = json.loads(raw_data)
-    print(data)
+    #print(data)
     if 'imdbVotes' not in data: #some ids don't work, so retry
         return getFilm(count+1)
     rating = data['imdbVotes']
@@ -138,4 +138,4 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-print(apiCall("film"))
+#print(apiCall("film"))

@@ -61,14 +61,25 @@ def create_questions(count,cache):
     type = "film"
     for i in range(count):
         if type == "film":
-            if cache == False:
-                data = apiCall(type)
-                add_film(data)
             total = c.execute("SELECT COUNT(*) FROM films")
             total = total.fetchone()[0] - 1
             answers = []
-            if cache == False:
-                answers = [data['Director']]
+            while len(answers) < 1:
+                if cache == False:
+                    data = apiCall(type)
+                    add_film(data)
+                    if (data['Director'] != "N/A"):
+                        title = data['Title']
+                        answers.append(data['Director'])
+                else:
+                    random_id = random.randint(0,total)
+                    command = ("SELECT * FROM films WHERE id = ?")
+                    vars = (random_id,)
+                    row = c.execute(command, vars).fetchone()
+                    title = row[1]
+                    director = row[4]
+                    if director != "N/A":
+                        answers.append(director)
             while len(answers) < 4:
                 random_id = random.randint(0,total)
                 command = "SELECT director FROM films WHERE id = ?"
@@ -79,13 +90,10 @@ def create_questions(count,cache):
                 print(answers)
 
                 #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
-                # TRIED IDS NOT YET DEFINED
-                # if random_id not in tried_ids:
-                #     tried_ids.append(tried_ids)
     db.commit()
     db.close()
 
-create_questions(1, True)
+create_questions(1, False)
 # game
 def create_game_data():
 

@@ -39,26 +39,27 @@ TBD
         width: 65vw;
 
         border-radius: 25px;
-        border-style: solid;
-        border-width: medium;
-        border-color: black;
 
-        background-color: white;
+        background-color: rgba(255,255,255,0.5);
       }
 
       /* BUTTONS */
       button {
         font-family: font;
-        font-size: 135%;
+        font-size: 145%;
         background: none;
+
+        width:35%;
 
         border-style: solid;
         border-width: medium;
         border-color: black;
+
+        transform: scale(130%);
       }
 
       button:hover:not(.btn-close, #audio) {
-        transform: scale(110%);
+        transform: scale(140%);
       }
     </style>
   </head>
@@ -69,12 +70,16 @@ TBD
     <div style="margin-top:10vh;" id='main' class="container">
       <!-- WINNER WINS TEXT HERE AS WELL AS BUTTON TO GO BACK TO MENU -->
       <div id='title' class='container'>
-        <p class='center' style='font-size:300%;margin-left:34%;'> {{ winner }} &nbsp&nbsp WINS </p>
+        <p class='center' style='font-size:400%;margin-left:32%;'> {{ winner }} &nbsp&nbsp WINS </p>
       </div>
-
+      <hr style="border-width:medium;margin-top:-2%;width:60%;" class='center'>
       <div style="margin-top:-50px; width:50%" class="container">
-        <button type="submit" form="play" name="restart" value="restart" class="center" style="margin-top:18% ;width:35%"> MENU </button>
-        <button type="submit" form="play" name="replay" value="replay" class="center" style="margin-top: 5%;width:35%"> REPLAY </button>
+        <button type="submit" form="play" name="restart" value="restart" class="center" style="margin-top:18%;">
+                MENU
+        </button>
+        <button type="submit" form="play" name="replay" value="replay" class="center" style="margin-top: 8%;">
+          REPLAY
+        </button>
       </div>
     </div>
 

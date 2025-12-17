@@ -155,7 +155,7 @@ TBD
         </div>
         <div class="modal-body">
           <!-- CHECKBOX TYPE SETTINGS -->
-          <div class="form-check-reverse form-switch">
+          <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ placeholder1 }}>
             <label for="setting1"> setting1 </label>
             <br>
@@ -164,9 +164,8 @@ TBD
             <br>
             <input class="form-check-input" type="checkbox" onclick="location.reload()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
             <label for="reverseTime"> reversed &nbsp&nbsp time </label>
-            <br>
           </div>
-          <br><br><br> <hr>
+          <hr>
           <!-- RADIO TYPE SETTINGS -->
           <div>
             <text> DIFFICULTY &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
@@ -238,15 +237,19 @@ TBD
           color = 'white';
 
           document.getElementById("title").src = '/static/images/ntitle.png';
-          buttons.style.borderColor = 'white';
-          buttons.style.color = 'white';
+          for (button of buttons) {
+            button.style.borderColor = 'white';
+            button.style.color = 'white';
+          }
         } else {
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
           document.getElementById("title").src = '/static/images/title.png'
-          buttons.style.borderColor = 'black';
-          buttons.style.color = 'black';
+          for (button of buttons) {
+            button.style.borderColor = 'black';
+            button.style.color = 'black';
+          }
         }
       } else {
         if (time == 0) {
@@ -254,15 +257,19 @@ TBD
           color = 'white';
 
           document.getElementById("title").src = '/static/images/ntitle.png'
-          buttons.style.borderColor = 'white';
-          buttons.style.color = 'white';
+          for (button of buttons) {
+            button.style.borderColor = 'white';
+            button.style.color = 'white';
+          }
         } else {
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
           document.getElementById("title").src = '/static/images/title.png'
-          buttons.style.borderColor = 'black';
-          buttons.style.color = 'black';
+          for (button of buttons) {
+            button.style.borderColor = 'black';
+            button.style.color = 'black';
+          }
         }
       };
     };

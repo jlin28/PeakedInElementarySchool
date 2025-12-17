@@ -75,7 +75,7 @@ def menu():
 
         if 'singleplayer' in data:
             reset_board()
-            create_questions()
+            # create_questions()
             create_game_data()
 
             session['turns'] = 1
@@ -92,7 +92,7 @@ def menu():
 
         if 'multiplayer' in data:
             reset_board()
-            create_questions()
+            # create_questions()
             create_game_data()
 
             session['turns'] = 1

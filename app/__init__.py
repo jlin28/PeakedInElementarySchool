@@ -98,7 +98,7 @@ def menu():
             session['turns'] = 1
             add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
                              [-6,-6,-6,-6,-6,-6,-6,-6],
-                             [0,0,0,0,0,0,0,0],
+                             [0 ,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
@@ -178,24 +178,20 @@ def game(gamemode, difficulty):
 
 @app.route('/result/<string:winner>', methods=['GET', 'POST'])
 def result(winner):
-
-    turn = 0
+    turn = 1
 
     if request.method == 'POST':
-        data = request.form
+        data = request.headers
 
         if 'next_board' in data:
             turn += 1
-
             return get_board_state(turn)
 
         if 'previous_board' in data:
             turn -= 1
-
             return get_board_state(turn)
 
-        if 'play' in data:
-
+        if 'restart' in request.form:
             return redirect(url_for('menu'))
 
     return render_template('result.html',

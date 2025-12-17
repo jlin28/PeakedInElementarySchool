@@ -138,4 +138,4 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-print(apiCall("film"))
+# print(apiCall("film"))

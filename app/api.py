@@ -110,7 +110,7 @@ def getThesaurus():
 
     data = json.loads(raw_data)
 
-    return data
+    return data[0]
 
 def getHero():
     ID = random.randint(0,732)
@@ -138,4 +138,4 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-#print(apiCall("film"))
+print(apiCall("film"))

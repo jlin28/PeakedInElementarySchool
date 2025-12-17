@@ -21,6 +21,7 @@ SUPERHERO_KEY = ""
 THESAURUS_KEY = ""
 RICK_AND_MORTY_URL = "https://rickandmortyapi.com/api"
 COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
+CHESS_ENGINE_URL = "https://chess-api.com/v1"
 
 #gives a random set of data for specific api
 def apiCall(api):
@@ -134,6 +135,15 @@ def getCountry():
     #print(random_country)
     COUNTRY_URL = f"https://restcountries.com/v3.1/name/{random_country}"
     with urllib.request.urlopen(COUNTRY_URL) as response:
+        raw_data = response.read()
+    data = json.loads(raw_data)
+    return data
+
+# insert an FEN position
+def getNextMove(moves):
+    FEN = json.dumps(moves)
+    CHESS_ENGINE_URL = f"https://chess-api.com/v1/{FEN}"
+    with urllib.request.urlopen(CHESS_ENGINE_URL) as response:
         raw_data = response.read()
     data = json.loads(raw_data)
     return data

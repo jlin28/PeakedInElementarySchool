@@ -182,7 +182,7 @@ def result(winner):
     turn = 0
 
     if request.method == 'POST':
-        data = request.headers
+        data = request.form
 
         if 'next_board' in data:
             turn += 1

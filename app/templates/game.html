@@ -189,11 +189,14 @@ TBD
                 <img class="center black piece {{ pieces[COL|abs - 1] }}"
                       src="/static/sprites/black/{{ pieces[COL|abs - 1] }}/idle.png"
                       alt="{{ pieces[COL|abs - 1] }}">
+                {% if color == "black" AND COL == -5 }
+
               {% elif COL > 0 %}
                 <img class="center white piece {{ pieces[COL|abs - 1] }}"
                       src="/static/sprites/white/{{ pieces[COL - 1] }}/idle.png"
                       alt="{{ pieces[COL - 1]}}">
               {% endif %}
+              {}
             </div>
           {% endfor %}
         </div>
@@ -225,6 +228,7 @@ TBD
   <script>
     var selected = null;
     var validMoves = null;
+    var inCheck = null;
     var moving = false;
     var newBoard = null;
     var turn = {{ turn }};
@@ -240,6 +244,19 @@ TBD
         document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
         document.getElementById('main').src = "/static/images/boardflip.png";
       };
+
+      let xhttp = new XMLHttpRequest();
+      xhttp.open('POST', window.location.href, true);
+      xhttp.setRequestHeader("check");
+      xhttp.send();
+
+      // checks if xhttp request is done and there were no errors (200 -- ok request) !!
+      xhttp.onload = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          inCheck = this.response.split(',');
+        }
+        highlightKing(inCheck);
+      }
     }
 
     var Aud = function() {
@@ -298,6 +315,7 @@ TBD
 
           moving = true;
           unhighlightLegalSquares(validMoves);
+          unhighlightKing(inCheck);
 
           let board = document.getElementById('buttons');
           let square = document.getElementsByClassName(position)[1];
@@ -524,6 +542,18 @@ TBD
       } else {
         let original = selected.className.split(' ')[2]
         document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
+      }
+    }
+
+    var highlightKing = function(square) {
+      if (square != null) {
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
+      }
+    }
+
+    var unhighlightKing = function(square) {
+      if (square != null) {
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
   </script>

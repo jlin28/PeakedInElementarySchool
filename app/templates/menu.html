@@ -44,7 +44,6 @@ TBD
     /* BACKGROUND */
     body {
       /* will hopefully be able to make the bg change based upon whether it is day or night real time */
-      background-image: url('/static/images/day.jpg');
       background-repeat: no-repeat;
       background-size: 100vw 100vh;
     }
@@ -127,16 +126,16 @@ TBD
   <!-- MAIN CONTENT OF PAGE-->
   <div style="margin-top:5vh;" class="container">
     <div class="container">
-      <image src="/static/images/title.png" class="center">
+      <image src="/static/images/title.png" id="title" class="center">
     </div>
     <div style="margin-top:-50px; width:50%" class="container">
-      <button type="submit" form="play" name="singleplayer" value="singleplayer" class="center" style="width:35%"> SINGLEPLAYER </button>
+      <button type="submit" form="play" name="singleplayer" value="singleplayer" class="main center" style="width:35%"> SINGLEPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button type="submit" form="play" name="multiplayer" value="multiplayer" class="center" style="width:35%"> MULTIPLAYER </button>
+      <button type="submit" form="play" name="multiplayer" value="multiplayer" class="main center" style="width:35%"> MULTIPLAYER </button>
     </div>
     <div style="margin-top:20px; width:50%" class="container">
-      <button type="button" class="center options" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
+      <button type="button" class="main center options" style="width:35%" data-bs-toggle="modal" data-bs-target="#settings">
         SETTINGS
       </button>
     </div>
@@ -156,14 +155,17 @@ TBD
         </div>
         <div class="modal-body">
           <!-- CHECKBOX TYPE SETTINGS -->
-          <div class="form-check-reverse form-switch">
+          <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ placeholder1 }}>
             <label for="setting1"> setting1 </label>
             <br>
             <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
             <label for="setting2"> setting2 </label>
+            <br>
+            <input class="form-check-input" type="checkbox" onclick="location.reload()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
+            <label for="reverseTime"> reversed &nbsp&nbsp time </label>
           </div>
-          <br><br><br> <hr>
+          <hr>
           <!-- RADIO TYPE SETTINGS -->
           <div>
             <text> DIFFICULTY &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </text>
@@ -201,15 +203,21 @@ TBD
     var pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
     var categories = {{ categories|tojson }};
     var selected = {{ selected|tojson }};
+    var time = {{ time }};
+    var alreadyReversed = "{{ reverseStatus }}";
+    var color;
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+
+      reverseTime();
+
       for (cat of categories) {
         if (selected.length == 0 || selected.includes(cat)) {
           document.getElementById(cat).checked = true;
         }
-      }
-    }
+      };
+    };
 
     var Aud = function() {
       let bgm = document.getElementById('bgm');
@@ -219,6 +227,51 @@ TBD
       else {
         bgm.pause();
       }
+    };
+
+    var reverseTime = function() {
+      let buttons = document.getElementsByClassName('main')
+      if (document.getElementById('reverseTime').checked) {
+        if (time == 1) {
+          document.body.style.backgroundImage = "url('/static/images/night.jpg')";
+          color = 'white';
+
+          document.getElementById("title").src = '/static/images/ntitle.png';
+          for (button of buttons) {
+            button.style.borderColor = 'white';
+            button.style.color = 'white';
+          }
+        } else {
+          document.body.style.backgroundImage = "url('/static/images/day.jpg')";
+          color = 'black';
+
+          document.getElementById("title").src = '/static/images/title.png'
+          for (button of buttons) {
+            button.style.borderColor = 'black';
+            button.style.color = 'black';
+          }
+        }
+      } else {
+        if (time == 0) {
+          document.body.style.backgroundImage = "url('/static/images/night.jpg')";
+          color = 'white';
+
+          document.getElementById("title").src = '/static/images/ntitle.png'
+          for (button of buttons) {
+            button.style.borderColor = 'white';
+            button.style.color = 'white';
+          }
+        } else {
+          document.body.style.backgroundImage = "url('/static/images/day.jpg')";
+          color = 'black';
+
+          document.getElementById("title").src = '/static/images/title.png'
+          for (button of buttons) {
+            button.style.borderColor = 'black';
+            button.style.color = 'black';
+          }
+        }
+      };
     };
 
     var checkboxes = function() {
@@ -237,7 +290,7 @@ TBD
 
       if (container.children.length == 0) {
         let img = document.createElement('img');
-        img.src = "/static/sprites/black/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
+        img.src = "/static/sprites/" + color + "/" + pieces[Math.floor(Math.random() * pieces.length)] + '/walk.gif';
         img.className = "piece center";
 
         container.appendChild(img);

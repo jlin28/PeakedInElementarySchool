@@ -356,3 +356,14 @@ DATETIME
 * ERRORS/BUGS:
     - For some reason there seems to be errors when trying to run the main python file
       - may be because I'm running it on my laptop???
+
+zixiQ -- 2025-12-17 11:18
+CHESS ENGINE
+*NEW CHANGES:
+    - Created getNextMove() function to call chess api
+    - Fixed merge conflict errors to pull request trivia overlay changes yesterday
+
+seanZ -- 2025-12-17 11:18
+    QUESTIONS
+    * NEW CHANGES:
+        - questions about directors basically done

@@ -319,3 +319,40 @@ ANIMATIONS AND SETTINGS
     - Made it so that settings are added to session
     - Added a trivia categories section to settings
     - fixed menu screen repeat spawnPiece call issue
+
+zixiQ -- 2025-12-15 23:11
+CHESS LOGIC AND TRIVIA
+* NEW CHANGES:
+    - Fixed in_checkmate() function
+    - Implementing pop up for trivia in chess
+
+seanZ -- 2025-12-16 11:42
+QUESTIONS
+* NEW CHANGES:
+    - Worked on questions for films(the toughest one)
+
+zixiQ -- 2025-12-16 11:45
+TRIVIA OVERLAY
+* NEW CHANGES:
+    - Implementing trivia pop up when a move is selected
+    - Tested and background shows
+
+joyceL -- 2025-12-16 12:34
+DATETIME
+* NEW CHANGES:
+    - Figuring out datetime library and adding it as an accessible variable
+    - setting up a reverse time setting
+
+zixiQ -- 2025-12-16 22:36
+TRIVIA OVERLAY
+* NEW CHANGES:
+    - Implemented trivia pop up with placeholder for questions
+
+joyceL -- 2025-12-17 1:18
+DATETIME
+* NEW CHANGES:
+    - Added prelim changes to inversed time setting (untested)
+    - Beginning result page and created graphics as well as template
+* ERRORS/BUGS:
+    - For some reason there seems to be errors when trying to run the main python file
+      - may be because I'm running it on my laptop???

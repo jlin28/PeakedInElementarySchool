@@ -1,7 +1,6 @@
 import urllib.request
 import json
 from pprint import pprint
-from db import add_film
 import random
 
 #setup
@@ -33,8 +32,6 @@ def apiCall(api):
         with open("keys/key_OMDb.txt", "r") as f:
             OMDB_KEY = f.read().strip()
         data = getFilm(1)
-        add_film(data)
-        print("                  ")
         return data
     if api == "spanish":
         with open("keys/key_spanish_english.txt", "r") as f:
@@ -65,7 +62,7 @@ def getFilm(count):
         num = random.randint(0, 9)
         ID = ID + str(num)
     if ID == "0000000":
-        return getFilm()
+        return getFilm(count+1)
     ID = "tt" + ID
     #ID = "tt0062873" #for manually slapping in ilms
     OMDB_URL = f"https://www.omdbapi.com/?i={ID}&apikey={OMDB_KEY}"
@@ -87,8 +84,8 @@ def getFilm(count):
             raw_data = response.read()
 
         data = json.loads(raw_data)
-        print(data)
-    print(str(count) + " searched")
+        #print(data)
+    #print(str(count) + " searched")
     return data
 
 def getSpanish():
@@ -113,7 +110,7 @@ def getThesaurus():
 
     data = json.loads(raw_data)
 
-    return data
+    return data[0]
 
 def getHero():
     ID = random.randint(0,732)
@@ -141,4 +138,4 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-print(apiCall("country"))
+print(apiCall("film"))

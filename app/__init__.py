@@ -6,7 +6,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
-from datetime import time
+import time
 from db import *
 from chess import *
 from pprint import pprint
@@ -17,6 +17,11 @@ app.secret_key = 'help'
 
 @app.route('/', methods=['GET', 'POST'])
 def menu():
+    # SETTING TIME
+    curHour = time.localtime()[3]
+    if curHour >= 18: curTime = 0
+    else: curTime = 1
+
     # ALL POSSIBLE QUESTION TYPES
     question_categories = ['movies', 'countries', 'spanish', 'superheroes']
     difficulty_types = ['easy', 'medium', 'hard']
@@ -25,10 +30,11 @@ def menu():
     difficulties = ['checked', '', '']
     setting1=''
     setting2=''
+    reverseStatus = ''
     selected_categories = []
 
     # CHECKS FOR PREVIOUS SETTINGS
-    if len(session) > 1:
+    if 'categories' in session:
         if 'difficulty' in session:
             difficulties[0] = ''
             difficulties[difficulty_types.index(session['difficulty'])] = 'checked'
@@ -38,6 +44,9 @@ def menu():
 
         if 'setting2' in session:
             setting2 = 'checked'
+
+        if 'reverseTime' in session:
+            reverseStatus = 'checked'
 
         selected_categories = session['categories'].copy()
 
@@ -56,6 +65,9 @@ def menu():
         if 'setting2' in data:
             session['setting2'] = 'checked'
 
+        if 'reverseTime' in data:
+            session['reverseTime'] = 'checked'
+
         for cat in question_categories:
             if cat in data:
                 selected_categories.append(cat)
@@ -63,7 +75,7 @@ def menu():
 
         if 'singleplayer' in data:
             reset_board()
-            create_questions()
+            # create_questions()
             create_game_data()
 
             session['turns'] = 1
@@ -80,7 +92,7 @@ def menu():
 
         if 'multiplayer' in data:
             reset_board()
-            create_questions()
+            # create_questions()
             create_game_data()
 
             session['turns'] = 1
@@ -96,6 +108,8 @@ def menu():
             return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
 
     return render_template('menu.html',
+                            time = curTime,
+                            reverseStatus = reverseStatus,
                             dEasy = difficulties[0],
                             dMed = difficulties[1],
                             dHard = difficulties[2],
@@ -171,7 +185,7 @@ def result(winner):
     turn = 0
 
     if request.method == 'POST':
-        data = request.headers
+        data = request.form
 
         if 'next_board' in data:
             turn += 1
@@ -191,21 +205,6 @@ def result(winner):
                             winner = winner,
                             board = get_board_state(turn)
                         )
-
-@app.route('/test', methods=['GET', 'POST'])
-def testError():
-
-    ######### FOR ERROR HANDLING TESTING PURPOSES ####################
-    try:
-        data = apiCall("film")
-        return data
-    except Exception as e:
-        print(f"An unexpected error occured: {e}")
-        return redirect('/error')
-
-    ##################################################################
-
-    return render_template('game.html')
 
 @app.route('/error')
 def error_page():

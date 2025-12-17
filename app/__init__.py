@@ -203,21 +203,6 @@ def result(winner):
                             board = get_board_state(turn)
                         )
 
-@app.route('/test', methods=['GET', 'POST'])
-def testError():
-
-    ######### FOR ERROR HANDLING TESTING PURPOSES ####################
-    try:
-        data = apiCall("film")
-        return data
-    except Exception as e:
-        print(f"An unexpected error occured: {e}")
-        return redirect('/error')
-
-    ##################################################################
-
-    return render_template('game.html')
-
 @app.route('/error')
 def error_page():
     #just to initialize the error handling part (we can polish it up later)

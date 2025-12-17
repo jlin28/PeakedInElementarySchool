@@ -336,3 +336,8 @@ TRIVIA OVERLAY
 * NEW CHANGES:
     - Implementing trivia pop up when a move is selected
     - Tested and background shows
+
+zixiQ -- 2025-12-16 22:36
+TRIVIA OVERLAY
+* NEW CHANGES:
+    - Implemented trivia pop up with placeholder for questions

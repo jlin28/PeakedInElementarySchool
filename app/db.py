@@ -76,12 +76,12 @@ def create_questions(count,cache):
                 director = c.execute(command, vars).fetchone()[0]
                 if director != "N/A" and director not in answers:
                     answers.append(director)
-            print(answers)
+                print(answers)
 
-
-            #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
-                if random_id not in tried_ids:
-                    tried_ids.append(tried_ids)
+                #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
+                # TRIED IDS NOT YET DEFINED
+                # if random_id not in tried_ids:
+                #     tried_ids.append(tried_ids)
     db.commit()
     db.close()
 
@@ -106,8 +106,7 @@ def create_game_data():
     db.close()
 
 
-#=============================QUESTIONS===========                if random_id not in tried_ids:
-                    tried_ids.append(tried_ids)==================#
+#=============================QUESTIONS=============================#
 
 
 #return format: [[question], [answers], [correct], [image]]
@@ -119,8 +118,7 @@ def get_question(id):
 
     command = 'SELECT * FROM questions WHERE id = ?'
     vars = (id,)
-    data = c.execute(command, vars).fetchone()                if random_id not in tried_ids:
-                    tried_ids.append(tried_ids)
+    data = c.execute(command, vars).fetchone()
 
     question = []
     for item in data:

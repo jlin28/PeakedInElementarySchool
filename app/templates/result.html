@@ -77,7 +77,8 @@ TBD
         <button type="submit" form="play" name="restart" value="restart" class="center" style="margin-top:18%;">
                 MENU
         </button>
-        <button type="submit" form="play" name="replay" value="replay" class="center" style="margin-top: 8%;">
+        <!-- replay button is modal -->
+        <button type="button" form="play" class="center" style="margin-top: 8%;">
           REPLAY
         </button>
       </div>
@@ -92,6 +93,7 @@ TBD
     <script>
       var winner = "{{ winner }}";
       console.log(winner);
+
       window.onload = function() {
         console.log('run');
         if (winner == 'white') {
@@ -99,6 +101,11 @@ TBD
         } else {
           document.body.style.backgroundImage = "url('/static/images/blackWin.jpg')";
         }
+      };
+
+      var move = function() {
+        /* prev */
+        /* next */
       };
     </script>
   </body>

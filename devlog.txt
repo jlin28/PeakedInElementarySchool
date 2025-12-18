@@ -431,7 +431,7 @@ PIECE HIGHLIGHTING
     - added request handling to check for king being in check
 
 joyceL -- 2025-12-17 23:02
-DATETIME
+TRIVIA AND RESULT
 * NEW CHANGES:
     - made a prelim replay system
     - implemented a timer
@@ -443,3 +443,8 @@ QUESTIONS
 * NEW CHANGES:
     - create_questions() in db.py done
     - cached 200 questions in data.db
+
+seanZ -- 2025-12-18 11:16
+QUESTIONS
+* NEW CHANGES:
+    - get_question and get_random_question functions done 

@@ -92,13 +92,13 @@ def make_question(question, type, answers, correct, image):
 def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
-    c = db.cursor()    
+    c = db.cursor()
     types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
     if  Dtype != None:
         type = Dtype
     answers = []
-    img = None 
-    correct = "e" 
+    img = None
+    correct = "e"
     question = "bruh"
     for i in range(count):
         if Dtype == None:
@@ -262,7 +262,7 @@ def create_game_data():
     db.commit()
     db.close()
 
-#return format: [[question], [answers], [correct], [image]]
+#return format: [[id], [type], [image], [question], [answers], [correct]]
 def get_question(id):
 
     DB_FILE="data.db"
@@ -277,29 +277,28 @@ def get_question(id):
     for item in data:
         question += [[item]]
 
-    question[1] = question[1][0].split("%SPLIT%")
+    question[4] = question[4][0].split("%SPLIT%")
 
     db.commit()
     db.close()
 
     return question
 
-
-#return format: [[question], [answers], [correct], [image]]
+#return format: [[id], [type], [image], [question], [answers], [correct]]
 def get_random_question():
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    count = c.execute(f'SELECT COUNT(id) FROM questions')
-    id = randint(1, count)
+    count = c.execute(f'SELECT COUNT(id) FROM questions').fetchone()[0]
+    id = random.randint(1, count - 1)
 
     db.commit()
     db.close()
 
     return get_question(id)
-
+print(get_random_question())
 #=============================GAME=============================#
 
 

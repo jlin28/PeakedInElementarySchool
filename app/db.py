@@ -7,11 +7,11 @@
 import sqlite3
 from api import apiCall
 import random
+from pprint import pprint
 
 #=============================MAKE=TABLES=============================#
 
-#films
-def add_film(data):
+def make_tables():
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
@@ -27,24 +27,7 @@ def add_film(data):
             released TEXT NOT NULL
         )"""
     )
-
-    count = c.execute(f'SELECT COUNT(*) FROM films')
-    count = count.fetchone()[0]
-    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
-    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
-    c.execute(command, vars)
-
-    db.commit()
-    db.close()
-
-
-# questions
-def create_questions(count,cache):
-
-    DB_FILE="data.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-    #c.execute("DROP TABLE questions")
+    #c.execute("DROP TABLE questions") #if any issues with questions
     c.execute("""
         CREATE TABLE IF NOT EXISTS questions (
             id INTEGER PRIMARY KEY NOT NULL,
@@ -55,22 +38,82 @@ def create_questions(count,cache):
             correct TEXT NOT NULL
         )"""
     )
+    db.commit()
+    db.close()
+make_tables() #for remaking tables
+#=============================QUESTIONS=============================#
 
+#films
+def add_film(data):
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    count = c.execute(f'SELECT COUNT(*) FROM films')
+    count = count.fetchone()[0]
+    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
+    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
+    c.execute(command, vars)
+
+    db.commit()
+    db.close()
+
+def jumble_answers(answers):
+    result = []
+    while len(answers) > 0:
+        id = random.randint(0, len(answers) - 1)
+        result.append(answers[id])
+        answers.pop(id)
+    return result
+
+#parameter format: question - string | type - string | answers - list of strings | correct - string | image - string
+#returns id of new question
+def make_question(question, type, answers, correct, image):
+
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+
+    id = c.execute(f'SELECT COUNT(id) FROM questions').fetchone()[0]
+    #print(id)
+
+    answers_str = '%SPLIT%'.join(answers)
+    #print(answers_str)
+
+    command = 'INSERT INTO questions VALUES (?, ?, ?, ?, ?, ?)'
+    vars = (id, type, image, question, answers_str, correct)
+    c.execute(command, vars)
+
+    db.commit()
+    db.close()
+
+    return id
+
+def create_questions(count,cache, Dtype):
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()    
     types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
-    type = random.randint(0,len(types))
-    type = "film"
+    if  Dtype != None:
+        type = Dtype
+    answers = []
+    img = None 
+    correct = "e" 
+    question = "bruh"
     for i in range(count):
+        if Dtype == None:
+            type = types[random.randint(0,len(types) - 1)]
         if type == "film":
+            DorP = random.randint(0,1) #0 for director and 1 for plot question
             total = c.execute("SELECT COUNT(*) FROM films")
             total = total.fetchone()[0] - 1
-            answers = []
             while len(answers) < 1:
                 if cache == False:
                     data = apiCall(type)
                     add_film(data)
-                    if (data['Director'] != "N/A"):
-                        title = data['Title']
-                        answers.append(data['Director'])
+                    title = data['Title']
+                    director = data['Director']
+                    plot = data['Plot']
                 else:
                     random_id = random.randint(0,total)
                     command = ("SELECT * FROM films WHERE id = ?")
@@ -78,22 +121,127 @@ def create_questions(count,cache):
                     row = c.execute(command, vars).fetchone()
                     title = row[1]
                     director = row[4]
-                    if director != "N/A":
-                        answers.append(director)
+                    plot = row[3]
+                if DorP == 0 and director != "N/A":
+                    answers.append(director)
+                if DorP == 1:
+                    answers.append(plot)
             while len(answers) < 4:
                 random_id = random.randint(0,total)
-                command = "SELECT director FROM films WHERE id = ?"
+                if DorP == 0:
+                    command = "SELECT director FROM films WHERE id = ?"
+                if DorP == 1:
+                    command = "SELECT plot FROM films WHERE id = ?"
                 vars = (random_id,)
-                director = c.execute(command, vars).fetchone()[0]
-                if director != "N/A" and director not in answers:
-                    answers.append(director)
-                print(answers)
+                grabbed = c.execute(command, vars).fetchone()[0]
+                if DorP == 0 and grabbed != "N/A" and grabbed not in answers:
+                    answers.append(grabbed)
+                if DorP == 1 and grabbed not in answers:
+                    answers.append(grabbed)
+            #print(answers)
+            if DorP == 0:
+                question = f"Who is the Director of {title}?"
+                correct = director
+            if DorP == 1:
+                question = f"What is the Plot of {title}?"
+                correct = plot
+            img = None
 
-                #make_question(f"Who directed {data['Title']}?", answers, data['Director'], null)
+        if type == "spanish":
+            while len(answers) < 1:
+                data = apiCall("spanish")
+                if len(data['shortdef']) > 0:
+                    word = data['meta']['stems'][0]
+                    correct = data['shortdef'][0]
+                    if ':' in correct:
+                        correct = correct.split(':')[1].strip()
+                    if ',' in correct:
+                        correct = correct.split(',')[0]
+                    if '(' in correct:
+                        correct = correct.split('(')[0]
+                    answers.append(correct)
+            while len(answers) < 4:
+                data = apiCall("spanish")
+                #pprint(data)
+                if len(data['shortdef']) > 0:
+                    sdef = data['shortdef'][0]
+                    if ':' in sdef:
+                        sdef = sdef.split(':')[1].strip()
+                    if ',' in sdef:
+                        sdef = sdef.split(',')[0]
+                    if '(' in sdef:
+                        sdef = sdef.split('(')[0]
+                    if sdef not in answers:
+                        answers.append(sdef)
+            question = f"What is the Spanish Translation of {word}?"
+            img = None
+
+        if type == "superhero":
+            data = apiCall("superhero")
+            correct = data['name']
+            img = data['image']['url']
+            answers.append(correct)
+            while len(answers) < 4:
+                data = apiCall("superhero")
+                if data['name'] not in answers:
+                    answers.append(data['name'])
+            question = "Who is this superhero?"
+
+        if type == "thesaurus":
+            while len(answers) < 1:
+                data = apiCall("thesaurus")
+                if isinstance(data, dict):
+                    word = data['meta']['id']
+                    syns = data['meta']['syns'][0]
+                    if len(syns) > 0:
+                        correct = data['meta']['syns'][0][random.randint(0, len(syns) - 1)]
+                        answers.append(correct)
+            while len(answers) < 4:
+                data = apiCall("thesaurus")
+                if isinstance(data, dict):
+                    syns = data['meta']['syns'][0]
+                    synonym = data['meta']['syns'][0][random.randint(0, len(syns) - 1)]
+                    if len(syns) > 0 and synonym not in answers:
+                        answers.append(synonym)
+            img = None
+            question = f"Which of the following is a synonym for {word}?"
+
+        if type == "rick":
+            data = apiCall("rick")
+            #pprint(data)
+            correct = data['name']
+            img = data['image']
+            answers.append(correct)
+            while len(answers) < 4:
+                data = apiCall("rick")
+                if data['name'] not in answers:
+                    answers.append(data['name'])
+            question = "Who is this character from Rick and Morty?"
+
+        if type == "country":
+            CorF = random.randint(0,1) #0 for capital and 1 for flag question
+            data = apiCall("country")[0]
+            img = data['flags']['png']
+            name = data['name']['common']
+            if CorF == 0:
+                correct = data['capital'][0]
+                question = f"What is the capital of {name}?"
+            if CorF == 1:
+                correct = name
+                question = f"What country is this?"
+            answers.append(correct)
+            while len(answers) < 4:
+                data = apiCall("country")[0]
+                if CorF == 0 and data['capital'][0] not in answers:
+                    answers.append(data['capital'][0])
+                if CorF == 1 and data['name']['common'] not in answers:
+                    answers.append(data['name']['common'])
+
+        make_question(question, type, jumble_answers(answers), correct, img)
     db.commit()
     db.close()
 
-create_questions(1, False)
+create_questions(100, True, None)
 # game
 def create_game_data():
 
@@ -112,10 +260,6 @@ def create_game_data():
 
     db.commit()
     db.close()
-
-
-#=============================QUESTIONS=============================#
-
 
 #return format: [[question], [answers], [correct], [image]]
 def get_question(id):
@@ -154,29 +298,6 @@ def get_random_question():
     db.close()
 
     return get_question(id)
-
-
-#parameter format: question - string | answers - list of strings | correct - string | image - string
-#returns id of new question
-def make_question(question, type, answers, correct, image):
-
-    DB_FILE="data.db"
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-
-
-    id = c.execute(f'SELECT COUNT(id) FROM questions')
-
-    answers_str = '%SPLIT%'.join(answers)
-
-    command = 'INSERT INTO questions VALUES (?, ?, ?, ?)'
-    vars = (id, type, image, question, answers_str, correct)
-    c.execute(command, vars)
-
-    db.commit()
-    db.close()
-
-    return id
 
 #=============================GAME=============================#
 

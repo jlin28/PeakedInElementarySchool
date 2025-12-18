@@ -127,6 +127,7 @@ def game(gamemode, difficulty):
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     trivia_questions = [[]]
+    timeMode = 10 + ((2-difficulty)*20)
 
     if request.method == 'POST':
         data = request.headers
@@ -176,7 +177,8 @@ def game(gamemode, difficulty):
     return render_template('game.html',
                                 board = get_board_state(turn),
                                 turn = turn,
-                                trivia=trivia_questions
+                                trivia=trivia_questions,
+                                timeMode = timeMode,
                           )
 
 @app.route('/result/<string:winner>/<int:totalturns>', methods=['GET', 'POST'])

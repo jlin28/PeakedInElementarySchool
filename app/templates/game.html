@@ -172,7 +172,16 @@ TBD
       overflow: auto;
     }
 
+    #timer {
+      position: absolute;
+      z-index: 1001;
 
+      top: 21%;
+      left: 64%;
+
+      font-size: 250%;
+      font-family: font;
+    }
 
 
   </style>
@@ -259,6 +268,9 @@ TBD
 
 <!-- TRIVIA OVERLAY -->
 <div id="triviaOverlay">
+  <div id="timer">
+    <p id='seconds'></p>
+  </div>
   <div id="triviaContent">
     <h3 id="triviaQuestion"></h3>
     <div id="triviaAnswers"></div>
@@ -283,9 +295,12 @@ TBD
 
     const triviaQuestions = {{ trivia | tojson }};
     var triviaActive = false;
+    var timeMode = {{ timeMode }};
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      document.getElementById('seconds').innerHTML = timeMode;
+
       if (turn > 1 && turn % 2 != 0) {
         document.getElementById('main').style.transform = "translate(-50%, -50%)";
         document.getElementById('main').src = "/static/images/board.png";
@@ -595,6 +610,21 @@ TBD
       overlay.style.display = "flex";  // show overlay
       qEl.innerText = questionObj.question;
       answersEl.innerHTML = "";
+
+      let time = setInterval(function() {
+        let cur = parseInt(document.getElementById('seconds').innerHTML);
+        if (cur > 0) {
+          document.getElementById('seconds').innerHTML = cur - 1;
+        } else {
+          clearInterval(time);
+          document.getElementById('seconds').innerHTML = timeMode;
+
+          triviaActive = false;
+          overlay.style.display = "none";
+          const correct = false;
+          console.log("Trivia answered: incorrect");
+        }
+      }, 1000);
 
       questionObj.answers.forEach((ans, idx) => {
         const btn = document.createElement("button");

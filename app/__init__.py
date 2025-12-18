@@ -130,6 +130,7 @@ def game(gamemode, difficulty):
     if request.method == 'POST':
         data = request.headers
 
+        #CHECK
         if 'check' in data:
             board = get_board_state(turn)
             if turn % 2 != 0:
@@ -147,6 +148,7 @@ def game(gamemode, difficulty):
                     if turn % 2 == 0 and board[row][col] == -5:
                         return gridlabel[col]+str(row)
 
+        #SELECT
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
@@ -161,6 +163,7 @@ def game(gamemode, difficulty):
                     validarr = validarr + ',' + gridlabel[7-y]+str(7-x)
             return validarr[1:]
 
+        #MOVE
         if 'move' in data:
             positions = data['move'].split("+");
 
@@ -198,8 +201,46 @@ def game(gamemode, difficulty):
                 return redirect(url_for('result', winner=game_over[1]))
 
             incheckmate = in_checkmate(get_board_state(turn), color_to_move)
-            if incheckmate[0]:
+            if incheckmate[0] and gamemode != 'singleplayer':
                 return get_board_state(turn) #tell them theyre in checkmate somehow
+
+            #SINGLEPLAYER
+            if gamemode == 'singleplayer':
+                session['turns'] = session['turns'] + 1
+                turn += 1
+
+                if turn % 2 == 0:
+                    color = 'black'
+                    color_to_move = 'white'
+                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move[0], bot_move[1],
+                        bot_move[2], bot_move[3],
+                        None,
+                        castling_state
+                    )[0]
+                else:
+                    color = 'white'
+                    color_to_move = 'black'
+                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move[0], bot_move[1],
+                        bot_move[2], bot_move[3],
+                        None,
+                        castling_state
+                    )[0]
+
+                set_board(newBoard)
+
+                make_board_state(turn, get_display_board(newBoard, color))
+
+                gameover = game_over(get_board_state(turn), color_to_move)
+                if gameover[0]:
+                    return redirect(url_for('result', winner=game_over[1]))
+
+                incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+                if incheckmate[0]:
+                    return get_board_state(turn) #tell them theyre in checkmate somehow
 
             return get_board_state(turn)
 

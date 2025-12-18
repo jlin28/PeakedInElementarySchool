@@ -429,3 +429,9 @@ PIECE HIGHLIGHTING
 * NEW CHANGES:
     - wrote code to highlight king
     - added request handling to check for king being in check
+
+seanZ -- 2025-12-18 0:33
+QUESTIONS
+* NEW CHANGES:
+    - create_questions() in db.py done
+    - cached 200 questions in data.db

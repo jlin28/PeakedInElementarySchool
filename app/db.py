@@ -241,7 +241,8 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-create_questions(100, True, None)
+#create_questions(1, False)
+
 # game
 def create_game_data():
 

@@ -131,6 +131,23 @@ def game(gamemode, difficulty):
     if request.method == 'POST':
         data = request.headers
 
+        if 'check' in data:
+            board = get_board_state(turn)
+            if turn % 2 != 0:
+                color = 'white'
+            if turn % 2 == 0:
+                color = 'black'
+
+            if not in_check(board, color):
+                return ""
+
+            for row in range(len(board)):
+                for col in range(len(board)):
+                    if turn % 2 != 0 and board[row][col] == 5:
+                        return gridlabel[7-col]+str(7-row)
+                    if turn % 2 == 0 and board[row][col] == -5:
+                        return gridlabel[col]+str(row)
+
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
@@ -151,8 +168,12 @@ def game(gamemode, difficulty):
             session['turns'] = session['turns'] + 1
             turn += 1
 
+            color = ''
+            color_to_move = ''
+
             if turn % 2 == 0:
                 color = 'black'
+                color_to_move = 'white'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     int(positions[0][1]), gridlabel.index(positions[0][0]),
                     int(positions[1][1]), gridlabel.index(positions[1][0]),
@@ -161,6 +182,7 @@ def game(gamemode, difficulty):
                 )[0]
             else:
                 color = 'white'
+                color_to_move = 'black'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
                     7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
@@ -171,6 +193,15 @@ def game(gamemode, difficulty):
             set_board(newBoard)
 
             make_board_state(turn, get_display_board(newBoard, color))
+
+            gameover = game_over(get_board_state(turn), color_to_move)
+            if gameover[0]:
+                return redirect(url_for('result', winner=game_over[1]))
+
+            incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+            if incheckmate[0]:
+                return get_board_state(turn) #tell them theyre in checkmate somehow
+
             return get_board_state(turn)
 
     return render_template('game.html',

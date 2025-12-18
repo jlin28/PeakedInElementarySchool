@@ -158,6 +158,13 @@ API CALLING
 * NEW CHANGES:
     - started spanish english api calling function
 
+evanK -- 2025-12-8 11:47
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - changed how settings are edited
+    - added tags for singleplayer and multiplayer buttons
+    - added a redirect to game
+
 joyceL -- 2025-12-8 12:33
 AUDIO STUFFS
 * NEW CHANGES:
@@ -191,6 +198,12 @@ CHESS LOGIC
 * ERRORS/BUGS:
     - En passant logic is incorrect and WIP, finish later
 
+evanK -- 2025-12-9 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - wrote flask handling for moving a piece
+    - wrote flask handling for selecting a piece
+
 joyceL -- 2025-12-9 12:37
 ANIMATIONS
 * NEW CHANGES:
@@ -219,6 +232,12 @@ CHESS LOGIC
     - Implementing castling functionality
     - Modified simulate move for castling
 
+evanK -- 2025-12-10 11:46
+DATABASE FUNCTIONS
+* NEW CHANGES:
+    - fixed SQL syntax
+    - updated database functions
+
 seanZ -- 2025-12-10 11:46
 API STUFF
 * NEW CHANGES:
@@ -240,6 +259,11 @@ SETTING UP INTERACTIONS BETWEEN FE AND BE
     - beginning highlightLegalSquares functions
 * ERRORS/BUGS:
     - background-color for squares has overflow that's bad
+
+evanK -- 2025-12-11 11:44
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - fixed order of functions to avoid repeat call errors
 
 zixiQ -- 2025-12-11 11:45
 CHESS LOGIC
@@ -270,6 +294,13 @@ HTML RENDERING
 * NEW CHANGES:
     - Relearning a little JS
     - Implementing rendering a new pop up when a move is made for trivia
+
+evanK -- 2025-12-12 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - gave board state changes permanence
+    - added use of flip_board function
+    - updated code to use same variable names
 
 joyceL -- 2025-12-12 12:35
 ANIMATIONS + TURNS
@@ -304,6 +335,12 @@ CHESS LOGIC
 # ERRORS/BUGS:
     - Found an sqlite query bug but Evan already fixed this period lol
 
+evanK -- 2025-12-15 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - wrote framework for result page
+    - updated menu POST request handling to match stylistically with game
+
 joyceL -- 2025-12-15 12:34
 FLIPPING AND CURTAINS
 * NEW CHANGES:
@@ -337,6 +374,13 @@ TRIVIA OVERLAY
     - Implementing trivia pop up when a move is selected
     - Tested and background shows
 
+evanK -- 2025-12-16 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - added redirect to results page
+    - added use of chess.py methods to check for game-over, checkmate, and stalemate
+    - added handling for game-over, checkmate, and stalemate
+
 joyceL -- 2025-12-16 12:34
 DATETIME
 * NEW CHANGES:
@@ -368,8 +412,20 @@ QUESTIONS
 * NEW CHANGES:
     - questions about directors basically done
 
+evanK -- 2025-12-17 11:18
+PIECE HIGHLIGHTING
+* NEW CHANGES:
+    - removed highlight when no moves available
+    - fixed error with highlihting when only one move is available
+
 joyceL -- 2025-12-17 12:06
 DATETIME
 * NEW CHANGES:
     - finished result CSS
     - beginnign replay function
+
+evanK -- 2025-12-16 21:53
+PIECE HIGHLIGHTING
+* NEW CHANGES:
+    - wrote code to highlight king
+    - added request handling to check for king being in check

@@ -298,7 +298,7 @@ def get_random_question():
     db.close()
 
     return get_question(id)
-print(get_random_question())
+#print(get_random_question())
 #=============================GAME=============================#
 
 

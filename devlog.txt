@@ -447,4 +447,5 @@ QUESTIONS
 seanZ -- 2025-12-18 11:16
 QUESTIONS
 * NEW CHANGES:
-    - get_question and get_random_question functions done 
+    - get_question and get_random_question functions done
+    - tried to implement trivia questions in __init__.py

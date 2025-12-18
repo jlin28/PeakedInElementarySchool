@@ -10,6 +10,7 @@ import time
 from db import *
 from chess import *
 from pprint import pprint
+from random import randint
 # from api import apiCall
 
 app = Flask(__name__)
@@ -256,6 +257,61 @@ def game(gamemode, difficulty):
                 newBoard = get_board_state(turn-1)
 
             make_board_state(turn, get_display_board(newBoard, color))
+
+            if gamemode == 'singleplayer':
+                session['turns'] = session['turns'] + 1
+                turn += 1
+
+                if gamemode == 0:
+                    chance = 65
+                elif gamemode == 1:
+                    chance = 80
+                else:
+                    chance = 95
+
+                if randint(0, 99) < chance:
+                    if turn % 2 == 0:
+                        color = 'black'
+                        color_to_move = 'white'
+                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                            bot_move[0], bot_move[1],
+                            bot_move[2], bot_move[3],
+                            None,
+                            castling_state
+                        )[0]
+                    else:
+                        color = 'white'
+                        color_to_move = 'black'
+                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                            bot_move[0], bot_move[1],
+                            bot_move[2], bot_move[3],
+                            None,
+                            castling_state
+                        )[0]
+
+                    set_board(newBoard)
+
+                    make_board_state(turn, get_display_board(newBoard, color))
+
+                    gameover = game_over(get_board_state(turn), color_to_move)
+                    if gameover[0]:
+                        return redirect(url_for('result', winner=game_over[1]))
+
+                    incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+                    if incheckmate[0]:
+                        return get_board_state(turn) #tell them theyre in checkmate somehow
+                else:
+                    if turn % 2 == 0:
+                        color = 'black'
+                        newBoard = get_board_state(turn-1)
+                    else:
+                        color = 'white'
+                        newBoard = get_board_state(turn-1)
+
+                    make_board_state(turn, get_display_board(newBoard, color))
+
             return get_board_state(turn)
 
     return render_template('game.html',

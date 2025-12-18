@@ -98,7 +98,7 @@ def menu():
             session['turns'] = 1
             add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
                              [-6,-6,-6,-6,-6,-6,-6,-6],
-                             [0,0,0,0,0,0,0,0],
+                             [0 ,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
@@ -125,6 +125,8 @@ def game(gamemode, difficulty):
     current_pos = get_board_state(turn)
 
     gridlabel = ['a','b','c','d','e','f','g','h']
+
+    trivia_questions = [[]]
 
     if request.method == 'POST':
         data = request.headers
@@ -205,49 +207,31 @@ def game(gamemode, difficulty):
     return render_template('game.html',
                                 board = get_board_state(turn),
                                 turn = turn,
+                                trivia=trivia_questions
                           )
 
 @app.route('/result/<string:winner>', methods=['GET', 'POST'])
 def result(winner):
-
-    turn = 0
+    turn = 1
 
     if request.method == 'POST':
-        data = request.form
+        data = request.headers
 
         if 'next_board' in data:
             turn += 1
-
             return get_board_state(turn)
 
         if 'previous_board' in data:
             turn -= 1
-
             return get_board_state(turn)
 
-        if 'play' in data:
-
+        if 'restart' in request.form:
             return redirect(url_for('menu'))
 
     return render_template('result.html',
                             winner = winner,
                             board = get_board_state(turn)
                         )
-
-@app.route('/test', methods=['GET', 'POST'])
-def testError():
-
-    ######### FOR ERROR HANDLING TESTING PURPOSES ####################
-    try:
-        data = apiCall("film")
-        return data
-    except Exception as e:
-        print(f"An unexpected error occured: {e}")
-        return redirect('/error')
-
-    ##################################################################
-
-    return render_template('game.html')
 
 @app.route('/error')
 def error_page():

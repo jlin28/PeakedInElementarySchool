@@ -26,13 +26,62 @@ TBD
 
     <!-- PAGE SPECIFIC CSS -->
     <style>
+      /* BACKGROUND */
+      body {
+        background-repeat: no-repeat;
+        background-size: 100vw 100vh;
+        font-family: font;
+      }
+
+      /* MAIN CONTAINER */
+      #main {
+        height:45vh;
+        width: 65vw;
+
+        border-radius: 25px;
+
+        background-color: rgba(255,255,255,0.5);
+      }
+
+      /* BUTTONS */
+      button {
+        font-family: font;
+        font-size: 145%;
+        background: none;
+
+        width:35%;
+
+        border-style: solid;
+        border-width: medium;
+        border-color: black;
+
+        transform: scale(130%);
+      }
+
+      button:hover:not(.btn-close, #audio) {
+        transform: scale(140%);
+      }
     </style>
   </head>
 
   <body>
+    <form id="play" method="POST" action="/"> </form>
 
-    <div style="margin-top:7vh;" class="container">
+    <div style="margin-top:10vh;" id='main' class="container">
       <!-- WINNER WINS TEXT HERE AS WELL AS BUTTON TO GO BACK TO MENU -->
+      <div id='title' class='container'>
+        <p class='center' style='font-size:400%;margin-left:32%;'> {{ winner }} &nbsp&nbsp WINS </p>
+      </div>
+      <hr style="border-width:medium;margin-top:-2%;width:60%;" class='center'>
+      <div style="margin-top:-50px; width:50%" class="container">
+        <button type="submit" form="play" name="restart" value="restart" class="center" style="margin-top:18%;">
+                MENU
+        </button>
+        <!-- replay button is modal -->
+        <button type="button" form="play" class="center" style="margin-top: 8%;">
+          REPLAY
+        </button>
+      </div>
     </div>
 
     <!-- BOOTSTRAP JS -->
@@ -43,13 +92,20 @@ TBD
     <!-- PAGE-SPECIFIC JS -->
     <script>
       var winner = "{{ winner }}";
+      console.log(winner);
 
       window.onload = function() {
-        if (winner.equals('white')) {
+        console.log('run');
+        if (winner == 'white') {
           document.body.style.backgroundImage = "url('/static/images/whiteWin.jpg')";
         } else {
           document.body.style.backgroundImage = "url('/static/images/blackWin.jpg')";
         }
+      };
+
+      var move = function() {
+        /* prev */
+        /* next */
       };
     </script>
   </body>

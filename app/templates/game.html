@@ -295,7 +295,9 @@ TBD
 
     const triviaQuestions = {{ trivia | tojson }};
     var triviaActive = false;
+    var triviad = false;
     var timeMode = {{ timeMode }};
+    var correct;
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
@@ -325,6 +327,7 @@ TBD
           turn = turn + 1;
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           selected = null;
+          triviad = false;
           curtains(false);
 
           setTimeout( function() {
@@ -349,6 +352,47 @@ TBD
       );
     }
 
+    var skipTurn = function() {
+      let xhttp = new XMLHttpRequest();
+      let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
+      let classnames = prev.className.split(" ");
+
+      unhighlightLegalSquares(validMoves);
+      prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+
+      xhttp.open('POST', window.location.href, true);
+      xhttp.setRequestHeader("skip", 'aa');
+      xhttp.send();
+
+      setTimeout(function() {
+          turn = turn + 1;
+          triviad = false;
+
+          selected = null;
+
+          curtains(false);
+
+          setTimeout( function() {
+              resetBoard();
+
+              if (turn > 1 && turn % 2 != 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50%)";
+                document.getElementById('main').src = "/static/images/board.png";
+              } else if (turn % 2 == 0) {
+                document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
+                document.getElementById('main').src = "/static/images/boardflip.png";
+              };
+            }, 1750
+          );
+          setTimeout( function() {
+              curtains(true);
+              moving = false;
+            }, 1950
+          );
+        }, 1000
+      );
+    }
+
     var select = function(position) {
       let xhttp = new XMLHttpRequest();
 
@@ -356,64 +400,64 @@ TBD
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
-          xhttp.open('POST', window.location.href, true);
-          xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
-          xhttp.send();
+          if (!triviad) { showTrivia(triviaQuestions, position) };
 
-          showTrivia(triviaQuestions);
+          if (correct) {
+            xhttp.open('POST', window.location.href, true);
+            xhttp.setRequestHeader("move", selected.className.split(" ")[2] + "+" + position);
+            xhttp.send();
 
-          xhttp.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              newBoard = JSON.parse(this.response);
+            xhttp.onload = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                newBoard = JSON.parse(this.response);
+              }
             }
-          }
 
+            unhighlightLegalSquares(validMoves);
 
-          moving = true;
-          unhighlightLegalSquares(validMoves);
+            let board = document.getElementById('buttons');
+            let square = document.getElementsByClassName(position)[1];
+            let takenPiece = square.querySelector("." + square.className.split(" ")[1] + " img");
+            if (takenPiece == null) {
+              takenPiece = square.appendChild(document.createElement('img'));
+              takenPiece.src = "/static/sprites/white/rook/idle.png";
+              takenPiece.className = 'center piece';
+              takenPiece.style.opacity = '0';
+            }
 
-          let board = document.getElementById('buttons');
-          let square = document.getElementsByClassName(position)[1];
-          let takenPiece = square.querySelector("." + square.className.split(" ")[1] + " img");
-          if (takenPiece == null) {
-            takenPiece = square.appendChild(document.createElement('img'));
-            takenPiece.src = "/static/sprites/white/rook/idle.png";
-            takenPiece.className = 'center piece';
-            takenPiece.style.opacity = '0';
-          }
+            let sprite = selected.querySelector("." + selected.className.split(" ")[1] + " img");
+            let classnames = sprite.className.split(" ");
 
-          let sprite = selected.querySelector("." + selected.className.split(" ")[1] + " img");
-          let classnames = sprite.className.split(" ");
+            let currentPos = sprite.getBoundingClientRect();
+            let newPos = takenPiece.getBoundingClientRect();
 
-          let currentPos = sprite.getBoundingClientRect();
-          let newPos = takenPiece.getBoundingClientRect();
+            let areaOfBoard = board.offsetWidth * board.offsetHeight;
+            let translationX = newPos.left - currentPos.left;
+            let translationY = newPos.top - currentPos.top;
+            let distance = Math.sqrt(Math.pow(translationX,2) + Math.pow(translationY,2));
 
-          let areaOfBoard = board.offsetWidth * board.offsetHeight;
-          let translationX = newPos.left - currentPos.left;
-          let translationY = newPos.top - currentPos.top;
-          let distance = Math.sqrt(Math.pow(translationX,2) + Math.pow(translationY,2));
+            let animTime = 1100 * (1 - distance/areaOfBoard);
 
-          let animTime = 1100 * (1 - distance/areaOfBoard);
+            sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/walk.gif';
+            let anim = sprite.animate(
+              [{transform: 'translate(0, 0)'}, {transform: 'translate(' + translationX + 'px, ' + translationY + 'px)'}],
+              {
+               duration: animTime,
+               iterations: 1,
+               easing: 'linear',
+               fill: 'forwards',
+             },
+            );
 
-          sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/walk.gif';
-          let anim = sprite.animate(
-            [{transform: 'translate(0, 0)'}, {transform: 'translate(' + translationX + 'px, ' + translationY + 'px)'}],
-            {
-             duration: animTime,
-             iterations: 1,
-             easing: 'linear',
-             fill: 'forwards',
-           },
-          );
+            anim.play()
 
-          anim.play()
+            setTimeout(function() {
+              takePiece(square.querySelector("." + square.className.split(" ")[1] + " img"))
+            },
+              animTime);
 
-          setTimeout(function() {
-            takePiece(square.querySelector("." + square.className.split(" ")[1] + " img"))
-          },
-            animTime);
-
-          stopMove(animTime, sprite, classnames);
+              stopMove(animTime, sprite, classnames);
+          };
         } else if (!moving) {
         let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
         let classnames = prev.className.split(" ");
@@ -422,7 +466,7 @@ TBD
         prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
         }
       }
-      if (!moving) {
+      if (!moving && !triviaActive) {
         xhttp.open('POST', window.location.href, true);
         xhttp.setRequestHeader("select", position);
         xhttp.send();
@@ -600,7 +644,7 @@ TBD
       }
     }
 
-    function showTrivia(questionObj) {
+    function showTrivia(questionObj, position) {
       triviaActive = true;
 
       const overlay = document.getElementById("triviaOverlay");
@@ -621,27 +665,32 @@ TBD
 
           triviaActive = false;
           overlay.style.display = "none";
-          const correct = false;
-          console.log("Trivia answered: incorrect");
+          correct = false;
+          triviad = true;
+          skipTurn();
         }
       }, 1000);
 
-      questionObj.answers.forEach((ans, idx) => {
-        const btn = document.createElement("button");
-        btn.innerText = ans;
-        btn.style.display = "block";
-        btn.style.margin = "8px auto";
-        btn.style.padding = "8px 16px";
-
-        btn.onclick = function () {
-          triviaActive = false;
-          overlay.style.display = "none";
-          const correct = (idx === questionObj.correct);
-          console.log("Trivia answered:", correct ? "correct" : "incorrect");
-        };
-
-        answersEl.appendChild(btn);
-      });
+      // questionObj.answers.forEach((ans, idx) => {
+      //   const btn = document.createElement("button");
+      //   btn.innerText = ans;
+      //   btn.style.display = "block";
+      //   btn.style.margin = "8px auto";
+      //   btn.style.padding = "8px 16px";
+      //
+      //   btn.onclick = function () {
+      //     triviaActive = false;
+      //     overlay.style.display = "none";
+      //     correct = (idx === questionObj.correct);
+      //     triviad = true;
+      //
+      //     if (correct) { select(position) }
+      //     else { skipTurn() };
+      //     console.log("Trivia answered:", correct ? "correct" : "incorrect");
+      //   };
+      //
+      //   answersEl.appendChild(btn);
+      // });
     }
 
   </script>

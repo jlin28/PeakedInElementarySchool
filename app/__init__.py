@@ -24,7 +24,6 @@ def menu():
 
     # ALL POSSIBLE QUESTION TYPES
     question_categories = ['movies', 'countries', 'spanish', 'superheroes']
-    difficulty_types = ['easy', 'medium', 'hard']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -37,7 +36,7 @@ def menu():
     if 'categories' in session:
         if 'difficulty' in session:
             difficulties[0] = ''
-            difficulties[difficulty_types.index(session['difficulty'])] = 'checked'
+            difficulties[session['difficulty']] = 'checked'
 
         if 'setting1' in session:
             setting1 = 'checked'
@@ -57,7 +56,7 @@ def menu():
 
         # ADDS SETTINGS TO SESSION
         if 'difficulty' in data:
-            session['difficulty'] = difficulty_types[0]
+            session['difficulty'] = int(data['difficulty'])
 
         if 'setting1' in data:
             session['setting1'] = 'checked'
@@ -88,7 +87,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty']))
 
         if 'multiplayer' in data:
             reset_board()
@@ -105,7 +104,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty']))
 
     return render_template('menu.html',
                             time = curTime,
@@ -120,7 +119,6 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
-
     turn = session['turns']
     current_pos = get_board_state(turn)
 
@@ -170,6 +168,20 @@ def game(gamemode, difficulty):
                 )[0]
 
             set_board(newBoard)
+
+            make_board_state(turn, get_display_board(newBoard, color))
+            return get_board_state(turn)
+
+        if 'skip' in data:
+            session['turns'] = session['turns'] + 1
+            turn += 1
+
+            if turn % 2 == 0:
+                color = 'black'
+                newBoard = get_board_state(turn)
+            else:
+                color = 'white'
+                newBoard = get_board_state(turn)
 
             make_board_state(turn, get_display_board(newBoard, color))
             return get_board_state(turn)

@@ -176,8 +176,9 @@ TBD
       position: absolute;
       z-index: 1001;
 
-      top: 21%;
-      left: 64%;
+      top: 29%;
+      left: 60%;
+      transform: translate(-40%, -71%);
 
       font-size: 250%;
       font-family: font;
@@ -682,6 +683,10 @@ TBD
 
       let time = setInterval(function() {
         let cur = parseInt(document.getElementById('seconds').innerHTML);
+        if (cur < 12) {
+          document.getElementById('seconds').style.color = 'red';
+        }
+
         if (cur > 0) {
           document.getElementById('seconds').innerHTML = cur - 1;
         } else {

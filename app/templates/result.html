@@ -224,36 +224,44 @@ TBD
       var move = function(direction) {
         let xhttp = new XMLHttpRequest();
         let board;
+        let maxTurns = {{ maxTurns }};
+        let turn = {{ turn }};
 
-        /* prev */
-        if (direction == 'prev') {
-          xhttp.open('POST', window.location.href, true);
-          xhttp.setRequestHeader("next_board", 'aa');
-          xhttp.send();
-
-          if (document.getElementById('right').disabled) {
-            document.getElementById('right').disabled = false;
-          }
-        }
-
-        /* next */
-        if (direction == 'next') {
-          xhttp.open('POST', window.location.href, true);
-          xhttp.setRequestHeader("previous_board", 'aa');
-          xhttp.send();
-
-          if (document.getElementById('left').disabled) {
-            document.getElementById('left').disabled = false;
-          }
-        }
+        xhttp.open('POST', window.location.href, true);
+        xhttp.setRequestHeader('direction', ''+direction);
+        xhttp.send();
 
         xhttp.onload = function() {
           if (this.readyState == 4 && this.status == 200) {
             board = JSON.parse(this.response);
+            resetBoard(board);
           }
         }
 
-        resetBoard(board);
+        /* prev */
+        if (direction == 'prev') {
+          if (document.getElementById('right').disabled) {
+            document.getElementById('right').disabled = false;
+          };
+          console.log(turn);
+          if (turn == 1) {
+            document.getElementById('left').disabled = true;
+          };
+        }
+
+        /* next */
+        else if (direction == 'next') {
+          turn = turn+1;
+
+          console.log(turn)
+          if (document.getElementById('left').disabled) {
+            document.getElementById('left').disabled = false;
+          };
+          if (turn == maxTurns) {
+            document.getElementById('right').disabled = true;
+          };
+        }
+
       };
 
       var resetBoard = function(newBoard) {

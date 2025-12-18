@@ -287,6 +287,7 @@ TBD
   <script>
     var selected = null;
     var validMoves = null;
+    var inCheck = "";
     var moving = false;
     var newBoard = null;
     var turn = {{ turn }};
@@ -464,7 +465,7 @@ TBD
 
         unhighlightLegalSquares(validMoves);
         prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-        }
+      }
       }
       if (!moving && !triviaActive) {
         xhttp.open('POST', window.location.href, true);
@@ -614,33 +615,51 @@ TBD
         }
         gridrow++;
       }
+
+      unhighlightKing(inCheck);
+      inCheck = "";
+
+      let xhttpcheck = new XMLHttpRequest();
+      xhttpcheck.open('POST', window.location.href, true);
+      xhttpcheck.setRequestHeader("check", true);
+      xhttpcheck.send();
+
+      // checks if xhttp request is done and there were no errors (200 -- ok request) !!
+      xhttpcheck.onload = function() {
+        if (this.status == 200) {
+          inCheck = this.responseText;
+          highlightKing(inCheck);
+        }
+      }
     }
 
     var highlightLegalSquares = function(arr) {
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', window.location.href, true);
       xhttp.send();
-      if (arr.length > 1) {
-        for (square of arr) {
-          if (square != '') {
-            document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
-          }
+      for (square of arr) {
+        if (square != '') {
+          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0.5)';
         }
-      } else {
-        let original = selected.className.split(' ')[2]
-        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
 
     var unhighlightLegalSquares = function(arr) {
       validMoves = null;
-      if (arr.length > 1) {
-        for (square of arr) {
-          document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
-        }
-      } else {
-        let original = selected.className.split(' ')[2]
-        document.getElementsByClassName('col glow ' + original)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
+      for (square of arr) {
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(100, 149, 237, 0)';
+      }
+    }
+
+    var highlightKing = function(square) {
+      if (square != "") {
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
+      }
+    }
+
+    var unhighlightKing = function(square) {
+      if (square != "") {
+        document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
 

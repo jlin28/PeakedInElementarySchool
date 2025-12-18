@@ -437,3 +437,9 @@ DATETIME
     - implemented a timer
     - skipturn is functioning
     - made curtains slightly faster
+
+seanZ -- 2025-12-18 0:33
+QUESTIONS
+* NEW CHANGES:
+    - create_questions() in db.py done
+    - cached 200 questions in data.db

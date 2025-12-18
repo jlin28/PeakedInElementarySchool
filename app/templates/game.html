@@ -303,6 +303,8 @@ TBD
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      
+      if (timeMode == 10) { document.getElementById('seconds').style.color = 'red' };
       document.getElementById('seconds').innerHTML = timeMode;
 
       if (turn > 1 && turn % 2 != 0) {
@@ -685,6 +687,8 @@ TBD
         let cur = parseInt(document.getElementById('seconds').innerHTML);
         if (cur < 12) {
           document.getElementById('seconds').style.color = 'red';
+        } else {
+          document.getElementById('seconds').style.color = 'black';
         }
 
         if (cur > 0) {

@@ -435,6 +435,5 @@ DATETIME
 * NEW CHANGES:
     - made a prelim replay system
     - implemented a timer
-    - working on getting skipturn to work
-* ERRORS/BUGS:
-    - error when running new_board = get_board_state(turn)
+    - skipturn is functioning
+    - made curtains slightly faster

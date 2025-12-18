@@ -365,6 +365,12 @@ TBD
       xhttp.setRequestHeader("skip", 'aa');
       xhttp.send();
 
+      xhttp.onload = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          newBoard = JSON.parse(this.response);
+        }
+      }
+
       setTimeout(function() {
           turn = turn + 1;
           triviad = false;
@@ -383,12 +389,12 @@ TBD
                 document.getElementById('main').style.transform = "translate(-50%, -50.5%)";
                 document.getElementById('main').src = "/static/images/boardflip.png";
               };
-            }, 1750
+            }, 1650
           );
           setTimeout( function() {
               curtains(true);
               moving = false;
-            }, 1950
+            }, 1850
           );
         }, 1000
       );
@@ -540,7 +546,7 @@ TBD
       let leftA = left.animate(
         [{transform: 'translate(0)'}, {transform: 'translate(' + winWidth + 'px)'}],
         {
-          duration: 1750,
+          duration: 1650,
           iterations: 1,
           easing: 'linear',
           fill: 'forwards',
@@ -550,7 +556,7 @@ TBD
       let rightA = right.animate(
         [{transform: 'translate(0)'}, {transform: 'translate(-' + winWidth + 'px)'}],
         {
-          duration: 1750,
+          duration: 1650,
           iterations: 1,
           easing: 'linear',
           fill: 'forwards',
@@ -564,7 +570,7 @@ TBD
         setTimeout(function() {
           left.style.display = 'none';
           right.style.display = 'none';
-        }, 1740);
+        }, 1640);
       } else {
         leftA.play();
         rightA.play();

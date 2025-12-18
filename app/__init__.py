@@ -209,10 +209,10 @@ def game(gamemode, difficulty):
 
             if turn % 2 == 0:
                 color = 'black'
-                newBoard = get_board_state(turn)
+                newBoard = get_board_state(turn-1)
             else:
                 color = 'white'
-                newBoard = get_board_state(turn)
+                newBoard = get_board_state(turn-1)
 
             make_board_state(turn, get_display_board(newBoard, color))
             return get_board_state(turn)

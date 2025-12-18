@@ -129,6 +129,23 @@ def game(gamemode, difficulty):
     if request.method == 'POST':
         data = request.headers
 
+        if 'check' in data:
+            board = get_board_state(turn)
+            if turn % 2 != 0:
+                color = 'white'
+            if turn % 2 == 0:
+                color = 'black'
+
+            if not in_check(board, color):
+                return ""
+
+            for row in range(len(board)):
+                for col in range(len(board)):
+                    if turn % 2 != 0 and board[row][col] == 5:
+                        return gridlabel[7-col]+str(7-row)
+                    if turn % 2 == 0 and board[row][col] == -5:
+                        return gridlabel[col]+str(row)
+
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]

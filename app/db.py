@@ -40,7 +40,7 @@ def make_tables():
     )
     db.commit()
     db.close()
-make_tables() #for remaking tables
+#make_tables() #for remaking tables
 #=============================QUESTIONS=============================#
 
 #films

@@ -155,13 +155,13 @@ TBD
         <div class="modal-body">
           <!-- CHECKBOX TYPE SETTINGS -->
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ placeholder1 }}>
+            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" autocomplete="off" {{ placeholder1 }}>
             <label for="setting1"> setting1 </label>
             <br>
             <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
             <label for="setting2"> setting2 </label>
             <br>
-            <input class="form-check-input" type="checkbox" onclick="location.reload()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
+            <input class="form-check-input" type="checkbox" onclick="Time()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
             <label for="reverseTime"> reversed &nbsp&nbsp time </label>
           </div>
           <hr>
@@ -209,7 +209,7 @@ TBD
     window.onload = function() {
       document.getElementById('audio').checked = false;
 
-      reverseTime();
+      Time();
 
       for (cat of categories) {
         if (selected.length == 0 || selected.includes(cat)) {
@@ -228,7 +228,7 @@ TBD
       }
     };
 
-    var reverseTime = function() {
+    var Time = function() {
       let buttons = document.getElementsByClassName('main')
       if (document.getElementById('reverseTime').checked) {
         if (time == 1) {

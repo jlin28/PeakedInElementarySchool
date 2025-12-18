@@ -93,7 +93,7 @@ def create_questions(count,cache):
     db.commit()
     db.close()
 
-create_questions(1, False)
+#create_questions(1, False)
 # game
 def create_game_data():
 

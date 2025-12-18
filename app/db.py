@@ -93,11 +93,7 @@ def create_questions(count,cache):
     db.commit()
     db.close()
 
-<<<<<<< HEAD
-# create_questions(1, False)
-=======
 #create_questions(1, False)
->>>>>>> 0da6980bbd325d6acc023e45f4aa02e32c1f096c
 # game
 def create_game_data():
 

@@ -83,6 +83,10 @@ TBD
         border-style: none;
       }
 
+      .noTransform:disabled  {
+        color: grey;
+      }
+
       /* BOARD */
       .board {
         position: absolute;
@@ -148,12 +152,12 @@ TBD
       <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
           <br>
-          <h3 class="center" style="font-size:300%" class="modal-title" id="staticBackdropLabel"> tbd </h1>
+          <h3 class="center" style="font-size:300%" class="modal-title" id="staticBackdropLabel"> replay &nbsp&nbsp match </h1>
           <br>
           <div class="modal-body" style="display:flex;flex-direction:row;margin-top:-30px;background-color:rgba(0,0,0,0.2)">
             <!-- REPLAY SYSTEM -->
             <div class='slides' style='width:20%;'>
-              <button type="button" class="bi bi-caret-left-fill noTransform"></p>
+              <button type="button" id="left" onclick="move('prev')" class="bi bi-caret-left-fill noTransform"></p>
             </div>
             <!------------ BOARD IMAGES ------------>
             <div class='slides' style='width:60%;'>
@@ -183,7 +187,7 @@ TBD
             </div>
             <!-- ---------------------- -->
             <div class='slides' style='width:20%;'>
-              <button type="button" class="bi bi-caret-right-fill noTransform"></button>
+              <button type="button" id="right" onclick="move('next')" class="bi bi-caret-right-fill noTransform"></button>
             </div>
           </div>
           <br>
@@ -201,21 +205,102 @@ TBD
     <!-- PAGE-SPECIFIC JS -->
     <script>
       var winner = "{{ winner }}";
-      console.log(winner);
+      var turns = "{{ maxTurns }}";
+      var turn = 1;
 
       window.onload = function() {
-        console.log('run');
         if (winner == 'white') {
           document.body.style.backgroundImage = "url('/static/images/whiteWin.jpg')";
         } else {
           document.body.style.backgroundImage = "url('/static/images/blackWin.jpg')";
         }
+
+        document.getElementById('left').disabled = true;
+        if (turns == 1) {
+          document.getElementById('right').disabled = true;
+        };
       };
 
-      var move = function() {
+      var move = function(direction) {
+        let xhttp = new XMLHttpRequest();
+        let board;
+
         /* prev */
+        if (direction == 'prev') {
+          xhttp.open('POST', window.location.href, true);
+          xhttp.setRequestHeader("next_board", 'aa');
+          xhttp.send();
+
+          if (document.getElementById('right').disabled) {
+            document.getElementById('right').disabled = false;
+          }
+        }
+
         /* next */
+        if (direction == 'next') {
+          xhttp.open('POST', window.location.href, true);
+          xhttp.setRequestHeader("previous_board", 'aa');
+          xhttp.send();
+
+          if (document.getElementById('left').disabled) {
+            document.getElementById('left').disabled = false;
+          }
+        }
+
+        xhttp.onload = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            board = JSON.parse(this.response);
+          }
+        }
+
+        resetBoard(board);
       };
+
+      var resetBoard = function(newBoard) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.open('GET', window.location.href, true);
+        xhttp.send();
+
+        let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+        let gridlabel = ['a','b','c','d','e','f','g','h'];
+
+        let childs = document.getElementById('images').children;
+        let board = newBoard;
+        let gridrow = 0;
+
+        for (row of board) {
+          let squares = childs[gridrow].children;
+          for (let col = 0; col < row.length; col++) {
+            let image = squares[col].querySelector("." + squares[col].className.split(" ")[1] + " img");
+
+            if (image != null) {
+              if (row[col] != 0) {
+                let classnames = image.className.split(' ');
+
+                if (row[col] < 0) { classnames[1] = 'black' };
+                if (row[col] > 0) { classnames[1] = 'white' };
+
+                classnames[3] = pieces[Math.abs(row[col]) - 1];
+
+                image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+                image.className = classnames.join(' ');
+              } else { squares[col].removeChild(image) };
+            } else if (row[col] != 0) {
+              let color;
+              let newChild = squares[col].appendChild(document.createElement('img'));
+              let type = pieces[Math.abs(row[col]) - 1];
+
+              if (row[col] < 0) { color = 'black' };
+              if (row[col] > 0) { color = 'white' };
+
+              newChild.className = "center " + color + " piece " + type;
+              newChild.src = '/static/sprites/' + color + '/' + type + '/idle.png';
+              newChild.alt = type;
+            }
+          }
+          gridrow++;
+        }
+      }
     </script>
   </body>
 

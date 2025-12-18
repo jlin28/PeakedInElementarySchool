@@ -179,8 +179,9 @@ def game(gamemode, difficulty):
                                 trivia=trivia_questions
                           )
 
-@app.route('/result/<string:winner>', methods=['GET', 'POST'])
-def result(winner):
+@app.route('/result/<string:winner>/<int:totalturns>', methods=['GET', 'POST'])
+def result(winner, totalturns):
+    maxTurns = totalturns
     turn = 1
 
     if request.method == 'POST':
@@ -199,7 +200,8 @@ def result(winner):
 
     return render_template('result.html',
                             winner = winner,
-                            board = get_board_state(turn)
+                            board = get_board_state(turn),
+                            maxTurns = maxTurns
                         )
 
 @app.route('/error')

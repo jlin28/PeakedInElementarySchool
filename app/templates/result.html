@@ -225,7 +225,6 @@ TBD
         let xhttp = new XMLHttpRequest();
         let board;
         let maxTurns = {{ maxTurns }};
-        let turn = {{ turn }};
 
         xhttp.open('POST', window.location.href, true);
         xhttp.setRequestHeader('direction', ''+direction);
@@ -240,20 +239,20 @@ TBD
 
         /* prev */
         if (direction == 'prev') {
+          turn = turn - 1;
+          
           if (document.getElementById('right').disabled) {
             document.getElementById('right').disabled = false;
           };
-          console.log(turn);
           if (turn == 1) {
             document.getElementById('left').disabled = true;
           };
         }
 
         /* next */
-        else if (direction == 'next') {
-          turn = turn+1;
+        if (direction == 'next') {
+          turn = turn + 1;
 
-          console.log(turn)
           if (document.getElementById('left').disabled) {
             document.getElementById('left').disabled = false;
           };

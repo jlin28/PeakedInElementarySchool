@@ -88,7 +88,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty']))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categories="%SPLIT%".join(session['categories'])))
 
         if 'multiplayer' in data:
             reset_board()
@@ -105,7 +105,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty']))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categories="%SPLIT%".join(session['categories'])))
 
     return render_template('menu.html',
                             time = curTime,
@@ -118,8 +118,8 @@ def menu():
                             categories=question_categories,
                             selected=selected_categories)
 
-@app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
-def game(gamemode, difficulty):
+@app.route('/game/<string:gamemode>/<int:difficulty>/<string:categoriesstr>', methods=['GET', 'POST'])
+def game(gamemode, difficulty, categoriesstr):
     turn = session['turns']
     current_pos = get_board_state(turn)
 
@@ -127,6 +127,8 @@ def game(gamemode, difficulty):
 
     trivia_questions = [[]]
     timeMode = 10 + ((2-difficulty)*20)
+
+    categories = categoriesstr.split("%SPLIT%")
 
     if request.method == 'POST':
         data = request.headers

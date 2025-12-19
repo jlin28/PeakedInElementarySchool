@@ -23,7 +23,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['movies', 'countries', 'spanish', 'superheroes', 'synonyms','rick and morty']
+    question_categories = ['movies and series', 'countries', 'spanish', 'superheroes', 'synonyms','rick and morty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']

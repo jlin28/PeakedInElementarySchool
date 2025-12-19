@@ -317,8 +317,12 @@ def game(gamemode, difficulty, cachestr, categoriesstr):
             if (cache):
                 return get_random_question(random.choice(selected_categories))
             else:
-                create_questions(1, True, random.choice(selected_categories))
-                return get_question(get_latest_id())
+                try:
+                    create_questions(1, True, random.choice(selected_categories))
+                    return get_question(get_latest_id())
+                except Exception:
+                    print("Error Found")
+                    return redirect(url_for('error'))
 
     return render_template('game.html',
                                 board = get_board_state(turn),
@@ -358,7 +362,7 @@ def result(winner, totalturns):
                         )
 
 @app.route('/error')
-def error_page():
+def error():
     #just to initialize the error handling part (we can polish it up later)
     return "oopsies, we had an error :C"
 

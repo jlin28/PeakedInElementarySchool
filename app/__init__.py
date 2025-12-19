@@ -29,7 +29,7 @@ def menu():
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
     setting1=''
-    setting2=''
+    cache=''
     reverseStatus = ''
     selected_categories = []
 
@@ -43,7 +43,7 @@ def menu():
             setting1 = 'checked'
 
         if 'setting2' in session:
-            setting2 = 'checked'
+            cache = 'checked'
 
         if 'reverseTime' in session:
             reverseStatus = 'checked'
@@ -62,8 +62,8 @@ def menu():
         if 'setting1' in data:
             session['setting1'] = 'checked'
 
-        if 'setting2' in data:
-            session['setting2'] = 'checked'
+        if 'cache' in data:
+            session['cache'] = 'checked'
 
         if 'reverseTime' in data:
             session['reverseTime'] = 'checked'
@@ -88,7 +88,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], cachestr=session['cache'], categoriesstr="%SPLIT%".join(session['categories'])))
 
         if 'multiplayer' in data:
             reset_board()
@@ -105,7 +105,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], cachestr=session['cache'], categoriesstr="%SPLIT%".join(session['categories'])))
 
     return render_template('menu.html',
                             time = curTime,
@@ -114,18 +114,18 @@ def menu():
                             dMed = difficulties[1],
                             dHard = difficulties[2],
                             placeholder1=setting1,
-                            placeholder2=setting2,
+                            quickload=cache,
                             categories=question_categories,
                             selected=selected_categories)
 
-@app.route('/game/<string:gamemode>/<int:difficulty>/<string:categoriesstr>', methods=['GET', 'POST'])
-def game(gamemode, difficulty, categoriesstr):
+@app.route('/game/<string:gamemode>/<int:difficulty>/<string:cachestr>/<string:categoriesstr>', methods=['GET', 'POST'])
+def game(gamemode, difficulty, cachestr, categoriesstr):
     turn = session['turns']
     current_pos = get_board_state(turn)
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 
-    cache = False # session['useCache']
+    cache = cachestr == 'checked'
     selected_categories = session['categories'].copy()
     timeMode = 10 + ((2-difficulty)*20)
 

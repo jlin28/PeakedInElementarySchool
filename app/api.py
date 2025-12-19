@@ -139,13 +139,23 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-# insert an FEN position
-def getNextMove(moves):
-    FEN = json.dumps(moves)
-    CHESS_ENGINE_URL = f"https://chess-api.com/v1/{FEN}"
-    with urllib.request.urlopen(CHESS_ENGINE_URL) as response:
-        raw_data = response.read()
-    data = json.loads(raw_data)
-    return data
+def getNextMove(fen):
+    data_dict = {
+        "fen": fen
+    }
+
+    data = json.dumps(data_dict).encode("utf-8")
+
+    req = urllib.request.Request(
+        CHESS_ENGINE_URL,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req) as response:
+        raw = response.read()
+
+    return json.loads(raw)
 
 print(apiCall("film"))

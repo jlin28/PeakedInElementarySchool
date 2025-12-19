@@ -468,3 +468,46 @@ def promotions(board):
         if board[7][i] == -6:
             all_promotions.append((7, i, (4, 1, 3, 2)))
     return all_promotions
+
+# Convert board position to FEN for chess engine api
+def board_to_fen(board, color_to_move, castling_state, en_passant):
+    piece_map = {
+        1: "r", 2: "n", 3: "b", 4: "q", 5: "k", 6: "p"
+    }
+
+    rows = []
+    for r in range(8):
+        empty = 0
+        fen_row = ""
+        for c in range(8):
+            piece = board[r][c]
+            if piece == 0:
+                empty += 1
+            else:
+                if empty > 0:
+                    fen_row += str(empty)
+                    empty = 0
+                p = piece_map[abs(piece)]
+                fen_row += p.upper() if piece > 0 else p
+        if empty > 0:
+            fen_row += str(empty)
+        rows.append(fen_row)
+
+    board_part = "/".join(rows)
+    turn_part = "w" if color_to_move == "white" else "b"
+
+    castling = ""
+    if castling_state["white_kingside"]: castling += "K"
+    if castling_state["white_queenside"]: castling += "Q"
+    if castling_state["black_kingside"]: castling += "k"
+    if castling_state["black_queenside"]: castling += "q"
+    if castling == "":
+        castling = "-"
+
+    if en_passant is None:
+        ep = "-"
+    else:
+        r, c, _, _ = en_passant
+        ep = chr(ord("a") + c) + str(8 - r) # convert to a square like e4 for en passant
+
+    return f"{board_part} {turn_part} {castling} {ep} 0 1"

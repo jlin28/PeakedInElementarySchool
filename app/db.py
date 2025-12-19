@@ -285,20 +285,34 @@ def get_question(id):
     return question
 
 #return format: [[id], [type], [image], [question], [answers], [correct]]
-def get_random_question():
+def get_random_question(type):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    count = c.execute(f'SELECT COUNT(id) FROM questions').fetchone()[0]
-    id = random.randint(1, count - 1)
+    command = 'SELECT id FROM questions WHERE type = ?'
+    vars = (type,)
+    ids = c.execute(command, vars).fetchall()
+    id = random.choice(ids)[0]
 
     db.commit()
     db.close()
 
     return get_question(id)
 #print(get_random_question())
+
+def get_latest_id():
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    count = c.execute(f'SELECT COUNT(id) FROM questions').fetchone()[0]
+
+    db.commit()
+    db.close()
+
+    return count-1
 #=============================GAME=============================#
 
 

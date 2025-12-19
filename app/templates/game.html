@@ -274,6 +274,7 @@ TBD
   </div>
   <div id="triviaContent">
     <h3 id="triviaQuestion"></h3>
+    <img id="triviaImage"></img>
     <div id="triviaAnswers"></div>
   </div>
 </div>
@@ -295,7 +296,6 @@ TBD
 
     var colors = ['black', 'white']
 
-    const triviaQuestions = {{ trivia | tojson }};
     var triviaActive = false;
     var triviad = false;
     var timeMode = {{ timeMode }};
@@ -303,7 +303,7 @@ TBD
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
-      
+
       if (timeMode == 10) { document.getElementById('seconds').style.color = 'red' };
       document.getElementById('seconds').innerHTML = timeMode;
 
@@ -410,7 +410,7 @@ TBD
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
-          if (!triviad) { showTrivia(triviaQuestions, position) };
+          if (!triviad) { showTrivia(position) };
 
           if (correct) {
             xhttp.open('POST', window.location.href, true);
@@ -672,59 +672,73 @@ TBD
       }
     }
 
-    function showTrivia(questionObj, position) {
+    function showTrivia(position) {
+      let xhttp = new XMLHttpRequest();
       triviaActive = true;
 
       const overlay = document.getElementById("triviaOverlay");
+      const img = document.getElementById("triviaImage");
       const qEl = document.getElementById("triviaQuestion");
       const answersEl = document.getElementById("triviaAnswers");
+      let question;
+
+      xhttp.open('POST', window.location.href, true);
+      xhttp.setRequestHeader("trivia", 'aa');
+      xhttp.send();
 
       overlay.style.display = "flex";  // show overlay
-      qEl.innerText = questionObj.question;
       answersEl.innerHTML = "";
 
-      let time = setInterval(function() {
-        let cur = parseInt(document.getElementById('seconds').innerHTML);
-        if (cur < 12) {
-          document.getElementById('seconds').style.color = 'red';
-        } else {
-          document.getElementById('seconds').style.color = 'black';
+      xhttp.onload = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          question = JSON.parse(this.response);
         }
+        console.log(question)
+        qEl.innerText = question[3];
 
-        if (cur > 0) {
-          document.getElementById('seconds').innerHTML = cur - 1;
-        } else {
-          clearInterval(time);
-          document.getElementById('seconds').innerHTML = timeMode;
+        let time = setInterval(function() {
+          let cur = parseInt(document.getElementById('seconds').innerHTML);
+          if (cur < 12) {
+            document.getElementById('seconds').style.color = 'red';
+          } else {
+            document.getElementById('seconds').style.color = 'black';
+          }
 
-          triviaActive = false;
-          overlay.style.display = "none";
-          correct = false;
-          triviad = true;
-          skipTurn();
-        }
-      }, 1000);
+          if (cur > 0) {
+            document.getElementById('seconds').innerHTML = cur - 1;
+          } else {
+            clearInterval(time);
+            document.getElementById('seconds').innerHTML = timeMode;
 
-      // questionObj.answers.forEach((ans, idx) => {
-      //   const btn = document.createElement("button");
-      //   btn.innerText = ans;
-      //   btn.style.display = "block";
-      //   btn.style.margin = "8px auto";
-      //   btn.style.padding = "8px 16px";
-      //
-      //   btn.onclick = function () {
-      //     triviaActive = false;
-      //     overlay.style.display = "none";
-      //     correct = (idx === questionObj.correct);
-      //     triviad = true;
-      //
-      //     if (correct) { select(position) }
-      //     else { skipTurn() };
-      //     console.log("Trivia answered:", correct ? "correct" : "incorrect");
-      //   };
-      //
-      //   answersEl.appendChild(btn);
-      // });
+            triviaActive = false;
+            overlay.style.display = "none";
+            correct = false;
+            triviad = true;
+            skipTurn();
+          }
+        }, 1000);
+
+        question[4].forEach((ans, idx) => {
+          const btn = document.createElement("button");
+          btn.innerText = ans;
+          btn.style.display = "block";
+          btn.style.margin = "8px auto";
+          btn.style.padding = "8px 16px";
+
+          btn.onclick = function () {
+            triviaActive = false;
+            overlay.style.display = "none";
+            correct = (idx === question[5]);
+            triviad = true;
+
+            if (correct) { select(position) }
+            else { skipTurn() };
+            console.log("Trivia answered:", correct ? "correct" : "incorrect");
+          };
+
+          answersEl.appendChild(btn);
+        });
+      }
     }
 
   </script>

@@ -125,6 +125,8 @@ def game(gamemode, difficulty):
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     trivia_questions = [[]]
+    cache = False # session['useCache']
+    selected_categories = session['categories'].copy()
     timeMode = 10 + ((2-difficulty)*20)
 
     if request.method == 'POST':
@@ -214,6 +216,13 @@ def game(gamemode, difficulty):
 
             make_board_state(turn, get_display_board(get_internal_board(), color))
             return get_board_state(turn)
+
+        if 'trivia' in data:
+            if (cache):
+                return get_random_question(random.choice(selected_categories))
+            else:
+                create_questions(1, False, random.choice(selected_categories))
+                return get_question(get_latest_id())
 
     return render_template('game.html',
                                 board = get_board_state(turn),

@@ -23,7 +23,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['movies', 'countries', 'spanish', 'superheroes', 'thesaurus','rick']
+    question_categories = ['movies and series', 'countries', 'spanish', 'superheroes', 'synonyms','rick and morty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -125,6 +125,9 @@ def game(gamemode, difficulty):
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     trivia_questions = [[]]
+    #trivia_questions = [[get_random_question()]]
+    #trivia_questions.append(get_random_question())
+    #print(trivia_questions)
     timeMode = 10 + ((2-difficulty)*20)
 
     if request.method == 'POST':

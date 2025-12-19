@@ -93,7 +93,7 @@ def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
+    types = ["movies and films", "spanish", "superhero", "synonyms", "rick and morty", "countries"]
     if  Dtype != None:
         type = Dtype
     answers = []
@@ -103,7 +103,7 @@ def create_questions(count,cache, Dtype):
     for i in range(count):
         if Dtype == None:
             type = types[random.randint(0,len(types) - 1)]
-        if type == "film":
+        if type == "movies and films":
             DorP = random.randint(0,1) #0 for director and 1 for plot question
             total = c.execute("SELECT COUNT(*) FROM films")
             total = total.fetchone()[0] - 1
@@ -187,7 +187,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this superhero?"
 
-        if type == "thesaurus":
+        if type == "synonyms":
             while len(answers) < 1:
                 data = apiCall("thesaurus")
                 if isinstance(data, dict):
@@ -206,7 +206,7 @@ def create_questions(count,cache, Dtype):
             img = None
             question = f"Which of the following is a synonym for {word}?"
 
-        if type == "rick":
+        if type == "rick and morty":
             data = apiCall("rick")
             #pprint(data)
             correct = data['name']
@@ -218,7 +218,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this character from Rick and Morty?"
 
-        if type == "country":
+        if type == "countries":
             CorF = random.randint(0,1) #0 for capital and 1 for flag question
             data = apiCall("country")[0]
             img = data['flags']['png']

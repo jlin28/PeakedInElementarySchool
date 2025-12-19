@@ -24,7 +24,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['movies', 'countries', 'spanish', 'superheroes']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superheroes', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -125,7 +125,8 @@ def game(gamemode, difficulty, categoriesstr):
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 
-    trivia_questions = [[]]
+    cache = False # session['useCache']
+    selected_categories = session['categories'].copy()
     timeMode = 10 + ((2-difficulty)*20)
 
     categories = categoriesstr.split("%SPLIT%")
@@ -253,10 +254,8 @@ def game(gamemode, difficulty, categoriesstr):
 
             if turn % 2 == 0:
                 color = 'black'
-                newBoard = get_board_state(turn-1)
             else:
                 color = 'white'
-                newBoard = get_board_state(turn-1)
 
             make_board_state(turn, get_display_board(newBoard, color))
 
@@ -316,10 +315,16 @@ def game(gamemode, difficulty, categoriesstr):
 
             return get_board_state(turn)
 
+        if 'trivia' in data:
+            if (cache):
+                return get_random_question(random.choice(selected_categories))
+            else:
+                create_questions(1, True, random.choice(selected_categories))
+                return get_question(get_latest_id())
+
     return render_template('game.html',
                                 board = get_board_state(turn),
                                 turn = turn,
-                                trivia=trivia_questions,
                                 timeMode = timeMode,
                           )
 
@@ -329,14 +334,19 @@ def result(winner, totalturns):
     turn = 1
 
     if request.method == 'POST':
+        print('bb')
         data = request.headers
+        print('headers: ')
+        print(data)
 
-        if 'next_board' in data:
-            turn += 1
+        if 'direction' in data:
+            if data['direction'] == 'next':
+                turn += 1
             return get_board_state(turn)
 
         if 'previous_board' in data:
-            turn -= 1
+            if data['direction'] == 'prev':
+                turn -= 1
             return get_board_state(turn)
 
         if 'restart' in request.form:
@@ -345,7 +355,8 @@ def result(winner, totalturns):
     return render_template('result.html',
                             winner = winner,
                             board = get_board_state(turn),
-                            maxTurns = maxTurns
+                            maxTurns = maxTurns,
+                            turn = turn
                         )
 
 @app.route('/error')

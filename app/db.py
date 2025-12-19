@@ -92,18 +92,19 @@ def make_question(question, type, answers, correct, image):
 def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
-    c = db.cursor()    
-    types = ["film", "spanish", "superhero", "thesaurus", "rick", "country"]
+    c = db.cursor()
+    types = ["OMDB", "spanish", "Superhero", "Synonyms", "RickAndMorty", "Countries"]
     if  Dtype != None:
         type = Dtype
     answers = []
-    img = None 
-    correct = "e" 
+    img = None
+    correct = "e"
     question = "bruh"
     for i in range(count):
+        print('aaaaa')
         if Dtype == None:
             type = types[random.randint(0,len(types) - 1)]
-        if type == "film":
+        if type == "OMDB":
             DorP = random.randint(0,1) #0 for director and 1 for plot question
             total = c.execute("SELECT COUNT(*) FROM films")
             total = total.fetchone()[0] - 1
@@ -147,7 +148,7 @@ def create_questions(count,cache, Dtype):
                 correct = plot
             img = None
 
-        if type == "spanish":
+        if type == "Spanish":
             while len(answers) < 1:
                 data = apiCall("spanish")
                 if len(data['shortdef']) > 0:
@@ -176,7 +177,7 @@ def create_questions(count,cache, Dtype):
             question = f"What is the Spanish Translation of {word}?"
             img = None
 
-        if type == "superhero":
+        if type == "Superhero":
             data = apiCall("superhero")
             correct = data['name']
             img = data['image']['url']
@@ -187,7 +188,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this superhero?"
 
-        if type == "thesaurus":
+        if type == "Synonyms":
             while len(answers) < 1:
                 data = apiCall("thesaurus")
                 if isinstance(data, dict):
@@ -206,7 +207,7 @@ def create_questions(count,cache, Dtype):
             img = None
             question = f"Which of the following is a synonym for {word}?"
 
-        if type == "rick":
+        if type == "RickAndMorty":
             data = apiCall("rick")
             #pprint(data)
             correct = data['name']
@@ -218,7 +219,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this character from Rick and Morty?"
 
-        if type == "country":
+        if type == "Countries":
             CorF = random.randint(0,1) #0 for capital and 1 for flag question
             data = apiCall("country")[0]
             img = data['flags']['png']
@@ -241,7 +242,7 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-#create_questions(100, True, None) #to create questions
+#create_questions(200, True, None) #to create questions
 
 # game
 def create_game_data():
@@ -262,7 +263,7 @@ def create_game_data():
     db.commit()
     db.close()
 
-#return format: [[question], [answers], [correct], [image]]
+#return format: [[id], [type], [image], [question], [answers], [correct]]
 def get_question(id):
 
     DB_FILE="data.db"
@@ -277,29 +278,42 @@ def get_question(id):
     for item in data:
         question += [[item]]
 
-    question[1] = question[1][0].split("%SPLIT%")
+    question[4] = question[4][0].split("%SPLIT%")
 
     db.commit()
     db.close()
 
     return question
 
-
-#return format: [[question], [answers], [correct], [image]]
-def get_random_question():
+#return format: [[id], [type], [image], [question], [answers], [correct]]
+def get_random_question(type):
 
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
 
-    count = c.execute(f'SELECT COUNT(id) FROM questions')
-    id = randint(1, count)
+    command = 'SELECT id FROM questions WHERE type = ?'
+    vars = (type,)
+    ids = c.execute(command, vars).fetchall()
+    id = random.choice(ids)[0]
 
     db.commit()
     db.close()
 
     return get_question(id)
+#print(get_random_question())
 
+def get_latest_id():
+    DB_FILE="data.db"
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    count = c.execute(f'SELECT COUNT(id) FROM questions').fetchone()[0]
+
+    db.commit()
+    db.close()
+
+    return count-1
 #=============================GAME=============================#
 
 

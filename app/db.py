@@ -93,7 +93,7 @@ def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    types = ["movies and films", "spanish", "superhero", "synonyms", "rick and morty", "countries"]
+    types = ["OMDB", "spanish", "Superhero", "Synonyms", "RickAndMorty", "Countries"]
     if  Dtype != None:
         type = Dtype
     answers = []
@@ -104,7 +104,7 @@ def create_questions(count,cache, Dtype):
         print('aaaaa')
         if Dtype == None:
             type = types[random.randint(0,len(types) - 1)]
-        if type == "movies and films":
+        if type == "OMDB":
             DorP = random.randint(0,1) #0 for director and 1 for plot question
             total = c.execute("SELECT COUNT(*) FROM films")
             total = total.fetchone()[0] - 1
@@ -148,7 +148,7 @@ def create_questions(count,cache, Dtype):
                 correct = plot
             img = None
 
-        if type == "spanish":
+        if type == "Spanish":
             while len(answers) < 1:
                 data = apiCall("spanish")
                 if len(data['shortdef']) > 0:
@@ -177,7 +177,7 @@ def create_questions(count,cache, Dtype):
             question = f"What is the Spanish Translation of {word}?"
             img = None
 
-        if type == "superhero":
+        if type == "Superhero":
             data = apiCall("superhero")
             correct = data['name']
             img = data['image']['url']
@@ -188,7 +188,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this superhero?"
 
-        if type == "synonyms":
+        if type == "Synonyms":
             while len(answers) < 1:
                 data = apiCall("thesaurus")
                 if isinstance(data, dict):
@@ -207,7 +207,7 @@ def create_questions(count,cache, Dtype):
             img = None
             question = f"Which of the following is a synonym for {word}?"
 
-        if type == "rick and morty":
+        if type == "RickAndMorty":
             data = apiCall("rick")
             #pprint(data)
             correct = data['name']
@@ -219,7 +219,7 @@ def create_questions(count,cache, Dtype):
                     answers.append(data['name'])
             question = "Who is this character from Rick and Morty?"
 
-        if type == "countries":
+        if type == "Countries":
             CorF = random.randint(0,1) #0 for capital and 1 for flag question
             data = apiCall("country")[0]
             img = data['flags']['png']
@@ -242,7 +242,7 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-#create_questions(100, True, None) #to create questions
+#create_questions(200, True, None) #to create questions
 
 # game
 def create_game_data():

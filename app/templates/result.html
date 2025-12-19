@@ -154,7 +154,7 @@ TBD
           <br>
           <h3 class="center" style="font-size:300%" class="modal-title" id="staticBackdropLabel"> replay &nbsp&nbsp match </h1>
           <br>
-          <div class="modal-body" style="display:flex;flex-direction:row;margin-top:-30px;background-color:rgba(0,0,0,0.2)">
+          <div class="modal-body" style="display:flex;flex-direction:row;background-color:rgba(0,0,0,0.2)">
             <!-- REPLAY SYSTEM -->
             <div class='slides' style='width:20%;'>
               <button type="button" id="left" onclick="move('prev')" class="bi bi-caret-left-fill noTransform"></p>
@@ -190,8 +190,7 @@ TBD
               <button type="button" id="right" onclick="move('next')" class="bi bi-caret-right-fill noTransform"></button>
             </div>
           </div>
-          <br>
-          <button type="button" class="noTransform center close" style="width:15%;transform:scale(110%);" data-bs-dismiss="modal" aria-label="Close"> exit </button>
+          <button type="button" class="noTransform center close" style="width:15%;transform:scale(110%);margin-top:20px;margin-bottom:10px" data-bs-dismiss="modal" aria-label="Close"> exit </button>
           <br>
         </div>
       </div>
@@ -224,36 +223,43 @@ TBD
       var move = function(direction) {
         let xhttp = new XMLHttpRequest();
         let board;
+        let maxTurns = {{ maxTurns }};
 
-        /* prev */
-        if (direction == 'prev') {
-          xhttp.open('POST', window.location.href, true);
-          xhttp.setRequestHeader("next_board", 'aa');
-          xhttp.send();
-
-          if (document.getElementById('right').disabled) {
-            document.getElementById('right').disabled = false;
-          }
-        }
-
-        /* next */
-        if (direction == 'next') {
-          xhttp.open('POST', window.location.href, true);
-          xhttp.setRequestHeader("previous_board", 'aa');
-          xhttp.send();
-
-          if (document.getElementById('left').disabled) {
-            document.getElementById('left').disabled = false;
-          }
-        }
+        xhttp.open('POST', window.location.href, true);
+        xhttp.setRequestHeader('direction', ''+direction);
+        xhttp.send();
 
         xhttp.onload = function() {
           if (this.readyState == 4 && this.status == 200) {
             board = JSON.parse(this.response);
+            resetBoard(board);
           }
         }
 
-        resetBoard(board);
+        /* prev */
+        if (direction == 'prev') {
+          turn = turn - 1;
+
+          if (document.getElementById('right').disabled) {
+            document.getElementById('right').disabled = false;
+          };
+          if (turn == 1) {
+            document.getElementById('left').disabled = true;
+          };
+        }
+
+        /* next */
+        if (direction == 'next') {
+          turn = turn + 1;
+
+          if (document.getElementById('left').disabled) {
+            document.getElementById('left').disabled = false;
+          };
+          if (turn == maxTurns) {
+            document.getElementById('right').disabled = true;
+          };
+        }
+
       };
 
       var resetBoard = function(newBoard) {

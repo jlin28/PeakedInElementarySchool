@@ -121,7 +121,7 @@ TBD
   <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
-  <label for="audio">
+  <label id='audiobut' for="audio">
     <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
       src="/static/images/mute.png">
   </label>
@@ -239,7 +239,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/night.jpg')";
           color = 'white';
 
-          document.getElementById("title").src = '/static/images/ntitle.png';
+          document.getElementById('audiobut').style.filter = 'invert(1)';
+          document.getElementById("title").style.filter = 'invert(1)';
+
           for (button of buttons) {
             button.style.borderColor = 'white';
             button.style.color = 'white';
@@ -248,7 +250,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
-          document.getElementById("title").src = '/static/images/title.png'
+          document.getElementById('audiobut').style.filter = 'invert(0)';
+          document.getElementById("title").style.filter = 'invert(0)';
+
           for (button of buttons) {
             button.style.borderColor = 'black';
             button.style.color = 'black';
@@ -259,7 +263,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/night.jpg')";
           color = 'white';
 
-          document.getElementById("title").src = '/static/images/ntitle.png'
+          document.getElementById('audiobut').style.filter = 'invert(1)';
+          document.getElementById("title").style.filter = 'invert(1)';
+
           for (button of buttons) {
             button.style.borderColor = 'white';
             button.style.color = 'white';
@@ -268,7 +274,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
-          document.getElementById("title").src = '/static/images/title.png'
+          document.getElementById('audiobut').style.filter = 'invert(0)';
+          document.getElementById("title").style.filter = 'invert(0)';
+          
           for (button of buttons) {
             button.style.borderColor = 'black';
             button.style.color = 'black';

@@ -206,19 +206,13 @@ def game(gamemode, difficulty):
         if 'skip' in data:
             session['turns'] = session['turns'] + 1
             turn += 1
-            print(turn)
+
             if turn % 2 == 0:
                 color = 'black'
             else:
                 color = 'white'
 
-            print(color)
-
-            newBoard = get_board_state(turn-1)
-            print(turn)
-            make_board_state(turn, get_display_board(newBoard, color))
-            aaaaa = get_board_state(turn)
-            print(aaaaa)
+            make_board_state(turn, get_display_board(get_internal_board(), color))
             return get_board_state(turn)
 
     return render_template('game.html',

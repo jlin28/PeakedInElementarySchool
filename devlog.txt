@@ -465,3 +465,9 @@ TRIVIA
       consider type)
     - removed ntitle and using invert() filters instead
     - made setting modal bigger
+
+zixiQ -- 2025-12-18 23:38
+CHESS ENGINE
+* NEW CHANGES:
+    - Created function to convert board position to fen notation
+    - Fixed chess api calling in getNextMove()

@@ -455,3 +455,12 @@ REPLAY SYSTEM AND DISPLAYS
     - replay system is now fully functioning
     - timer is repositioned and turns red at 10 seconds
     - display for replay system is altered slightly
+
+joyceL -- 2025-12-18 22:38
+TRIVIA
+* NEW CHANGES:
+    - connecting trivia and front end
+    - slight changes to db.py (added a get_latest_id and get_random_question
+      consider type)
+    - removed ntitle and using invert() filters instead
+    - made setting modal bigger

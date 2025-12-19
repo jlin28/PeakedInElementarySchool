@@ -176,8 +176,9 @@ TBD
       position: absolute;
       z-index: 1001;
 
-      top: 21%;
-      left: 64%;
+      top: 29%;
+      left: 60%;
+      transform: translate(-40%, -71%);
 
       font-size: 250%;
       font-family: font;
@@ -302,6 +303,8 @@ TBD
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
+      
+      if (timeMode == 10) { document.getElementById('seconds').style.color = 'red' };
       document.getElementById('seconds').innerHTML = timeMode;
 
       if (turn > 1 && turn % 2 != 0) {
@@ -682,6 +685,12 @@ TBD
 
       let time = setInterval(function() {
         let cur = parseInt(document.getElementById('seconds').innerHTML);
+        if (cur < 12) {
+          document.getElementById('seconds').style.color = 'red';
+        } else {
+          document.getElementById('seconds').style.color = 'black';
+        }
+
         if (cur > 0) {
           document.getElementById('seconds').innerHTML = cur - 1;
         } else {

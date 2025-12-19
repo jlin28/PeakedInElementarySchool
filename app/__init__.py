@@ -212,12 +212,10 @@ def game(gamemode, difficulty):
 
             if turn % 2 == 0:
                 color = 'black'
-                newBoard = get_board_state(turn-1)
             else:
                 color = 'white'
-                newBoard = get_board_state(turn-1)
 
-            make_board_state(turn, get_display_board(newBoard, color))
+            make_board_state(turn, get_display_board(get_internal_board(), color))
             return get_board_state(turn)
 
     return render_template('game.html',
@@ -233,14 +231,19 @@ def result(winner, totalturns):
     turn = 1
 
     if request.method == 'POST':
+        print('bb')
         data = request.headers
+        print('headers: ')
+        print(data)
 
-        if 'next_board' in data:
-            turn += 1
+        if 'direction' in data:
+            if data['direction'] == 'next':
+                turn += 1
             return get_board_state(turn)
 
         if 'previous_board' in data:
-            turn -= 1
+            if data['direction'] == 'prev':
+                turn -= 1
             return get_board_state(turn)
 
         if 'restart' in request.form:
@@ -249,7 +252,8 @@ def result(winner, totalturns):
     return render_template('result.html',
                             winner = winner,
                             board = get_board_state(turn),
-                            maxTurns = maxTurns
+                            maxTurns = maxTurns,
+                            turn = turn
                         )
 
 @app.route('/error')

@@ -88,7 +88,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categories="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
         if 'multiplayer' in data:
             reset_board()
@@ -105,7 +105,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categories="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
     return render_template('menu.html',
                             time = curTime,
@@ -257,7 +257,7 @@ def game(gamemode, difficulty, categoriesstr):
             else:
                 color = 'white'
 
-            make_board_state(turn, get_display_board(newBoard, color))
+            make_board_state(turn, get_display_board(get_internal_board(), color))
 
             if gamemode == 'singleplayer':
                 session['turns'] = session['turns'] + 1
@@ -306,12 +306,10 @@ def game(gamemode, difficulty, categoriesstr):
                 else:
                     if turn % 2 == 0:
                         color = 'black'
-                        newBoard = get_board_state(turn-1)
                     else:
                         color = 'white'
-                        newBoard = get_board_state(turn-1)
 
-                    make_board_state(turn, get_display_board(newBoard, color))
+                    make_board_state(turn, get_display_board(get_internal_board(), color))
 
             return get_board_state(turn)
 

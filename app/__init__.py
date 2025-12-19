@@ -221,7 +221,7 @@ def game(gamemode, difficulty):
             if (cache):
                 return get_random_question(random.choice(selected_categories))
             else:
-                create_questions(2, False, random.choice(selected_categories))
+                create_questions(1, True, random.choice(selected_categories))
                 return get_question(get_latest_id())
 
     return render_template('game.html',

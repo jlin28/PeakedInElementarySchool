@@ -101,6 +101,7 @@ def create_questions(count,cache, Dtype):
     correct = "e"
     question = "bruh"
     for i in range(count):
+        print('aaaaa')
         if Dtype == None:
             type = types[random.randint(0,len(types) - 1)]
         if type == "film":

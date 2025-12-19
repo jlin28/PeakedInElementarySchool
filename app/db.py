@@ -93,7 +93,7 @@ def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    types = ["OMDB", "spanish", "Superhero", "Synonyms", "RickAndMorty", "Countries"]
+    types = ["OMDB", "Spanish", "Superhero", "Synonyms", "RickAndMorty", "Countries"]
     if  Dtype != None:
         type = Dtype
     answers = []
@@ -101,7 +101,6 @@ def create_questions(count,cache, Dtype):
     correct = "e"
     question = "bruh"
     for i in range(count):
-        print('aaaaa')
         if Dtype == None:
             type = types[random.randint(0,len(types) - 1)]
         if type == "OMDB":

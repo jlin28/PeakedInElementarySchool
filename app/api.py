@@ -2,6 +2,7 @@ import urllib.request
 import json
 from pprint import pprint
 import random
+from chess import *
 
 #setup
 
@@ -53,6 +54,8 @@ def apiCall(api):
         return getPickle()
     if api == "country":
         return getCountry()
+    if api == "chess":
+        return getNextMove(board_to_fen(get_internal_board(), "white", castling_state, en_passant)) # update with color to move
 
     raise ParameterError("wrong parameter used")
     return ""
@@ -156,6 +159,14 @@ def getNextMove(fen):
     with urllib.request.urlopen(req) as response:
         raw = response.read()
 
-    return json.loads(raw)
+    move_list = json.loads(raw).get("text").split()
 
-print(apiCall("film"))
+    start_square = move_list[1]
+    r1 = -int(start_square[1]) + 8
+    c1 = start_square[0]
+    c1 = ord(c1) - 97 # convert from letter column to number index
+    end_square = move_list[3]
+    r2 = -int(end_square[1]) + 8
+    c2 = end_square[0]
+    c2 = ord(c2) - 97
+    return r1, c1, r2, c2

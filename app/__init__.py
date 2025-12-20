@@ -217,7 +217,7 @@ def game(gamemode, difficulty, categoriesstr):
                 if turn % 2 == 0:
                     color = 'black'
                     color_to_move = 'white'
-                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    bot_move = apiCall(get_display_board(get_internal_board()), color)
                     newBoard = simulate_move(get_display_board(get_internal_board()),
                         bot_move[0], bot_move[1],
                         bot_move[2], bot_move[3],
@@ -227,7 +227,7 @@ def game(gamemode, difficulty, categoriesstr):
                 else:
                     color = 'white'
                     color_to_move = 'black'
-                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    bot_move = apiCall(get_display_board(get_internal_board()), color)
                     newBoard = simulate_move(get_display_board(get_internal_board()),
                         bot_move[0], bot_move[1],
                         bot_move[2], bot_move[3],
@@ -275,7 +275,7 @@ def game(gamemode, difficulty, categoriesstr):
                     if turn % 2 == 0:
                         color = 'black'
                         color_to_move = 'white'
-                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        bot_move = apiCall(get_display_board(get_internal_board()), color)
                         newBoard = simulate_move(get_display_board(get_internal_board()),
                             bot_move[0], bot_move[1],
                             bot_move[2], bot_move[3],
@@ -285,7 +285,7 @@ def game(gamemode, difficulty, categoriesstr):
                     else:
                         color = 'white'
                         color_to_move = 'black'
-                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        bot_move = apiCall(get_display_board(get_internal_board()), color)
                         newBoard = simulate_move(get_display_board(get_internal_board()),
                             bot_move[0], bot_move[1],
                             bot_move[2], bot_move[3],

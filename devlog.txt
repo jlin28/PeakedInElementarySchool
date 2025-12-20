@@ -471,3 +471,8 @@ CHESS ENGINE
 * NEW CHANGES:
     - Created function to convert board position to fen notation
     - Fixed chess api calling in getNextMove()
+
+zixiQ -- 2025-12-19 11:45
+CHESS ENGINE
+* NEW CHANGES:
+    - Completed getNextMove(), need to update api call with real color to move (currently always white)

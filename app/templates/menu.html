@@ -162,8 +162,8 @@ TBD
             <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" autocomplete="off" {{ placeholder1 }}>
             <label for="setting1"> setting1 </label>
             <br>
-            <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
-            <label for="setting2"> setting2 </label>
+            <input class="form-check-input" type="checkbox" form="play" id="cache" name="cache" {{ placeholder2 }}>
+            <label for="cache"> quick &nbsp&nbsp load </label>
             <br>
             <input class="form-check-input" type="checkbox" onclick="Time()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
             <label for="reverseTime"> reversed &nbsp&nbsp time </label>
@@ -276,7 +276,7 @@ TBD
 
           document.getElementById('audiobut').style.filter = 'invert(0)';
           document.getElementById("title").style.filter = 'invert(0)';
-          
+
           for (button of buttons) {
             button.style.borderColor = 'black';
             button.style.color = 'black';

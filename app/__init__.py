@@ -53,6 +53,7 @@ def menu():
     # CREATES NEW GAME
     if request.method == 'POST':
         session.clear()
+        print(request.form)
         data = request.form
 
         # ADDS SETTINGS TO SESSION
@@ -88,7 +89,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], cachestr=session['cache'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
         if 'multiplayer' in data:
             reset_board()
@@ -105,7 +106,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], cachestr=session['cache'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
     return render_template('menu.html',
                             time = curTime,
@@ -118,14 +119,14 @@ def menu():
                             categories=question_categories,
                             selected=selected_categories)
 
-@app.route('/game/<string:gamemode>/<int:difficulty>/<string:cachestr>/<string:categoriesstr>', methods=['GET', 'POST'])
-def game(gamemode, difficulty, cachestr, categoriesstr):
+@app.route('/game/<string:gamemode>/<int:difficulty>/<string:categoriesstr>', methods=['GET', 'POST'])
+def game(gamemode, difficulty, categoriesstr):
     turn = session['turns']
     current_pos = get_board_state(turn)
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 
-    cache = cachestr == 'checked'
+    cache = 'cache' in session
     selected_categories = session['categories'].copy()
     timeMode = 10 + ((2-difficulty)*20)
 

@@ -282,7 +282,7 @@ TBD
   </div>
   <div id="triviaContent">
     <h3 id="triviaQuestion"></h3>
-    <img id="triviaImage"></img>
+    <div id="triviaImage"></div>
     <div id="triviaAnswers"></div>
   </div>
 </div>
@@ -685,7 +685,7 @@ TBD
       triviaActive = true;
 
       const overlay = document.getElementById("triviaOverlay");
-      const img = document.getElementById("triviaImage");
+      const qImg = document.getElementById("triviaImage");
       const qEl = document.getElementById("triviaQuestion");
       const answersEl = document.getElementById("triviaAnswers");
       let question;
@@ -696,7 +696,7 @@ TBD
 
       overlay.style.display = "flex";  // show overlay
       answersEl.innerHTML = "";
-      img.innerHTML = "";
+      qImg.innerHTML = "";
 
       xhttp.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -705,7 +705,7 @@ TBD
         console.log(question)
         qEl.innerText = question[3];
         if (question[2][0] != null) {
-          let imgChild = img.appendChild(document.createElement('img'));
+          let imgChild = qImg.appendChild(document.createElement('img'));
           imgChild.src = question[2][0];
           imgChild.className = 'triviaImg';
         }
@@ -733,6 +733,9 @@ TBD
         }, 1000);
 
         question[4].forEach((ans, idx) => {
+          const cont = document.createElement('div');
+          cont.className = "row";
+
           const btn = document.createElement("button");
           btn.innerText = ans;
           btn.style.display = "block";
@@ -752,7 +755,8 @@ TBD
             console.log("Trivia answered:", correct ? "correct" : "incorrect");
           };
 
-          answersEl.appendChild(btn);
+          cont.appendChild(btn);
+          answersEl.appendChild(cont);
         });
       }
     }

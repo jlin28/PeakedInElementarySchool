@@ -438,7 +438,7 @@ TRIVIA AND RESULT
     - skipturn is functioning
     - made curtains slightly faster
 
-seanZ -- 2025-12-18 0:33
+seanZ -- 2025-12-18 00:33
 QUESTIONS
 * NEW CHANGES:
     - create_questions() in db.py done
@@ -476,3 +476,10 @@ zixiQ -- 2025-12-19 11:45
 CHESS ENGINE
 * NEW CHANGES:
     - Completed getNextMove(), need to update api call with real color to move (currently always white)
+
+joyceL -- 2025-12-20 05:19
+TRIVIA
+* NEW CHANGES:
+    - formatting trivia popup
+* ERRORS/BUGS:
+    - errors are thrown when trying to pull question

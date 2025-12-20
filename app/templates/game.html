@@ -172,6 +172,14 @@ TBD
       overflow: auto;
     }
 
+    .triviaImg {
+      position: absolute;
+      z-index: 1002;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%)
+    }
+
     #timer {
       position: absolute;
       z-index: 1001;
@@ -688,6 +696,7 @@ TBD
 
       overlay.style.display = "flex";  // show overlay
       answersEl.innerHTML = "";
+      img.innerHTML = "";
 
       xhttp.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -695,6 +704,11 @@ TBD
         }
         console.log(question)
         qEl.innerText = question[3];
+        if (question[2][0] != null) {
+          let imgChild = img.appendChild(document.createElement('img'));
+          imgChild.src = question[2][0];
+          imgChild.className = 'triviaImg';
+        }
 
         let time = setInterval(function() {
           let cur = parseInt(document.getElementById('seconds').innerHTML);
@@ -730,6 +744,8 @@ TBD
             overlay.style.display = "none";
             correct = (idx === question[5]);
             triviad = true;
+            clearInterval(time);
+            document.getElementById('seconds').innerHTML = timeMode;
 
             if (correct) { select(position) }
             else { skipTurn() };

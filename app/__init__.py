@@ -23,7 +23,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superheroes', 'Synonyms','RickAndMorty']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']

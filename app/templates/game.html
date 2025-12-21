@@ -5,7 +5,7 @@ Joyce Lin, Evan Khosh, Sean Zheng, Zixi Qiao
 PIES
 SoftDev
 P01 -- ArRESTed Development
-TBD
+12/22/2025
 -->
 
 <html>
@@ -82,7 +82,7 @@ TBD
     }
 
     /* BUTTONS GRID */
-    button {
+    button:not(.trivia) {
       position: absolute;
       z-index: 3;
       margin-left: -12px;
@@ -156,16 +156,16 @@ TBD
     }
 
     #triviaContent {
+      position: relative;
       background: #f4f1ea;
       padding: 30px;
       border-radius: 12px;
 
-      width: min(80vw, 500px);
+      width: min(80vw, 600px);
       aspect-ratio: 1 / 1;
 
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
 
       text-align: center;
@@ -173,23 +173,28 @@ TBD
     }
 
     .triviaImg {
-      position: absolute;
-      z-index: 1002;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%)
+      margin: -60px;
+      transform: scale(50%);
     }
 
     #timer {
       position: absolute;
       z-index: 1001;
 
-      top: 29%;
-      left: 60%;
-      transform: translate(-40%, -71%);
+      top: 12%;
+      left: 90%;
+      transform: translate(-10%, -88%);
 
       font-size: 250%;
       font-family: font;
+    }
+
+    #triviaAnswers {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      text-align: center;
     }
 
 
@@ -211,7 +216,7 @@ TBD
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
   <label for="audio">
-    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:0"
       src="/static/images/mute.png">
   </label>
 
@@ -277,13 +282,13 @@ TBD
 
 <!-- TRIVIA OVERLAY -->
 <div id="triviaOverlay">
-  <div id="timer">
-    <p id='seconds'></p>
-  </div>
   <div id="triviaContent">
+    <div id="timer">
+      <p id='seconds'></p>
+    </div>
     <h3 id="triviaQuestion"></h3>
     <div id="triviaImage"></div>
-    <div id="triviaAnswers"></div>
+    <div class="container" id="triviaAnswers"></div>
   </div>
 </div>
 
@@ -340,6 +345,7 @@ TBD
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           selected = null;
           triviad = false;
+          correct = false;
           curtains(false);
 
           setTimeout( function() {
@@ -431,6 +437,7 @@ TBD
               }
             }
 
+            moving = true;
             unhighlightLegalSquares(validMoves);
 
             let board = document.getElementById('buttons');
@@ -645,7 +652,13 @@ TBD
       xhttpcheck.onload = function() {
         if (this.status == 200) {
           inCheck = this.responseText;
-          highlightKing(inCheck);
+          console.log("inCheck:");
+          console.log(inCheck);
+          if (inCheck != "checkmate") {
+            highlightKing(inCheck);
+          } else {
+            // checkmate(); function that creates a popup telling you that you are in checkmate and turn skipped
+          }
         }
       }
     }
@@ -668,20 +681,24 @@ TBD
       }
     }
 
-    var highlightKing = function(square) {
-      if (square != "") {
+    var highlightKing = function(color) {
+      if (color != "") {
+        console.log(color);
+        square = document.getElementsByClassName("center " + color + " piece king")[0].parentElement.className.split(" ")[2];
+        console.log(square);
         document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
 
-    var unhighlightKing = function(square) {
-      if (square != "") {
+    var unhighlightKing = function(color) {
+      if (color != "") {
+        square = document.getElementsByClassName("center " + color + " piece king")[0].parentElement.className.split(" ")[2];
         document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }
 
     function showTrivia(position) {
-      let xhttp = new XMLHttpRequest();
+      let trivia = new XMLHttpRequest();
       triviaActive = true;
 
       const overlay = document.getElementById("triviaOverlay");
@@ -690,15 +707,15 @@ TBD
       const answersEl = document.getElementById("triviaAnswers");
       let question;
 
-      xhttp.open('POST', window.location.href, true);
-      xhttp.setRequestHeader("trivia", 'aa');
-      xhttp.send();
+      trivia.open('POST', window.location.href, true);
+      trivia.setRequestHeader("trivia", 'aa');
+      trivia.send();
 
       overlay.style.display = "flex";  // show overlay
       answersEl.innerHTML = "";
       qImg.innerHTML = "";
 
-      xhttp.onload = function() {
+      trivia.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
           question = JSON.parse(this.response);
         }
@@ -732,20 +749,21 @@ TBD
           }
         }, 1000);
 
-        question[4].forEach((ans, idx) => {
-          const cont = document.createElement('div');
-          cont.className = "row";
-
+        question[4].forEach(ans => {
           const btn = document.createElement("button");
+          btn.className = "trivia";
           btn.innerText = ans;
           btn.style.display = "block";
-          btn.style.margin = "8px auto";
           btn.style.padding = "8px 16px";
+          btn.style.marginBottom = "10px";
+          btn.style.marginTop = "10px";
+          btn.style.borderStyle = 'solid';
+          btn.style.background = 'none';
 
           btn.onclick = function () {
             triviaActive = false;
             overlay.style.display = "none";
-            correct = (idx === question[5]);
+            correct = (ans === question[5][0]);
             triviad = true;
             clearInterval(time);
             document.getElementById('seconds').innerHTML = timeMode;
@@ -755,8 +773,7 @@ TBD
             console.log("Trivia answered:", correct ? "correct" : "incorrect");
           };
 
-          cont.appendChild(btn);
-          answersEl.appendChild(cont);
+          answersEl.appendChild(btn);
         });
       }
     }

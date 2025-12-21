@@ -7,6 +7,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import time
+import random
 from db import *
 from chess import *
 from pprint import pprint
@@ -119,6 +120,7 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
+    global en_passant, castling_state
     turn = session['turns']
     current_pos = get_board_state(turn)
 
@@ -129,7 +131,7 @@ def game(gamemode, difficulty):
     timeMode = 10 + ((2-difficulty)*20)
 
     if request.method == 'POST':
-        data = request.headers
+        data = request.form
 
         #CHECK
         if 'check' in data:
@@ -176,23 +178,26 @@ def game(gamemode, difficulty):
             if turn % 2 == 0:
                 color = 'black'
                 color_to_move = 'white'
-                newBoard = simulate_move(get_display_board(get_internal_board()),
+                newBoard, new_ep, new_castling = simulate_move(get_display_board(get_internal_board()),
                     int(positions[0][1]), gridlabel.index(positions[0][0]),
                     int(positions[1][1]), gridlabel.index(positions[1][0]),
                     None,
                     castling_state
-                )[0]
+                )
+
             else:
                 color = 'white'
                 color_to_move = 'black'
-                newBoard = simulate_move(get_display_board(get_internal_board()),
+                newBoard, new_ep, new_castling = simulate_move(get_display_board(get_internal_board()),
                     7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
                     7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
                     None,
                     castling_state
-                )[0]
+                )
 
             set_board(newBoard)
+            en_passant = new_ep
+            castling_state = new_castling
 
             make_board_state(turn, get_display_board(newBoard, color))
 
@@ -202,37 +207,40 @@ def game(gamemode, difficulty):
 
             #SINGLEPLAYER
             if gamemode == 'singleplayer':
-                session['turns'] = session['turns'] + 1
+                session['turns'] += 1
                 turn += 1
 
-                if turn % 2 == 0:
-                    color = 'black'
-                    color_to_move = 'white'
-                    bot_move = apiCall(get_display_board(get_internal_board()), color)
-                    newBoard = simulate_move(get_display_board(get_internal_board()),
-                        bot_move[0], bot_move[1],
-                        bot_move[2], bot_move[3],
-                        None,
-                        castling_state
-                    )[0]
-                else:
-                    color = 'white'
-                    color_to_move = 'black'
-                    bot_move = apiCall(get_display_board(get_internal_board()), color)
-                    newBoard = simulate_move(get_display_board(get_internal_board()),
-                        bot_move[0], bot_move[1],
-                        bot_move[2], bot_move[3],
-                        None,
-                        castling_state
-                    )[0]
+                bot_color = "white" if turn % 2 != 0 else "black"
+                human_color = "black" if bot_color == "white" else "white"
+
+                bot_move = apiCall(
+                    "chess",
+                    color_to_move=bot_color,
+                    difficulty=["Easy", "Medium", "Hard"][difficulty]
+                )
+
+                newBoard, new_ep, new_castling = simulate_move(
+                    get_internal_board(),
+                    bot_move[0], bot_move[1],
+                    bot_move[2], bot_move[3],
+                    en_passant,
+                    castling_state
+                )
+                if bot_move[4] is not None:
+                    newBoard = apply_promotion(
+                        newBoard,
+                        bot_move[4]
+                    )
 
                 set_board(newBoard)
+                en_passant = new_ep
+                castling_state = new_castling
 
-                make_board_state(turn, get_display_board(newBoard, color))
+                make_board_state(turn, get_display_board(newBoard, bot_color))
 
-                gameover = game_over(get_board_state(turn), color_to_move)
+                gameover = game_over(get_board_state(turn), human_color)
                 if gameover[0]:
-                    return redirect(url_for('result', winner=game_over[1], totalturns=turn))
+                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
 
                 incheckmate = in_checkmate(get_board_state(turn), color_to_move)
                 if incheckmate[0]:
@@ -256,9 +264,9 @@ def game(gamemode, difficulty):
                 session['turns'] = session['turns'] + 1
                 turn += 1
 
-                if gamemode == 0:
+                if difficulty == 0:
                     chance = 65
-                elif gamemode == 1:
+                elif difficulty == 1:
                     chance = 80
                 else:
                     chance = 95
@@ -267,23 +275,45 @@ def game(gamemode, difficulty):
                     if turn % 2 == 0:
                         color = 'black'
                         color_to_move = 'white'
-                        bot_move = apiCall(get_display_board(get_internal_board()), color)
-                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move = apiCall(
+                            "chess",
+                            color_to_move,
+                            difficulty=["Easy", "Medium", "Hard"][difficulty]
+                        )
+                        newBoard, new_ep, new_castling = simulate_move(get_internal_board(),
                             bot_move[0], bot_move[1],
                             bot_move[2], bot_move[3],
-                            None,
+                            en_passant,
                             castling_state
-                        )[0]
+                        )
+                        if bot_move[4] is not None:
+                            newBoard = apply_promotion(
+                                newBoard,
+                                bot_move[4]
+                            )
+                        en_passant = new_ep
+                        castling_state = new_castling
                     else:
                         color = 'white'
                         color_to_move = 'black'
-                        bot_move = apiCall(get_display_board(get_internal_board()), color)
-                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move = apiCall(
+                            "chess",
+                            color_to_move,
+                            difficulty=["Easy", "Medium", "Hard"][difficulty]
+                        )
+                        newBoard, new_ep, new_castling = simulate_move(get_internal_board(),
                             bot_move[0], bot_move[1],
                             bot_move[2], bot_move[3],
-                            None,
+                            en_passant,
                             castling_state
-                        )[0]
+                        )
+                        if bot_move[4] is not None:
+                            newBoard = apply_promotion(
+                                newBoard,
+                                bot_move[4]
+                            )
+                        en_passant = new_ep
+                        castling_state = new_castling
 
                     set_board(newBoard)
 
@@ -333,7 +363,7 @@ def result(winner, totalturns):
 
     if request.method == 'POST':
         print('bb')
-        data = request.headers
+        data = request.form
         print('headers: ')
         print(data)
 

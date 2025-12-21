@@ -10,6 +10,7 @@ import time
 from db import *
 from chess import *
 from pprint import pprint
+from random import randint
 # from api import apiCall
 
 app = Flask(__name__)
@@ -23,13 +24,12 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['movies', 'countries', 'spanish', 'superheroes']
-    difficulty_types = ['easy', 'medium', 'hard']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
     setting1=''
-    setting2=''
+    cache=''
     reverseStatus = ''
     selected_categories = []
 
@@ -37,13 +37,13 @@ def menu():
     if 'categories' in session:
         if 'difficulty' in session:
             difficulties[0] = ''
-            difficulties[difficulty_types.index(session['difficulty'])] = 'checked'
+            difficulties[session['difficulty']] = 'checked'
 
         if 'setting1' in session:
             setting1 = 'checked'
 
         if 'setting2' in session:
-            setting2 = 'checked'
+            cache = 'checked'
 
         if 'reverseTime' in session:
             reverseStatus = 'checked'
@@ -53,17 +53,18 @@ def menu():
     # CREATES NEW GAME
     if request.method == 'POST':
         session.clear()
+        print(request.form)
         data = request.form
 
         # ADDS SETTINGS TO SESSION
         if 'difficulty' in data:
-            session['difficulty'] = difficulty_types[0]
+            session['difficulty'] = int(data['difficulty'])
 
         if 'setting1' in data:
             session['setting1'] = 'checked'
 
-        if 'setting2' in data:
-            session['setting2'] = 'checked'
+        if 'cache' in data:
+            session['cache'] = 'checked'
 
         if 'reverseTime' in data:
             session['reverseTime'] = 'checked'
@@ -88,7 +89,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=difficulties.index('checked')))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
         if 'multiplayer' in data:
             reset_board()
@@ -98,14 +99,14 @@ def menu():
             session['turns'] = 1
             add_board_state([[-1,-2,-3,-4,-5,-3,-2,-1],
                              [-6,-6,-6,-6,-6,-6,-6,-6],
-                             [0,0,0,0,0,0,0,0],
+                             [0 ,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [0,0,0,0,0,0,0,0],
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=difficulties.index('checked')))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
 
     return render_template('menu.html',
                             time = curTime,
@@ -114,23 +115,45 @@ def menu():
                             dMed = difficulties[1],
                             dHard = difficulties[2],
                             placeholder1=setting1,
-                            placeholder2=setting2,
+                            quickload=cache,
                             categories=question_categories,
                             selected=selected_categories)
 
-@app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
-def game(gamemode, difficulty):
-
+@app.route('/game/<string:gamemode>/<int:difficulty>/<string:categoriesstr>', methods=['GET', 'POST'])
+def game(gamemode, difficulty, categoriesstr):
     turn = session['turns']
     current_pos = get_board_state(turn)
 
     gridlabel = ['a','b','c','d','e','f','g','h']
 
-    trivia_questions = [[]]
+    cache = 'cache' in session
+    selected_categories = session['categories'].copy()
+    timeMode = 10 + ((2-difficulty)*20)
+
+    categories = categoriesstr.split("%SPLIT%")
 
     if request.method == 'POST':
         data = request.headers
 
+        #CHECK
+        if 'check' in data:
+            board = get_board_state(turn)
+            if turn % 2 != 0:
+                color = 'white'
+            if turn % 2 == 0:
+                color = 'black'
+
+            if not in_check(board, color):
+                return ""
+
+            for row in range(len(board)):
+                for col in range(len(board)):
+                    if turn % 2 != 0 and board[row][col] == 5:
+                        return gridlabel[7-col]+str(7-row)
+                    if turn % 2 == 0 and board[row][col] == -5:
+                        return gridlabel[col]+str(row)
+
+        #SELECT
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
@@ -145,14 +168,19 @@ def game(gamemode, difficulty):
                     validarr = validarr + ',' + gridlabel[7-y]+str(7-x)
             return validarr[1:]
 
+        #MOVE
         if 'move' in data:
             positions = data['move'].split("+")
 
             session['turns'] = session['turns'] + 1
             turn += 1
 
+            color = ''
+            color_to_move = ''
+
             if turn % 2 == 0:
                 color = 'black'
+                color_to_move = 'white'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     int(positions[0][1]), gridlabel.index(positions[0][0]),
                     int(positions[1][1]), gridlabel.index(positions[1][0]),
@@ -161,6 +189,7 @@ def game(gamemode, difficulty):
                 )[0]
             else:
                 color = 'white'
+                color_to_move = 'black'
                 newBoard = simulate_move(get_display_board(get_internal_board()),
                     7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
                     7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
@@ -171,43 +200,170 @@ def game(gamemode, difficulty):
             set_board(newBoard)
 
             make_board_state(turn, get_display_board(newBoard, color))
+
+            gameover = game_over(get_board_state(turn), color_to_move)
+            if gameover[0]:
+                return redirect(url_for('result', winner=game_over[1]))
+
+            incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+            if incheckmate[0] and gamemode != 'singleplayer':
+                return get_board_state(turn) #tell them theyre in checkmate somehow
+
+            #SINGLEPLAYER
+            if gamemode == 'singleplayer':
+                session['turns'] = session['turns'] + 1
+                turn += 1
+
+                if turn % 2 == 0:
+                    color = 'black'
+                    color_to_move = 'white'
+                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move[0], bot_move[1],
+                        bot_move[2], bot_move[3],
+                        None,
+                        castling_state
+                    )[0]
+                else:
+                    color = 'white'
+                    color_to_move = 'black'
+                    bot_move = bot_move(get_display_board(get_internal_board()), color)
+                    newBoard = simulate_move(get_display_board(get_internal_board()),
+                        bot_move[0], bot_move[1],
+                        bot_move[2], bot_move[3],
+                        None,
+                        castling_state
+                    )[0]
+
+                set_board(newBoard)
+
+                make_board_state(turn, get_display_board(newBoard, color))
+
+                gameover = game_over(get_board_state(turn), color_to_move)
+                if gameover[0]:
+                    return redirect(url_for('result', winner=game_over[1]))
+
+                incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+                if incheckmate[0]:
+                    return get_board_state(turn) #tell them theyre in checkmate somehow
+
             return get_board_state(turn)
+
+        if 'skip' in data:
+            session['turns'] = session['turns'] + 1
+            turn += 1
+
+            if turn % 2 == 0:
+                color = 'black'
+            else:
+                color = 'white'
+
+            make_board_state(turn, get_display_board(get_internal_board(), color))
+
+            if gamemode == 'singleplayer':
+                session['turns'] = session['turns'] + 1
+                turn += 1
+
+                if gamemode == 0:
+                    chance = 65
+                elif gamemode == 1:
+                    chance = 80
+                else:
+                    chance = 95
+
+                if randint(0, 99) < chance:
+                    if turn % 2 == 0:
+                        color = 'black'
+                        color_to_move = 'white'
+                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                            bot_move[0], bot_move[1],
+                            bot_move[2], bot_move[3],
+                            None,
+                            castling_state
+                        )[0]
+                    else:
+                        color = 'white'
+                        color_to_move = 'black'
+                        bot_move = bot_move(get_display_board(get_internal_board()), color)
+                        newBoard = simulate_move(get_display_board(get_internal_board()),
+                            bot_move[0], bot_move[1],
+                            bot_move[2], bot_move[3],
+                            None,
+                            castling_state
+                        )[0]
+
+                    set_board(newBoard)
+
+                    make_board_state(turn, get_display_board(newBoard, color))
+
+                    gameover = game_over(get_board_state(turn), color_to_move)
+                    if gameover[0]:
+                        return redirect(url_for('result', winner=game_over[1]))
+
+                    incheckmate = in_checkmate(get_board_state(turn), color_to_move)
+                    if incheckmate[0]:
+                        return get_board_state(turn) #tell them theyre in checkmate somehow
+                else:
+                    if turn % 2 == 0:
+                        color = 'black'
+                    else:
+                        color = 'white'
+
+                    make_board_state(turn, get_display_board(get_internal_board(), color))
+
+            return get_board_state(turn)
+
+        if 'trivia' in data:
+            if (cache):
+                return get_random_question(random.choice(selected_categories))
+            else:
+                try:
+                    create_questions(1, True, random.choice(selected_categories))
+                    return get_question(get_latest_id())
+                except Exception:
+                    print("Error Found")
+                    return redirect(url_for('error'))
 
     return render_template('game.html',
                                 board = get_board_state(turn),
                                 turn = turn,
-                                trivia=trivia_questions
+                                timeMode = timeMode,
                           )
 
-@app.route('/result/<string:winner>', methods=['GET', 'POST'])
-def result(winner):
-
-    turn = 0
+@app.route('/result/<string:winner>/<int:totalturns>', methods=['GET', 'POST'])
+def result(winner, totalturns):
+    maxTurns = totalturns
+    turn = 1
 
     if request.method == 'POST':
-        data = request.form
+        print('bb')
+        data = request.headers
+        print('headers: ')
+        print(data)
 
-        if 'next_board' in data:
-            turn += 1
-
+        if 'direction' in data:
+            if data['direction'] == 'next':
+                turn += 1
             return get_board_state(turn)
 
         if 'previous_board' in data:
-            turn -= 1
-
+            if data['direction'] == 'prev':
+                turn -= 1
             return get_board_state(turn)
 
-        if 'play' in data:
-
+        if 'restart' in request.form:
             return redirect(url_for('menu'))
 
     return render_template('result.html',
                             winner = winner,
-                            board = get_board_state(turn)
+                            board = get_board_state(turn),
+                            maxTurns = maxTurns,
+                            turn = turn
                         )
 
 @app.route('/error')
-def error_page():
+def error():
     #just to initialize the error handling part (we can polish it up later)
     return "oopsies, we had an error :C"
 

@@ -74,7 +74,7 @@ def getFilm(count):
         raw_data = response.read()
 
     data = json.loads(raw_data)
-    print(data)
+    #print(data)
     if 'imdbVotes' not in data: #some ids don't work, so retry
         return getFilm(count+1)
     rating = data['imdbVotes']
@@ -93,7 +93,7 @@ def getFilm(count):
     return data
 
 def getSpanish():
-    ID = random.randint(0,935)
+    ID = random.randint(0,len(spanish_words) - 1)
     random_word = spanish_words[ID].strip()
     #print(random_word)
     SPANISH_ENGLISH_URL = f"https://dictionaryapi.com/api/v3/references/spanish/json/{random_word}?key={SPANISH_ENGLISH_KEY}"
@@ -105,19 +105,17 @@ def getSpanish():
     return data[0]
 
 def getThesaurus():
-    ID = random.randint(0,561)
+    ID = random.randint(0,len(thesaurus_words) - 1)
     random_word = thesaurus_words[ID].strip()
-    #print(random_word)
     THESAURUS_URL = f"https://dictionaryapi.com/api/v3/references/thesaurus/json/{random_word}?key={THESAURUS_KEY}"
     with urllib.request.urlopen(THESAURUS_URL) as response:
         raw_data = response.read()
 
     data = json.loads(raw_data)
-
     return data[0]
 
 def getHero():
-    ID = random.randint(0,732)
+    ID = random.randint(0,731)
     SUPERHERO_URL = f"https://www.superheroapi.com/api.php/{SUPERHERO_KEY}/{ID}"
     with urllib.request.urlopen(SUPERHERO_URL) as response:
         raw_data = response.read()
@@ -125,7 +123,7 @@ def getHero():
     return data
 
 def getPickle():
-    ID = random.randint(0,827)
+    ID = random.randint(0,826)
     RICK_URL = f"https://rickandmortyapi.com/api/character/{ID}"
     with urllib.request.urlopen(RICK_URL) as response:
         raw_data = response.read()
@@ -133,8 +131,8 @@ def getPickle():
     return data
 
 def getCountry():
-    ID = random.randint(0, 193)
-    random_country = countries[ID].strip()
+    ID = random.randint(0, len(countries) - 1)
+    random_country = countries[ID].strip().replace(" ", "%20") #replace is for countries with spaces like South Korea
     #print(random_country)
     COUNTRY_URL = f"https://restcountries.com/v3.1/name/{random_country}"
     with urllib.request.urlopen(COUNTRY_URL) as response:

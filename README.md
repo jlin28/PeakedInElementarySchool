@@ -8,7 +8,7 @@
 - Zixi Qiao: Chess Logic
 
 ## Description
-- Chess but for people bored of traditional chess! With every move you must answer a random trivia question (which, depending on if you get it right or not, can influence the rest of the match) pulled from a collection of APIs! Additionally, you may be afflicted a random debuff mid match or even receive a buff -- though whether they will be good or bad is debatable.
+- Chess but for people bored of traditional chess! With every move you must answer a random trivia question (which, depending on if you get it right or not, can influence the rest of the match) pulled from a collection of APIs! You can play this either with a friend, through the multiplayer system, or a bot through the singleplayer system! Both gamemodes will be scaled on the chosen difficulty in the menu screen.
 
 ## Install Guide
 **1) Clone the repo**

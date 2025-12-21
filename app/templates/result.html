@@ -23,16 +23,177 @@ TBD
       rel="stylesheet"
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 
     <!-- PAGE SPECIFIC CSS -->
     <style>
+      /* BACKGROUND */
+      body {
+        background-repeat: no-repeat;
+        background-size: 100vw 100vh;
+        font-family: font;
+      }
+
+      /* MAIN CONTAINER */
+      #main {
+        height:45vh;
+        width: 65vw;
+
+        border-radius: 25px;
+
+        background-color: rgba(255,255,255,0.5);
+      }
+
+      /* BUTTONS */
+      button {
+        font-family: font;
+        font-size: 145%;
+        background: none;
+
+        width:35%;
+
+        border-style: solid;
+        border-width: medium;
+        border-color: black;
+
+        transform: scale(130%);
+      }
+
+      button:hover:not(.noTransform) {
+        transform: scale(140%);
+      }
+
+      /* MODAL */
+      .modal-dialog, .modal-content {
+        height:90%;
+      }
+
+      .slides {
+        display: flex;
+        flex-direction: row;
+
+        align-items: center;
+        justify-content: center;
+      }
+
+      .noTransform:not(.close) {
+        transform: scale(200%);
+        height: 10%;
+        width: 20%;
+        border-style: none;
+      }
+
+      .noTransform:disabled  {
+        color: grey;
+      }
+
+      /* BOARD */
+      .board {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        width: 400px;
+        height:auto;
+      }
+
+      #images {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50.5%);
+
+        width: 400px;
+        height: 402px;
+      }
+
+      .row {
+        height: 12.52%;
+      }
+
+      .col {
+        width:15px;
+        height: 100%;
+      }
+
+      .piece {
+        width: 75px;
+        height: auto;
+        overflow: hidden;
+
+        margin-left: -23px;
+        margin-top: -14px;
+      }
+
     </style>
   </head>
 
   <body>
+    <form id="play" method="POST" action="/"> </form>
 
-    <div style="margin-top:7vh;" class="container">
-      <!-- WINNER WINS TEXT HERE AS WELL AS BUTTON TO GO BACK TO MENU -->
+    <div style="margin-top:10vh;" id='main' class="container">
+      <div id='title' class='center container' style="text-align:center">
+        <p style='font-size:400%;'> {{ winner }} &nbsp&nbsp WINS </p>
+      </div>
+      <hr style="border-width:medium;margin-top:-2%;width:60%;" class='center'>
+      <div style="margin-top:-50px; width:50%" class="container">
+        <button type="submit" form="play" name="restart" value="restart" class="center" style="margin-top:18%;">
+                MENU
+        </button>
+        <button type="button" form="play" class="center" style="margin-top: 8%;" data-bs-toggle="modal" data-bs-target="#replay">
+          REPLAY
+        </button>
+      </div>
+    </div>
+
+    <!-- MODAL + REPLAY STUFF -->
+    <div class="modal fade" id="replay" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+          <br>
+          <h3 class="center" style="font-size:300%" class="modal-title" id="staticBackdropLabel"> replay &nbsp&nbsp match </h1>
+          <br>
+          <div class="modal-body" style="display:flex;flex-direction:row;background-color:rgba(0,0,0,0.2)">
+            <!-- REPLAY SYSTEM -->
+            <div class='slides' style='width:20%;'>
+              <button type="button" id="left" onclick="move('prev')" class="bi bi-caret-left-fill noTransform"></p>
+            </div>
+            <!------------ BOARD IMAGES ------------>
+            <div class='slides' style='width:60%;'>
+              <img src="/static/images/plainBoard.jpg" class="board">
+              <div id="images" class="container">
+                {% set pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'] %}
+                {% set gridlabel = ['a','b','c','d','e','f','g','h'] %}
+                {% for ROW in board %}
+                  <div class="row">
+                    {% set index = loop.index0 %}
+                    {% for COL in ROW %}
+                      <div class="col image {{ gridlabel[loop.index0] }}{{ index }}">
+                        {% if COL < 0 %}
+                          <img class="center black piece {{ pieces[COL|abs - 1] }}"
+                                src="/static/sprites/black/{{ pieces[COL|abs - 1] }}/idle.png"
+                                alt="{{ pieces[COL|abs - 1] }}">
+                        {% elif COL > 0 %}
+                          <img class="center white piece {{ pieces[COL|abs - 1] }}"
+                                src="/static/sprites/white/{{ pieces[COL - 1] }}/idle.png"
+                                alt="{{ pieces[COL - 1]}}">
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <!-- ---------------------- -->
+            <div class='slides' style='width:20%;'>
+              <button type="button" id="right" onclick="move('next')" class="bi bi-caret-right-fill noTransform"></button>
+            </div>
+          </div>
+          <button type="button" class="noTransform center close" style="width:15%;transform:scale(110%);margin-top:20px;margin-bottom:10px" data-bs-dismiss="modal" aria-label="Close"> exit </button>
+          <br>
+        </div>
+      </div>
     </div>
 
     <!-- BOOTSTRAP JS -->
@@ -43,14 +204,109 @@ TBD
     <!-- PAGE-SPECIFIC JS -->
     <script>
       var winner = "{{ winner }}";
+      var turns = "{{ maxTurns }}";
+      var turn = 1;
 
       window.onload = function() {
-        if (winner.equals('white')) {
+        if (winner == 'white') {
           document.body.style.backgroundImage = "url('/static/images/whiteWin.jpg')";
         } else {
           document.body.style.backgroundImage = "url('/static/images/blackWin.jpg')";
         }
+
+        document.getElementById('left').disabled = true;
+        if (turns == 1) {
+          document.getElementById('right').disabled = true;
+        };
       };
+
+      var move = function(direction) {
+        let xhttp = new XMLHttpRequest();
+        let board;
+        let maxTurns = {{ maxTurns }};
+
+        xhttp.open('POST', window.location.href, true);
+        xhttp.setRequestHeader('direction', ''+direction);
+        xhttp.send();
+
+        xhttp.onload = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            board = JSON.parse(this.response);
+            resetBoard(board);
+          }
+        }
+
+        /* prev */
+        if (direction == 'prev') {
+          turn = turn - 1;
+
+          if (document.getElementById('right').disabled) {
+            document.getElementById('right').disabled = false;
+          };
+          if (turn == 1) {
+            document.getElementById('left').disabled = true;
+          };
+        }
+
+        /* next */
+        if (direction == 'next') {
+          turn = turn + 1;
+
+          if (document.getElementById('left').disabled) {
+            document.getElementById('left').disabled = false;
+          };
+          if (turn == maxTurns) {
+            document.getElementById('right').disabled = true;
+          };
+        }
+
+      };
+
+      var resetBoard = function(newBoard) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.open('GET', window.location.href, true);
+        xhttp.send();
+
+        let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
+        let gridlabel = ['a','b','c','d','e','f','g','h'];
+
+        let childs = document.getElementById('images').children;
+        let board = newBoard;
+        let gridrow = 0;
+
+        for (row of board) {
+          let squares = childs[gridrow].children;
+          for (let col = 0; col < row.length; col++) {
+            let image = squares[col].querySelector("." + squares[col].className.split(" ")[1] + " img");
+
+            if (image != null) {
+              if (row[col] != 0) {
+                let classnames = image.className.split(' ');
+
+                if (row[col] < 0) { classnames[1] = 'black' };
+                if (row[col] > 0) { classnames[1] = 'white' };
+
+                classnames[3] = pieces[Math.abs(row[col]) - 1];
+
+                image.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+                image.className = classnames.join(' ');
+              } else { squares[col].removeChild(image) };
+            } else if (row[col] != 0) {
+              let color;
+              let newChild = squares[col].appendChild(document.createElement('img'));
+              let type = pieces[Math.abs(row[col]) - 1];
+
+              if (row[col] < 0) { color = 'black' };
+              if (row[col] > 0) { color = 'white' };
+
+              newChild.className = "center " + color + " piece " + type;
+              newChild.src = '/static/sprites/' + color + '/' + type + '/idle.png';
+              newChild.alt = type;
+            }
+          }
+          gridrow++;
+        }
+      }
     </script>
   </body>
 

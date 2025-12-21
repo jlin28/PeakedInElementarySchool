@@ -43,7 +43,6 @@ TBD
 
     /* BACKGROUND */
     body {
-      /* will hopefully be able to make the bg change based upon whether it is day or night real time */
       background-repeat: no-repeat;
       background-size: 100vw 100vh;
     }
@@ -52,6 +51,10 @@ TBD
     .modal-content {
       border-radius: 0;
       font-family: font;
+    }
+
+    .modal-dialog, .modal-content {
+      height:80%;
     }
 
     .form-check-reverse {
@@ -118,7 +121,7 @@ TBD
   <audio loop id="bgm" src="/static/audio/bgm.mp3"> </audio>
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
-  <label for="audio">
+  <label id='audiobut' for="audio">
     <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
       src="/static/images/mute.png">
   </label>
@@ -147,22 +150,22 @@ TBD
 
   <!-- MODAL + SETTINGS INPUTS -->
   <div class="modal fade" id="settings" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title" style="margin-left:180px;" id="staticBackdropLabel">SETTINGS</h1>
+          <h3 class="modal-title" style="margin-left:320px;" id="staticBackdropLabel">SETTINGS</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- CHECKBOX TYPE SETTINGS -->
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" {{ placeholder1 }}>
+            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" autocomplete="off" {{ placeholder1 }}>
             <label for="setting1"> setting1 </label>
             <br>
-            <input class="form-check-input" type="checkbox" form="play" id="setting2" name="setting2" {{ placeholder2 }}>
-            <label for="setting2"> setting2 </label>
+            <input class="form-check-input" type="checkbox" form="play" id="cache" name="cache" {{ placeholder2 }}>
+            <label for="cache"> quick &nbsp&nbsp load </label>
             <br>
-            <input class="form-check-input" type="checkbox" onclick="location.reload()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
+            <input class="form-check-input" type="checkbox" onclick="Time()" form="play" id="reverseTime" name="reverseTime" {{ reverseStatus }}>
             <label for="reverseTime"> reversed &nbsp&nbsp time </label>
           </div>
           <hr>
@@ -210,7 +213,7 @@ TBD
     window.onload = function() {
       document.getElementById('audio').checked = false;
 
-      reverseTime();
+      Time();
 
       for (cat of categories) {
         if (selected.length == 0 || selected.includes(cat)) {
@@ -229,14 +232,16 @@ TBD
       }
     };
 
-    var reverseTime = function() {
+    var Time = function() {
       let buttons = document.getElementsByClassName('main')
       if (document.getElementById('reverseTime').checked) {
         if (time == 1) {
           document.body.style.backgroundImage = "url('/static/images/night.jpg')";
           color = 'white';
 
-          document.getElementById("title").src = '/static/images/ntitle.png';
+          document.getElementById('audiobut').style.filter = 'invert(1)';
+          document.getElementById("title").style.filter = 'invert(1)';
+
           for (button of buttons) {
             button.style.borderColor = 'white';
             button.style.color = 'white';
@@ -245,7 +250,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
-          document.getElementById("title").src = '/static/images/title.png'
+          document.getElementById('audiobut').style.filter = 'invert(0)';
+          document.getElementById("title").style.filter = 'invert(0)';
+
           for (button of buttons) {
             button.style.borderColor = 'black';
             button.style.color = 'black';
@@ -256,7 +263,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/night.jpg')";
           color = 'white';
 
-          document.getElementById("title").src = '/static/images/ntitle.png'
+          document.getElementById('audiobut').style.filter = 'invert(1)';
+          document.getElementById("title").style.filter = 'invert(1)';
+
           for (button of buttons) {
             button.style.borderColor = 'white';
             button.style.color = 'white';
@@ -265,7 +274,9 @@ TBD
           document.body.style.backgroundImage = "url('/static/images/day.jpg')";
           color = 'black';
 
-          document.getElementById("title").src = '/static/images/title.png'
+          document.getElementById('audiobut').style.filter = 'invert(0)';
+          document.getElementById("title").style.filter = 'invert(0)';
+
           for (button of buttons) {
             button.style.borderColor = 'black';
             button.style.color = 'black';

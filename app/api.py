@@ -1,3 +1,9 @@
+# Joyce Lin, Evan Khosh, Sean Zheng, Zixi Qiao
+# PIES
+# SoftDev
+# P01 -- ArRESTed Development
+# 12/22/2025
+
 import urllib.request
 import json
 from pprint import pprint

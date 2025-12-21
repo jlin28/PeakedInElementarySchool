@@ -492,6 +492,5 @@ CHESS ENGINE
 joyceL -- 2025-12-20 22:03
 TRIVIA
 * NEW CHANGES:
-    - formatting trivia popup
-* ERRORS/BUGS:
-    - errors are thrown when trying to pull question
+    - completed trivia popup format
+    - optimized positioning for timer

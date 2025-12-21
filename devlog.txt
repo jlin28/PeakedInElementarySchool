@@ -488,3 +488,10 @@ zixiQ -- 2025-12-20 20:27
 CHESS ENGINE
 * NEW CHANGES:
     - Added promotion handling, difficulty levels, and fixed bugs in getNextMove()
+
+joyceL -- 2025-12-20 22:03
+TRIVIA
+* NEW CHANGES:
+    - formatting trivia popup
+* ERRORS/BUGS:
+    - errors are thrown when trying to pull question

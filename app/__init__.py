@@ -197,7 +197,7 @@ def game(gamemode, difficulty):
 
             gameover = game_over(get_board_state(turn), color_to_move)
             if gameover[0]:
-                return redirect(url_for('result', winner=game_over[1], totalturns=turn))
+                return redirect(url_for('result', winner=gameover[1], totalturns=turn))
 
             #SINGLEPLAYER
             if gamemode == 'singleplayer':
@@ -328,13 +328,10 @@ def game(gamemode, difficulty):
 @app.route('/result/<string:winner>/<int:totalturns>', methods=['GET', 'POST'])
 def result(winner, totalturns):
     maxTurns = totalturns
-    turn = 1
 
     if request.method == 'POST':
-        print('bb')
         data = request.headers
-        print('headers: ')
-        print(data)
+        turn = int(data['turn'])
 
         if 'direction' in data:
             if data['direction'] == 'next':
@@ -351,9 +348,8 @@ def result(winner, totalturns):
 
     return render_template('result.html',
                             winner = winner,
-                            board = get_board_state(turn),
-                            maxTurns = maxTurns,
-                            turn = turn
+                            board = get_board_state(1),
+                            maxTurns = maxTurns
                         )
 
 @app.route('/error')

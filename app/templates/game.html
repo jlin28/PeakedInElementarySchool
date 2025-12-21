@@ -712,8 +712,6 @@ P01 -- ArRESTed Development
       trivia.send();
 
       overlay.style.display = "flex";  // show overlay
-      answersEl.innerHTML = "";
-      qImg.innerHTML = "";
 
       trivia.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -740,12 +738,18 @@ P01 -- ArRESTed Development
           } else {
             clearInterval(time);
             document.getElementById('seconds').innerHTML = timeMode;
+            answersEl.innerHTML = "";
+            qImg.innerHTML = "";
+            qEl.innerText = "Wrong :("
 
-            triviaActive = false;
-            overlay.style.display = "none";
-            correct = false;
-            triviad = true;
-            skipTurn();
+            setTimeout(function() {
+                triviaActive = false;
+                overlay.style.display = "none";
+                correct = false;
+                triviad = true;
+                skipTurn();
+              }, 2000
+            );
           }
         }, 1000);
 
@@ -762,15 +766,24 @@ P01 -- ArRESTed Development
 
           btn.onclick = function () {
             triviaActive = false;
-            overlay.style.display = "none";
-            correct = (ans === question[5][0]);
-            triviad = true;
             clearInterval(time);
             document.getElementById('seconds').innerHTML = timeMode;
+            answersEl.innerHTML = "";
+            qImg.innerHTML = "";
+            correct = (ans === question[5][0]);
 
-            if (correct) { select(position) }
-            else { skipTurn() };
-            console.log("Trivia answered:", correct ? "correct" : "incorrect");
+            if (correct) { qEl.innerText = "CORRECT!!!" }
+            else { qEl.innerText = "Wrong :("}
+
+            setTimeout(function() {
+                overlay.style.display = "none";
+                triviad = true;
+
+                if (correct) { select(position) }
+                else { skipTurn() };
+                console.log("Trivia answered:", correct ? "correct" : "incorrect");
+              }, 2000
+            );
           };
 
           answersEl.appendChild(btn);

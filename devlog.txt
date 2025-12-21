@@ -501,3 +501,9 @@ CHECKMATE
     - Reworked check system
     - Creating a checkmate system
     - Fixed issue with move system where the board was not updating
+
+seanZ -- 2025-12-21 15:15
+QUESTIONS
+* NEW CHANGES:
+    - added images to omdb
+    - removed superhero bc image doesnt work :C

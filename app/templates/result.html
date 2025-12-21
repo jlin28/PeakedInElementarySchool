@@ -227,6 +227,7 @@ P01 -- ArRESTed Development
 
         xhttp.open('POST', window.location.href, true);
         xhttp.setRequestHeader('direction', ''+direction);
+        xhttp.setRequestHeader('turn', turn);
         xhttp.send();
 
         xhttp.onload = function() {
@@ -263,9 +264,9 @@ P01 -- ArRESTed Development
       };
 
       var resetBoard = function(newBoard) {
-        let xhttp = new XMLHttpRequest();
-        xhttp.open('GET', window.location.href, true);
-        xhttp.send();
+        let reset = new XMLHttpRequest();
+        reset.open('GET', window.location.href, true);
+        reset.send();
 
         let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
         let gridlabel = ['a','b','c','d','e','f','g','h'];

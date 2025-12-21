@@ -97,7 +97,7 @@ P01 -- ArRESTed Development
     /* CURTAINS */
     #curtainleft {
       position: absolute;
-      z-index: 4;
+      z-index: 2000;
 
       background-image: url('/static/images/halfcurtain.jpg');
       background-repeat: no-repeat;
@@ -111,7 +111,7 @@ P01 -- ArRESTed Development
 
     #curtainright {
       position: absolute;
-      z-index: 4;
+      z-index: 2000;
 
       background-image: url('/static/images/halfcurtain.jpg');
       background-repeat: no-repeat;
@@ -302,7 +302,7 @@ P01 -- ArRESTed Development
   <!-- TRIVIA OVERLAY -->
   <div id="triviaOverlay">
     <div id="triviaContent">
-      <div id="timer">
+      <div style="margin-bottom: 5px;" id="timer">
         <p id='seconds'></p>
       </div>
       <h3 id="triviaQuestion"></h3>
@@ -332,6 +332,8 @@ P01 -- ArRESTed Development
     var triviad = false;
     var timeMode = {{ timeMode }};
     var correct;
+
+    var continueGame = true;
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
@@ -367,6 +369,9 @@ P01 -- ArRESTed Development
           correct = false;
           curtains(false);
 
+          unhighlightKing(inCheck);
+          inCheck = "";
+
           setTimeout( function() {
             sprite.parentNode.removeChild(sprite);
             resetBoard();
@@ -398,6 +403,11 @@ P01 -- ArRESTed Development
 
         unhighlightLegalSquares(validMoves);
         prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+      } else {
+        if (turn % 2 == 0) { inCheck = 'black' }
+        else { inCheck = 'white' };
+        unhighlightKing(inCheck);
+        inCheck = "";
       }
 
       xhttp.open('POST', window.location.href, true);
@@ -441,8 +451,9 @@ P01 -- ArRESTed Development
 
     var select = function(position) {
       let xhttp = new XMLHttpRequest();
+      let xhttp2 = new XMLHttpRequest();
 
-      if (triviaActive) return;  // ignore clicks while trivia is showing
+      if (!continueGame || triviaActive || inCheck == "checkmate") return;  // ignore clicks
 
       if (selected != null && validMoves != null) {
         if (validMoves.includes(position)) {
@@ -455,7 +466,12 @@ P01 -- ArRESTed Development
 
             xhttp.onload = function() {
               if (this.readyState == 4 && this.status == 200) {
-                newBoard = JSON.parse(this.response);
+                try {
+                  newBoard = JSON.parse(this.response);
+                } catch(e) {
+                  window.location.replace(this.responseURL);
+                  continueGame = false;
+                }
               }
             }
 
@@ -505,7 +521,7 @@ P01 -- ArRESTed Development
 
               stopMove(animTime, sprite, classnames);
           };
-        } else if (!moving) {
+        } else if (!moving && continueGame) {
         let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
         let classnames = prev.className.split(" ");
 
@@ -513,10 +529,10 @@ P01 -- ArRESTed Development
         prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
       }
       }
-      if (!moving && !triviaActive) {
-        xhttp.open('POST', window.location.href, true);
-        xhttp.setRequestHeader("select", position);
-        xhttp.send();
+      if (!moving && !triviaActive && continueGame) {
+        xhttp2.open('POST', window.location.href, true);
+        xhttp2.setRequestHeader("select", position);
+        xhttp2.send();
 
         let piece = document.getElementsByClassName(position)[1];
         selected = piece;
@@ -527,7 +543,7 @@ P01 -- ArRESTed Development
           if (colors[turn%2] == classnames[1]) {
             sprite.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/select.gif';
             // checks if xhttp request is done and there were no errors (200 -- ok request) !!
-            xhttp.onload = function() {
+            xhttp2.onload = function() {
               if (this.readyState == 4 && this.status == 200) {
                 validMoves = this.response.split(',');
               }
@@ -618,9 +634,9 @@ P01 -- ArRESTed Development
     }
 
     var resetBoard = function() {
-      let xhttp = new XMLHttpRequest();
-      xhttp.open('GET', window.location.href, true);
-      xhttp.send();
+      let reset = new XMLHttpRequest();
+      reset.open('GET', window.location.href, true);
+      reset.send();
 
       let pieces = ['rook', 'knight', 'bishop', 'queen', 'king','pawn'];
       let gridlabel = ['a','b','c','d','e','f','g','h'];
@@ -661,9 +677,6 @@ P01 -- ArRESTed Development
         }
         gridrow++;
       }
-
-      unhighlightKing(inCheck);
-      inCheck = "";
 
       let xhttpcheck = new XMLHttpRequest();
       xhttpcheck.open('POST', window.location.href, true);
@@ -824,7 +837,10 @@ P01 -- ArRESTed Development
       else { color = 'white' };
 
       highlightKing(color);
-      // setTimeout(unhighlightKing(color), 6000);
+      setTimeout(function() {
+        alert.style.display = "none";
+        skipTurn();
+      }, 4000);
     }
 
   </script>

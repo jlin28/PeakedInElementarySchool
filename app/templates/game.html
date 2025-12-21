@@ -362,7 +362,11 @@ P01 -- ArRESTed Development
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
-          turn = turn + 1;
+          if (window.location.href.includes('singleplayer')) {
+            turn = turn + 2;
+          } else {  
+            turn = turn + 1;
+          }
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           selected = null;
           triviad = false;
@@ -421,7 +425,11 @@ P01 -- ArRESTed Development
       }
 
       setTimeout(function() {
-          turn = turn + 1;
+          if (window.location.href.includes('singleplayer')) {
+            turn = turn + 2;
+          } else {
+            turn = turn + 1;
+          }
           triviad = false;
 
           selected = null;

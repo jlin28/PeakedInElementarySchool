@@ -512,3 +512,7 @@ QUESTIONS
 * NEW CHANGES
     - fixed categories
     - issue with formatting for plot question
+
+zixiQ -- 2025-12-21 18:10
+* NEW CHANGES
+    - singleplayer implemented properly

@@ -72,7 +72,7 @@ def menu():
             if cat in data:
                 selected_categories.append(cat)
         session['categories'] = selected_categories.copy()
-        print(session['categories'])
+        
         if 'singleplayer' in data:
             reset_board()
             create_game_data()

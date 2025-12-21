@@ -240,7 +240,7 @@ def create_questions(count,cache, Dtype):
                 if CorF == 1 and data['name']['common'] not in answers:
                     answers.append(data['name']['common'])
 
-        print(make_question(question, type, jumble_answers(answers), correct, img))
+        make_question(question, type, jumble_answers(answers), correct, img)
     db.commit()
     db.close()
 

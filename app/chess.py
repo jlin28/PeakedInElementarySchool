@@ -66,6 +66,12 @@ def set_board(board):
     global current_pos
     current_pos = board
 
+def remove_piece(r,c):
+    global current_pos
+    current_pos[r][c] = 0;
+    print("internal:")
+    print(current_pos)
+
 def get_internal_board():
     global current_pos
     return current_pos

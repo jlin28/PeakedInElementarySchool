@@ -162,7 +162,7 @@ P01 -- ArRESTed Development
       padding: 30px;
       border-radius: 12px;
 
-      width: min(80vw, 600px);
+      width: min(80vw, 625px);
       aspect-ratio: 1 / 1;
 
       display: flex;
@@ -204,7 +204,6 @@ P01 -- ArRESTed Development
       z-index: 1003;
 
       width: 65%;
-
     }
 
 
@@ -302,10 +301,10 @@ P01 -- ArRESTed Development
   <!-- TRIVIA OVERLAY -->
   <div id="triviaOverlay">
     <div id="triviaContent">
-      <div style="margin-bottom: 5px;" id="timer">
+      <div id="timer">
         <p id='seconds'></p>
       </div>
-      <h3 id="triviaQuestion"></h3>
+      <h3 style="padding-top: 10px;" id="triviaQuestion"></h3>
       <div id="triviaImage"></div>
       <div class="container" id="triviaAnswers"></div>
     </div>
@@ -321,7 +320,6 @@ P01 -- ArRESTed Development
   <script>
     var selected = null;
     var validMoves = null;
-    var inCheck = "";
     var moving = false;
     var newBoard = null;
     var turn = {{ turn }};
@@ -334,6 +332,8 @@ P01 -- ArRESTed Development
     var correct;
 
     var continueGame = true;
+    var inCheck = "";
+    var checkmated = "";
 
     window.onload = function() {
       document.getElementById('audio').checked = false;
@@ -397,17 +397,19 @@ P01 -- ArRESTed Development
     var skipTurn = function() {
       let xhttp = new XMLHttpRequest();
 
-      if (inCheck != "checkmate"){
-        let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
-        let classnames = prev.className.split(" ");
+      if (checkmated != "") {
+        if (inCheck != "checkmate"){
+          let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
+          let classnames = prev.className.split(" ");
 
-        unhighlightLegalSquares(validMoves);
-        prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-      } else {
-        if (turn % 2 == 0) { inCheck = 'black' }
-        else { inCheck = 'white' };
-        unhighlightKing(inCheck);
-        inCheck = "";
+          unhighlightLegalSquares(validMoves);
+          prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
+        } else {
+          if (turn % 2 == 0) { inCheck = 'black' }
+          else { inCheck = 'white' };
+          unhighlightKing(inCheck);
+          inCheck = "";
+        }
       }
 
       xhttp.open('POST', window.location.href, true);
@@ -783,6 +785,11 @@ P01 -- ArRESTed Development
                 overlay.style.display = "none";
                 correct = false;
                 triviad = true;
+
+                if (checkmated != "") {
+                  removePiece();
+                  checkmated = "";
+                };
                 skipTurn();
               }, 1500
             );
@@ -817,7 +824,13 @@ P01 -- ArRESTed Development
                 triviad = true;
 
                 if (correct) { select(position) }
-                else { skipTurn() };
+                else {
+                  if (checkmated != "") {
+                    removePiece();
+                    checkmated = "";
+                  };
+                  skipTurn();
+                };
                 console.log("Trivia answered:", correct ? "correct" : "incorrect");
               }, 1500
             );
@@ -837,10 +850,26 @@ P01 -- ArRESTed Development
       else { color = 'white' };
 
       highlightKing(color);
+      checkmated = color;
       setTimeout(function() {
         alert.style.display = "none";
         skipTurn();
       }, 4000);
+    }
+
+    var removePiece = function() {
+      console.log("im running");
+      let remove = new XMLHttpRequest();
+
+      let position = selected.className.split(" ")[2];
+      let piece = selected.querySelector("." + selected.className.split(" ")[1] + " img");
+
+      unhighlightLegalSquares(validMoves);
+      piece.parentNode.removeChild(piece);
+
+      remove.open("POST", window.location.href, true);
+      remove.setRequestHeader("remove", position);
+      remove.send();
     }
 
   </script>

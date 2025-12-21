@@ -141,13 +141,8 @@ def game(gamemode, difficulty):
 
             if not in_check(board, color):
                 return ""
-
-            for row in range(len(board)):
-                for col in range(len(board)):
-                    if turn % 2 != 0 and board[row][col] == 5:
-                        return gridlabel[7-col]+str(7-row)
-                    if turn % 2 == 0 and board[row][col] == -5:
-                        return gridlabel[col]+str(row)
+            else:
+                return color
 
         #SELECT
         if 'select' in data:

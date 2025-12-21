@@ -345,6 +345,7 @@ P01 -- ArRESTed Development
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           selected = null;
           triviad = false;
+          correct = false;
           curtains(false);
 
           setTimeout( function() {
@@ -651,6 +652,8 @@ P01 -- ArRESTed Development
       xhttpcheck.onload = function() {
         if (this.status == 200) {
           inCheck = this.responseText;
+          console.log("inCheck:");
+          console.log(inCheck);
           highlightKing(inCheck);
         }
       }
@@ -674,14 +677,18 @@ P01 -- ArRESTed Development
       }
     }
 
-    var highlightKing = function(square) {
-      if (square != "") {
+    var highlightKing = function(color) {
+      if (color != "") {
+        console.log(color);
+        square = document.getElementsByClassName("center " + color + " piece king")[0].parentElement.className.split(" ")[2];
+        console.log(square);
         document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
 
-    var unhighlightKing = function(square) {
-      if (square != "") {
+    var unhighlightKing = function(color) {
+      if (color != "") {
+        square = document.getElementsByClassName("center " + color + " piece king")[0].parentElement.className.split(" ")[2];
         document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0)';
       }
     }

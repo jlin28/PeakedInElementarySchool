@@ -24,6 +24,7 @@ def make_tables():
             plot TEXT NOT NULL,
             director TEXT NOT NULL,
             rating TEXT NOT NULL,
+            img TEXT NOT NULL,
             released TEXT NOT NULL
         )"""
     )
@@ -40,7 +41,7 @@ def make_tables():
     )
     db.commit()
     db.close()
-#make_tables() #for remaking tables
+make_tables() #for remaking tables
 #=============================QUESTIONS=============================#
 
 #films
@@ -50,8 +51,8 @@ def add_film(data):
     c = db.cursor()
     count = c.execute(f'SELECT COUNT(*) FROM films')
     count = count.fetchone()[0]
-    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?)'
-    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Released'])
+    command = 'INSERT INTO films VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    vars = (count, data['Title'], data['Genre'], data['Plot'], data['Director'], data['imdbRating'], data['Poster'], data['Released'])
     c.execute(command, vars)
 
     db.commit()
@@ -93,7 +94,7 @@ def create_questions(count,cache, Dtype):
     DB_FILE="data.db"
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    types = ["OMDB", "Spanish", "Superhero", "Synonyms", "RickAndMorty", "Countries"]
+    types = ["OMDB", "Spanish", "Synonyms", "RickAndMorty", "Countries"]
     if  Dtype != None:
         type = Dtype
     answers = []
@@ -109,11 +110,12 @@ def create_questions(count,cache, Dtype):
             total = total.fetchone()[0] - 1
             while len(answers) < 1:
                 if cache == False:
-                    data = apiCall(type)
+                    data = apiCall("film")
                     add_film(data)
                     title = data['Title']
                     director = data['Director']
                     plot = data['Plot']
+                    img = data['Poster']
                 else:
                     random_id = random.randint(0,total)
                     command = ("SELECT * FROM films WHERE id = ?")
@@ -122,6 +124,7 @@ def create_questions(count,cache, Dtype):
                     title = row[1]
                     director = row[4]
                     plot = row[3]
+                    img = row[6]
                 if DorP == 0 and director != "N/A":
                     answers.append(director)
                 if DorP == 1:
@@ -145,7 +148,6 @@ def create_questions(count,cache, Dtype):
             if DorP == 1:
                 question = f"What is the Plot of {title}?"
                 correct = plot
-            img = None
 
         if type == "Spanish":
             while len(answers) < 1:
@@ -175,7 +177,7 @@ def create_questions(count,cache, Dtype):
                         answers.append(sdef)
             question = f"What is the Spanish Translation of {word}?"
             img = None
-
+        #superhero is blocked off in __init__.py due to the image requiring human verification -> error loading the image
         if type == "Superhero":
             data = apiCall("superhero")
             correct = data['name']
@@ -241,7 +243,8 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-#create_questions(200, True, None) #to create questions
+#create_questions(500, True, None) #to create questions
+#add_film(apiCall("film"))
 
 # game
 def create_game_data():

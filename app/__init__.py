@@ -199,7 +199,7 @@ def game(gamemode, difficulty):
 
             gameover = game_over(get_board_state(turn), color_to_move)
             if gameover[0]:
-                return redirect(url_for('result', winner=game_over[1]))
+                return redirect(url_for('result', winner=game_over[1], totalturns=turn))
 
             incheckmate = in_checkmate(get_board_state(turn), color_to_move)
             if incheckmate[0] and gamemode != 'singleplayer':
@@ -237,12 +237,13 @@ def game(gamemode, difficulty):
 
                 gameover = game_over(get_board_state(turn), color_to_move)
                 if gameover[0]:
-                    return redirect(url_for('result', winner=game_over[1]))
+                    return redirect(url_for('result', winner=game_over[1], totalturns=turn))
 
                 incheckmate = in_checkmate(get_board_state(turn), color_to_move)
                 if incheckmate[0]:
                     return get_board_state(turn) #tell them theyre in checkmate somehow
 
+            print(get_board_state(turn))
             return get_board_state(turn)
 
         if 'skip' in data:
@@ -295,7 +296,7 @@ def game(gamemode, difficulty):
 
                     gameover = game_over(get_board_state(turn), color_to_move)
                     if gameover[0]:
-                        return redirect(url_for('result', winner=game_over[1]))
+                        return redirect(url_for('result', winner=game_over[1], totalturns=turn))
 
                     incheckmate = in_checkmate(get_board_state(turn), color_to_move)
                     if incheckmate[0]:

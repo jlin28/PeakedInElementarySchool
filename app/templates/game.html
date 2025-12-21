@@ -436,6 +436,7 @@ P01 -- ArRESTed Development
               }
             }
 
+            moving = true;
             unhighlightLegalSquares(validMoves);
 
             let board = document.getElementById('buttons');
@@ -686,7 +687,7 @@ P01 -- ArRESTed Development
     }
 
     function showTrivia(position) {
-      let xhttp = new XMLHttpRequest();
+      let trivia = new XMLHttpRequest();
       triviaActive = true;
 
       const overlay = document.getElementById("triviaOverlay");
@@ -695,15 +696,15 @@ P01 -- ArRESTed Development
       const answersEl = document.getElementById("triviaAnswers");
       let question;
 
-      xhttp.open('POST', window.location.href, true);
-      xhttp.setRequestHeader("trivia", 'aa');
-      xhttp.send();
+      trivia.open('POST', window.location.href, true);
+      trivia.setRequestHeader("trivia", 'aa');
+      trivia.send();
 
       overlay.style.display = "flex";  // show overlay
       answersEl.innerHTML = "";
       qImg.innerHTML = "";
 
-      xhttp.onload = function() {
+      trivia.onload = function() {
         if (this.readyState == 4 && this.status == 200) {
           question = JSON.parse(this.response);
         }
@@ -737,7 +738,7 @@ P01 -- ArRESTed Development
           }
         }, 1000);
 
-        question[4].forEach((ans, idx) => {
+        question[4].forEach(ans => {
           const btn = document.createElement("button");
           btn.className = "trivia";
           btn.innerText = ans;
@@ -751,7 +752,7 @@ P01 -- ArRESTed Development
           btn.onclick = function () {
             triviaActive = false;
             overlay.style.display = "none";
-            correct = (idx === question[5]);
+            correct = (ans === question[5][0]);
             triviad = true;
             clearInterval(time);
             document.getElementById('seconds').innerHTML = timeMode;

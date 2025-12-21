@@ -12,7 +12,6 @@ from db import *
 from chess import *
 from pprint import pprint
 from random import randint
-# from api import apiCall
 
 app = Flask(__name__)
 app.secret_key = 'help'
@@ -25,7 +24,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -203,7 +202,7 @@ def game(gamemode, difficulty):
 
             gameover = game_over(get_board_state(turn), color_to_move)
             if gameover[0]:
-                return redirect(url_for('result', winner=game_over[1], totalturns=turn))
+                return redirect(url_for('result', winner=gameover[1], totalturns=turn))
 
             #SINGLEPLAYER
             if gamemode == 'singleplayer':
@@ -359,13 +358,10 @@ def game(gamemode, difficulty):
 @app.route('/result/<string:winner>/<int:totalturns>', methods=['GET', 'POST'])
 def result(winner, totalturns):
     maxTurns = totalturns
-    turn = 1
 
     if request.method == 'POST':
-        print('bb')
-        data = request.form
-        print('headers: ')
-        print(data)
+        data = request.headers
+        turn = int(data['turn'])
 
         if 'direction' in data:
             if data['direction'] == 'next':
@@ -382,9 +378,8 @@ def result(winner, totalturns):
 
     return render_template('result.html',
                             winner = winner,
-                            board = get_board_state(turn),
-                            maxTurns = maxTurns,
-                            turn = turn
+                            board = get_board_state(1),
+                            maxTurns = maxTurns
                         )
 
 @app.route('/error')

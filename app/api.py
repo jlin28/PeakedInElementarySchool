@@ -63,10 +63,11 @@ def apiCall(api, color_to_move=None, difficulty=None):
     if api == "chess":
         # MAKE SURE COLOR_TO_MOVE AND DIFFICULTY ARE NOT NONE
         return getNextMove(board_to_fen(get_internal_board(), color_to_move, castling_state, en_passant), difficulty)
-    raise ParameterError("wrong parameter used")
+    raise Exception("wrong parameter used")
     return ""
 
 def getFilm(count):
+    #print(count)
     ID = ""
     for i in range(7):
         num = random.randint(0, 9)
@@ -74,13 +75,13 @@ def getFilm(count):
     if ID == "0000000":
         return getFilm(count+1)
     ID = "tt" + ID
-    #ID = "tt0062873" #for manually slapping in ilms
+    #ID = "tt0088247" #for manually slapping in ilms
     OMDB_URL = f"https://www.omdbapi.com/?i={ID}&apikey={OMDB_KEY}"
     with urllib.request.urlopen(OMDB_URL) as response:
         raw_data = response.read()
 
     data = json.loads(raw_data)
-    #print(data)
+    #pprint(data)
     if 'imdbVotes' not in data: #some ids don't work, so retry
         return getFilm(count+1)
     rating = data['imdbVotes']

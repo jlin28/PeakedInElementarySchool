@@ -76,7 +76,6 @@ def menu():
 
         if 'singleplayer' in data:
             reset_board()
-            # create_questions()
             create_game_data()
 
             session['turns'] = 1
@@ -89,11 +88,10 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='singleplayer', difficulty=session['difficulty']))
 
         if 'multiplayer' in data:
             reset_board()
-            # create_questions()
             create_game_data()
 
             session['turns'] = 1
@@ -106,7 +104,7 @@ def menu():
                              [6,6,6,6,6,6,6,6],
                              [1,2,3,4,5,3,2,1]])
 
-            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty'], categoriesstr="%SPLIT%".join(session['categories'])))
+            return redirect(url_for('game', gamemode='multiplayer', difficulty=session['difficulty']))
 
     return render_template('menu.html',
                             time = curTime,
@@ -119,8 +117,8 @@ def menu():
                             categories=question_categories,
                             selected=selected_categories)
 
-@app.route('/game/<string:gamemode>/<int:difficulty>/<string:categoriesstr>', methods=['GET', 'POST'])
-def game(gamemode, difficulty, categoriesstr):
+@app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
+def game(gamemode, difficulty):
     turn = session['turns']
     current_pos = get_board_state(turn)
 
@@ -129,8 +127,6 @@ def game(gamemode, difficulty, categoriesstr):
     cache = 'cache' in session
     selected_categories = session['categories'].copy()
     timeMode = 10 + ((2-difficulty)*20)
-
-    categories = categoriesstr.split("%SPLIT%")
 
     if request.method == 'POST':
         data = request.headers

@@ -11,7 +11,6 @@ from db import *
 from chess import *
 from pprint import pprint
 from random import randint
-# from api import apiCall
 
 app = Flask(__name__)
 app.secret_key = 'help'
@@ -24,7 +23,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']

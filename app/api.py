@@ -2,6 +2,7 @@ import urllib.request
 import json
 from pprint import pprint
 import random
+from chess import *
 
 #setup
 
@@ -21,9 +22,10 @@ SUPERHERO_KEY = ""
 THESAURUS_KEY = ""
 RICK_AND_MORTY_URL = "https://rickandmortyapi.com/api"
 COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
+CHESS_ENGINE_URL = "https://chess-api.com/v1"
 
 #gives a random set of data for specific api
-def apiCall(api):
+def apiCall(api, color_to_move=None, difficulty=None):
     global OMDB_KEY
     global SPANISH_ENGLISH_KEY
     global SUPERHERO_KEY
@@ -52,7 +54,9 @@ def apiCall(api):
         return getPickle()
     if api == "country":
         return getCountry()
-
+    if api == "chess":
+        # MAKE SURE COLOR_TO_MOVE AND DIFFICULTY ARE NOT NONE
+        return getNextMove(board_to_fen(get_internal_board(), color_to_move, castling_state, en_passant), difficulty)
     raise ParameterError("wrong parameter used")
     return ""
 
@@ -136,4 +140,42 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-#print(apiCall("country"))
+def getNextMove(fen, difficulty):
+    depth = 5
+    if difficulty == "Easy":
+        depth = 3
+    elif difficulty == "Medium":
+        depth = 5
+    elif difficulty == "Hard":
+        depth = 7
+    data_dict = {
+        "fen": fen,
+        "depth": depth
+    }
+
+    data = json.dumps(data_dict).encode("utf-8")
+
+    req = urllib.request.Request(
+        CHESS_ENGINE_URL,
+        data=data,
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req) as response:
+        raw = response.read()
+
+    move_list = json.loads(raw).get("text").split()
+
+    start_square = move_list[1]
+    r1 = -int(start_square[1]) + 8
+    c1 = start_square[0]
+    c1 = ord(c1) - 97 # convert from letter column to number index
+    end_square = move_list[3]
+    r2 = -int(end_square[1]) + 8
+    c2 = end_square[0]
+    c2 = ord(c2) - 97
+    promotion_piece = None
+    if len(move_list[4]) > 5 and move_list[4][2].isdigit():
+        promotion_piece = move_list[4][4]
+    return r1, c1, r2, c2, promotion_piece

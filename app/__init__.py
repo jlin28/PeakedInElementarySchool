@@ -315,15 +315,18 @@ def game(gamemode, difficulty, categoriesstr):
             return get_board_state(turn)
 
         if 'trivia' in data:
+            cat = random.choice(selected_categories)
             if (cache):
-                return get_random_question(random.choice(selected_categories))
+                return get_random_question(cat)
             else:
                 try:
-                    create_questions(1, True, random.choice(selected_categories))
+                    print('category:')
+                    print(cat)
+                    create_questions(1, True, cat)
                     return get_question(get_latest_id())
                 except Exception:
                     print("Error Found")
-                    return redirect(url_for('error'))
+                    return get_random_question(cat)
 
     return render_template('game.html',
                                 board = get_board_state(turn),

@@ -82,7 +82,7 @@ TBD
     }
 
     /* BUTTONS GRID */
-    button {
+    button:not(.trivia) {
       position: absolute;
       z-index: 3;
       margin-left: -12px;
@@ -156,16 +156,16 @@ TBD
     }
 
     #triviaContent {
+      position: relative;
       background: #f4f1ea;
       padding: 30px;
       border-radius: 12px;
 
-      width: min(80vw, 500px);
+      width: min(80vw, 600px);
       aspect-ratio: 1 / 1;
 
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
 
       text-align: center;
@@ -173,23 +173,28 @@ TBD
     }
 
     .triviaImg {
-      position: absolute;
-      z-index: 1002;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%)
+      margin: -60px;
+      transform: scale(50%);
     }
 
     #timer {
       position: absolute;
       z-index: 1001;
 
-      top: 29%;
-      left: 60%;
-      transform: translate(-40%, -71%);
+      top: 12%;
+      left: 90%;
+      transform: translate(-10%, -88%);
 
       font-size: 250%;
       font-family: font;
+    }
+
+    #triviaAnswers {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      text-align: center;
     }
 
 
@@ -211,7 +216,7 @@ TBD
 
   <input type="checkbox" id="audio" onclick="Aud()" style="border-style:none;">
   <label for="audio">
-    <img style="width:50px;height:auto;position:absolute;left:5px;top:2px"
+    <img style="width:50px;height:auto;position:absolute;left:5px;top:0"
       src="/static/images/mute.png">
   </label>
 
@@ -277,13 +282,13 @@ TBD
 
 <!-- TRIVIA OVERLAY -->
 <div id="triviaOverlay">
-  <div id="timer">
-    <p id='seconds'></p>
-  </div>
   <div id="triviaContent">
+    <div id="timer">
+      <p id='seconds'></p>
+    </div>
     <h3 id="triviaQuestion"></h3>
     <div id="triviaImage"></div>
-    <div id="triviaAnswers"></div>
+    <div class="container" id="triviaAnswers"></div>
   </div>
 </div>
 
@@ -733,14 +738,15 @@ TBD
         }, 1000);
 
         question[4].forEach((ans, idx) => {
-          const cont = document.createElement('div');
-          cont.className = "row";
-
           const btn = document.createElement("button");
+          btn.className = "trivia";
           btn.innerText = ans;
           btn.style.display = "block";
-          btn.style.margin = "8px auto";
           btn.style.padding = "8px 16px";
+          btn.style.marginBottom = "10px";
+          btn.style.marginTop = "10px";
+          btn.style.borderStyle = 'solid';
+          btn.style.background = 'none';
 
           btn.onclick = function () {
             triviaActive = false;
@@ -755,8 +761,7 @@ TBD
             console.log("Trivia answered:", correct ? "correct" : "incorrect");
           };
 
-          cont.appendChild(btn);
-          answersEl.appendChild(cont);
+          answersEl.appendChild(btn);
         });
       }
     }

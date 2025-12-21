@@ -41,7 +41,7 @@ def make_tables():
     )
     db.commit()
     db.close()
-#make_tables() #for remaking tables
+make_tables() #for remaking tables
 #=============================QUESTIONS=============================#
 
 #films
@@ -148,7 +148,6 @@ def create_questions(count,cache, Dtype):
             if DorP == 1:
                 question = f"What is the Plot of {title}?"
                 correct = plot
-            img = None
 
         if type == "Spanish":
             while len(answers) < 1:
@@ -244,7 +243,7 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-#create_questions(1000, True, None) #to create questions
+#create_questions(500, True, None) #to create questions
 #add_film(apiCall("film"))
 
 # game

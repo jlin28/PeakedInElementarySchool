@@ -139,8 +139,12 @@ def game(gamemode, difficulty):
             if turn % 2 == 0:
                 color = 'black'
 
+            incheckmate = in_checkmate(get_board_state(turn), color)
+
             if not in_check(board, color):
                 return ""
+            elif incheckmate[0] and gamemode != 'singleplayer':
+                return 'checkmate'
             else:
                 return color
 
@@ -195,10 +199,6 @@ def game(gamemode, difficulty):
             gameover = game_over(get_board_state(turn), color_to_move)
             if gameover[0]:
                 return redirect(url_for('result', winner=game_over[1], totalturns=turn))
-
-            incheckmate = in_checkmate(get_board_state(turn), color_to_move)
-            if incheckmate[0] and gamemode != 'singleplayer':
-                return get_board_state(turn) #tell them theyre in checkmate somehow
 
             #SINGLEPLAYER
             if gamemode == 'singleplayer':

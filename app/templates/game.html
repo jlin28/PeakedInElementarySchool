@@ -654,7 +654,11 @@ P01 -- ArRESTed Development
           inCheck = this.responseText;
           console.log("inCheck:");
           console.log(inCheck);
-          highlightKing(inCheck);
+          if (inCheck != "checkmate") {
+            highlightKing(inCheck);
+          } else {
+            // checkmate(); function that creates a popup telling you that you are in checkmate and turn skipped
+          }
         }
       }
     }

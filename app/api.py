@@ -141,13 +141,13 @@ def getCountry():
     return data
 
 def getNextMove(fen, difficulty):
-    depth = 4
+    depth = 5
     if difficulty == "Easy":
-        depth = 2
+        depth = 3
     elif difficulty == "Medium":
-        depth = 4
+        depth = 5
     elif difficulty == "Hard":
-        depth = 6
+        depth = 7
     data_dict = {
         "fen": fen,
         "depth": depth
@@ -176,6 +176,6 @@ def getNextMove(fen, difficulty):
     c2 = end_square[0]
     c2 = ord(c2) - 97
     promotion_piece = None
-    if len(move_list[4]) > 5:
+    if len(move_list[4]) > 5 and move_list[4][2].isdigit():
         promotion_piece = move_list[4][4]
     return r1, c1, r2, c2, promotion_piece

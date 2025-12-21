@@ -146,7 +146,7 @@ def game(gamemode, difficulty):
             return validarr[1:]
 
         if 'move' in data:
-            positions = data['move'].split("+");
+            positions = data['move'].split("+")
 
             session['turns'] = session['turns'] + 1
             turn += 1

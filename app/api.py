@@ -25,7 +25,7 @@ COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 CHESS_ENGINE_URL = "https://chess-api.com/v1"
 
 #gives a random set of data for specific api
-def apiCall(api):
+def apiCall(api, color_to_move=None):
     global OMDB_KEY
     global SPANISH_ENGLISH_KEY
     global SUPERHERO_KEY
@@ -55,8 +55,8 @@ def apiCall(api):
     if api == "country":
         return getCountry()
     if api == "chess":
-        return getNextMove(board_to_fen(get_internal_board(), "white", castling_state, en_passant)) # update with color to move
-
+        # MAKE SURE COLOR_TO_MOVE IS NOT NONE
+        return getNextMove(board_to_fen(get_internal_board(), color_to_move, castling_state, en_passant))
     raise ParameterError("wrong parameter used")
     return ""
 
@@ -169,4 +169,7 @@ def getNextMove(fen):
     r2 = -int(end_square[1]) + 8
     c2 = end_square[0]
     c2 = ord(c2) - 97
-    return r1, c1, r2, c2
+    promotion_piece = None
+    if len(move_list[4]) > 5:
+        promotion_piece = move_list[4][4]
+    return r1, c1, r2, c2, promotion_piece

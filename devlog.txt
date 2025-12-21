@@ -507,3 +507,8 @@ QUESTIONS
 * NEW CHANGES:
     - added images to omdb
     - removed superhero bc image doesnt work :C
+
+    -- 2025-12-21 15:56
+* NEW CHANGES
+    - fixed categories
+    - issue with formatting for plot question

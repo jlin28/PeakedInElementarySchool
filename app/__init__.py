@@ -48,7 +48,7 @@ def menu():
         if 'reverseTime' in session:
             reverseStatus = 'checked'
 
-        selected_categories = session['categories'].copy()
+        selected_categories = []
 
     # CREATES NEW GAME
     if request.method == 'POST':
@@ -73,7 +73,7 @@ def menu():
             if cat in data:
                 selected_categories.append(cat)
         session['categories'] = selected_categories.copy()
-
+        
         if 'singleplayer' in data:
             reset_board()
             create_game_data()
@@ -310,6 +310,17 @@ def game(gamemode, difficulty):
                 except Exception:
                     print("Error Found")
                     return get_random_question(cat)
+        if 'remove' in data:
+            position = data['remove']
+            print(position)
+
+            if turn % 2 != 0:
+                remove_piece(int(position[1]), gridlabel.index(position[0]))
+            else:
+                remove_piece(7-int(position[1]), 7-gridlabel.index(position[0]))
+            print('remove:')
+            print(str(7-int(position[1])) + "," + str(7-gridlabel.index(position[0])))
+            print(get_internal_board())
 
     if gamemode == 'singleplayer':
         display_board = get_display_board(get_internal_board(), 'white')

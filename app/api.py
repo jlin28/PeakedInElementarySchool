@@ -25,7 +25,7 @@ COUNTRIES_URL = "https://restcountries.com/v3.1/capital/all"
 CHESS_ENGINE_URL = "https://chess-api.com/v1"
 
 #gives a random set of data for specific api
-def apiCall(api, color_to_move=None):
+def apiCall(api, color_to_move=None, difficulty=None):
     global OMDB_KEY
     global SPANISH_ENGLISH_KEY
     global SUPERHERO_KEY
@@ -55,8 +55,8 @@ def apiCall(api, color_to_move=None):
     if api == "country":
         return getCountry()
     if api == "chess":
-        # MAKE SURE COLOR_TO_MOVE IS NOT NONE
-        return getNextMove(board_to_fen(get_internal_board(), color_to_move, castling_state, en_passant))
+        # MAKE SURE COLOR_TO_MOVE AND DIFFICULTY ARE NOT NONE
+        return getNextMove(board_to_fen(get_internal_board(), color_to_move, castling_state, en_passant), difficulty)
     raise ParameterError("wrong parameter used")
     return ""
 
@@ -140,9 +140,17 @@ def getCountry():
     data = json.loads(raw_data)
     return data
 
-def getNextMove(fen):
+def getNextMove(fen, difficulty):
+    depth = 4
+    if difficulty == "Easy":
+        depth = 2
+    elif difficulty == "Medium":
+        depth = 4
+    elif difficulty == "Hard":
+        depth = 6
     data_dict = {
-        "fen": fen
+        "fen": fen,
+        "depth": depth
     }
 
     data = json.dumps(data_dict).encode("utf-8")

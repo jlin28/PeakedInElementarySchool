@@ -11,6 +11,7 @@ from db import *
 from chess import *
 from pprint import pprint
 from random import randint
+from api import apiCall
 
 app = Flask(__name__)
 app.secret_key = 'help'
@@ -23,7 +24,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['OMDB', 'Countries', 'Spanish', 'Synonyms','RickAndMorty']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -118,9 +119,9 @@ def menu():
 
 @app.route('/game/<string:gamemode>/<int:difficulty>', methods=['GET', 'POST'])
 def game(gamemode, difficulty):
+    global en_passant, castling_state
     turn = session['turns']
-    current_pos = get_board_state(turn)
-
+    
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     cache = 'cache' in session
@@ -132,13 +133,14 @@ def game(gamemode, difficulty):
 
         #CHECK
         if 'check' in data:
-            board = get_board_state(turn)
-            if turn % 2 != 0:
-                color = 'white'
-            if turn % 2 == 0:
-                color = 'black'
+            board = get_internal_board()
+            # In singleplayer, human is white, AI is black
+            if gamemode == 'singleplayer':
+                color = 'white' if turn % 2 != 0 else 'black'
+            else:
+                color = 'white' if turn % 2 != 0 else 'black'
 
-            incheckmate = in_checkmate(get_board_state(turn), color)
+            incheckmate = in_checkmate(board, color)
 
             if not in_check(board, color):
                 return ""
@@ -147,178 +149,167 @@ def game(gamemode, difficulty):
             else:
                 return color
 
-        #SELECT
+        # SELECT
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
-            if turn % 2 == 0:
-                position[0] = 7 - position[0]
-                position[1] = 7 - position[1]
-
-            for x,y in legal_squares(get_display_board(get_internal_board()), position[1], position[0], en_passant):
-                if turn % 2 != 0:
+    
+            if gamemode == 'singleplayer':
+                # SINGLEPLAYER: always use white's perspective
+                for x,y in legal_squares(get_display_board(get_internal_board()), position[1], position[0], en_passant):
                     validarr = validarr + ',' + gridlabel[y]+str(x)
-                else:
-                    validarr = validarr + ',' + gridlabel[7-y]+str(7-x)
+            else:
+                # MULTIPLAYER
+                if turn % 2 == 0:
+                    position[0] = 7 - position[0]
+                    position[1] = 7 - position[1]
+
+                for x,y in legal_squares(get_display_board(get_internal_board()), position[1], position[0], en_passant):
+                    if turn % 2 != 0:
+                        validarr = validarr + ',' + gridlabel[y]+str(x)
+                    else:
+                        validarr = validarr + ',' + gridlabel[7-y]+str(7-x)
             return validarr[1:]
 
         #MOVE
         if 'move' in data:
             positions = data['move'].split("+")
 
-            session['turns'] = session['turns'] + 1
-            turn += 1
-
-            color = ''
-            color_to_move = ''
-
-            if turn % 2 == 0:
-                color = 'black'
-                color_to_move = 'white'
-                newBoard = simulate_move(get_display_board(get_internal_board()),
-                    int(positions[0][1]), gridlabel.index(positions[0][0]),
-                    int(positions[1][1]), gridlabel.index(positions[1][0]),
-                    None,
-                    castling_state
-                )[0]
-            else:
-                color = 'white'
-                color_to_move = 'black'
-                newBoard = simulate_move(get_display_board(get_internal_board()),
-                    7-int(positions[0][1]), 7-gridlabel.index(positions[0][0]),
-                    7-int(positions[1][1]), 7-gridlabel.index(positions[1][0]),
-                    None,
-                    castling_state
-                )[0]
-
-            set_board(newBoard)
-
-            make_board_state(turn, get_display_board(newBoard, color))
-
-            gameover = game_over(get_board_state(turn), color_to_move)
-            if gameover[0]:
-                return redirect(url_for('result', winner=gameover[1], totalturns=turn))
-
-            #SINGLEPLAYER
             if gamemode == 'singleplayer':
-                session['turns'] = session['turns'] + 1
-                turn += 1
-
-                if turn % 2 == 0:
+                # Human (white) move - use display coordinates directly
+                start_x = int(positions[0][1])
+                start_y = gridlabel.index(positions[0][0])
+                end_x = int(positions[1][1])
+                end_y = gridlabel.index(positions[1][0])
+                
+                result = simulate_move(get_internal_board(),
+                    start_x, start_y,
+                    end_x, end_y,
+                    en_passant,
+                    castling_state
+                )
+                newBoard = result[0]
+                en_passant = result[1]
+                castling_state = result[2]
+                
+                set_board(newBoard)
+                session['turns'] += 1
+                turn = session['turns']
+                make_board_state(turn, newBoard) # Store internal board
+                
+                # Check if human won
+                gameover = game_over(newBoard, 'black')
+                if gameover[0]:
+                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
+                
+                # AI (black) moves
+                ai_move = apiCall("chess", "black", difficulty=["Easy", "Medium", "Hard"][difficulty])
+                result = simulate_move(newBoard,
+                    ai_move[0], ai_move[1],
+                    ai_move[2], ai_move[3],
+                    en_passant,
+                    castling_state
+                )
+                ai_board = result[0]
+                en_passant = result[1]
+                castling_state = result[2]
+                
+                set_board(ai_board)
+                session['turns'] += 1
+                turn = session['turns']
+                make_board_state(turn, ai_board)  # Store internal board
+                
+                # Check if AI won
+                gameover = game_over(ai_board, 'white')
+                if gameover[0]:
+                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
+                
+                # Return display board for white
+                return get_display_board(ai_board, 'white')
+                
+            else:
+                # MULTIPLAYER
+                if turn % 2 == 0:  # Black's turn
+                    # Convert display coordinates to internal coordinates
+                    start_x = 7 - int(positions[0][1])
+                    start_y = 7 - gridlabel.index(positions[0][0])
+                    end_x = 7 - int(positions[1][1])
+                    end_y = 7 - gridlabel.index(positions[1][0])
                     color = 'black'
                     color_to_move = 'white'
-                    bot_move = apiCall(get_display_board(get_internal_board()), color)
-                    newBoard = simulate_move(get_display_board(get_internal_board()),
-                        bot_move[0], bot_move[1],
-                        bot_move[2], bot_move[3],
-                        None,
-                        castling_state
-                    )[0]
-                else:
+                else:  # White's turn
+                    start_x = int(positions[0][1])
+                    start_y = gridlabel.index(positions[0][0])
+                    end_x = int(positions[1][1])
+                    end_y = gridlabel.index(positions[1][0])
                     color = 'white'
                     color_to_move = 'black'
-                    bot_move = apiCall(get_display_board(get_internal_board()), color)
-                    newBoard = simulate_move(get_display_board(get_internal_board()),
-                        bot_move[0], bot_move[1],
-                        bot_move[2], bot_move[3],
-                        None,
-                        castling_state
-                    )[0]
-
+                
+                result = simulate_move(get_internal_board(),
+                    start_x, start_y,
+                    end_x, end_y,
+                    en_passant,
+                    castling_state
+                )
+                newBoard = result[0]
+                en_passant = result[1]
+                castling_state = result[2]
+                
                 set_board(newBoard)
+                session['turns'] += 1
+                turn = session['turns']
+                make_board_state(turn, newBoard)  # Store internal board
 
-                make_board_state(turn, get_display_board(newBoard, color))
-
-                gameover = game_over(get_board_state(turn), color_to_move)
+                gameover = game_over(newBoard, color_to_move)
                 if gameover[0]:
-                    return redirect(url_for('result', winner=game_over[1], totalturns=turn))
+                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
 
-                incheckmate = in_checkmate(get_board_state(turn), color_to_move)
-                if incheckmate[0]:
-                    return get_board_state(turn) #tell them theyre in checkmate somehow
-
-            print(get_board_state(turn))
-            return get_board_state(turn)
+                # Return display board for next player
+                next_color = 'white' if turn % 2 != 0 else 'black'
+                return get_display_board(newBoard, next_color)
 
         if 'skip' in data:
-            session['turns'] = session['turns'] + 1
-            turn += 1
-
-            if turn % 2 == 0:
-                color = 'black'
-            else:
-                color = 'white'
-
-            make_board_state(turn, get_display_board(get_internal_board(), color))
-
             if gamemode == 'singleplayer':
-                session['turns'] = session['turns'] + 1
-                turn += 1
-
-                if gamemode == 0:
-                    chance = 65
-                elif gamemode == 1:
-                    chance = 80
-                else:
-                    chance = 95
-
-                if randint(0, 99) < chance:
-                    if turn % 2 == 0:
-                        color = 'black'
-                        color_to_move = 'white'
-                        bot_move = apiCall(get_display_board(get_internal_board()), color)
-                        newBoard = simulate_move(get_display_board(get_internal_board()),
-                            bot_move[0], bot_move[1],
-                            bot_move[2], bot_move[3],
-                            None,
-                            castling_state
-                        )[0]
-                    else:
-                        color = 'white'
-                        color_to_move = 'black'
-                        bot_move = apiCall(get_display_board(get_internal_board()), color)
-                        newBoard = simulate_move(get_display_board(get_internal_board()),
-                            bot_move[0], bot_move[1],
-                            bot_move[2], bot_move[3],
-                            None,
-                            castling_state
-                        )[0]
-
-                    set_board(newBoard)
-
-                    make_board_state(turn, get_display_board(newBoard, color))
-
-                    gameover = game_over(get_board_state(turn), color_to_move)
-                    if gameover[0]:
-                        return redirect(url_for('result', winner=game_over[1], totalturns=turn))
-
-                    incheckmate = in_checkmate(get_board_state(turn), color_to_move)
-                    if incheckmate[0]:
-                        return get_board_state(turn) #tell them theyre in checkmate somehow
-                else:
-                    if turn % 2 == 0:
-                        color = 'black'
-                    else:
-                        color = 'white'
-
-                    make_board_state(turn, get_display_board(get_internal_board(), color))
-
-            return get_board_state(turn)
+                # Human got trivia wrong, AI moves
+                ai_move = apiCall("chess", "black", difficulty=["Easy", "Medium", "Hard"][difficulty])
+                result = simulate_move(get_internal_board(),
+                    ai_move[0], ai_move[1],
+                    ai_move[2], ai_move[3],
+                    en_passant,
+                    castling_state
+                )
+                ai_board = result[0]
+                en_passant = result[1]
+                castling_state = result[2]
+                
+                set_board(ai_board)
+                session['turns'] += 1
+                turn = session['turns']
+                make_board_state(turn, ai_board)
+                
+                gameover = game_over(ai_board, 'white')
+                if gameover[0]:
+                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
+                
+                return get_display_board(ai_board, 'white')
+            else:
+                # Multiplayer skip
+                session['turns'] += 1
+                turn = session['turns']
+                next_color = 'white' if turn % 2 != 0 else 'black'
+                return get_display_board(get_internal_board(), next_color)
 
         if 'trivia' in data:
             cat = random.choice(selected_categories)
-            if (cache):
+            if cache:
                 return get_random_question(cat)
             else:
                 try:
-                    print('category:')
-                    print(cat)
                     create_questions(1, True, cat)
                     return get_question(get_latest_id())
                 except Exception:
                     print("Error Found")
                     return get_random_question(cat)
-
         if 'remove' in data:
             position = data['remove']
             print(position)
@@ -331,9 +322,14 @@ def game(gamemode, difficulty):
             print(str(7-int(position[1])) + "," + str(7-gridlabel.index(position[0])))
             print(get_internal_board())
 
-
+    if gamemode == 'singleplayer':
+        display_board = get_display_board(get_internal_board(), 'white')
+    else:
+        current_color = 'white' if turn % 2 != 0 else 'black'
+        display_board = get_display_board(get_internal_board(), current_color)
+    
     return render_template('game.html',
-                                board = get_board_state(turn),
+                                board = display_board,
                                 turn = turn,
                                 timeMode = timeMode,
                           )

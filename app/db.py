@@ -244,7 +244,7 @@ def create_questions(count,cache, Dtype):
     db.commit()
     db.close()
 
-create_questions(1000, True, None) #to create questions
+#create_questions(1000, True, None) #to create questions
 #add_film(apiCall("film"))
 
 # game

@@ -217,11 +217,11 @@ def game(gamemode, difficulty):
                 session['turns'] += 1
                 turn = session['turns']
                 make_board_state(turn, ai_board)  # Store internal board
-
+                
                 # Check if AI checkmated human
                 if in_checkmate(ai_board, 'white')[0]:
                     return redirect(url_for('result', winner='black', totalturns=turn))
-
+                
                 # Return display board for white
                 return get_display_board(ai_board, 'white')
 

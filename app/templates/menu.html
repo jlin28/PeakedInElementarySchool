@@ -162,9 +162,6 @@ P01 -- ArRESTed Development
         <div class="modal-body">
           <!-- CHECKBOX TYPE SETTINGS -->
           <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" form="play" id="setting1" name="setting1" autocomplete="off" {{ placeholder1 }}>
-            <label for="setting1"> setting1 </label>
-            <br>
             <input class="form-check-input" type="checkbox" form="play" id="cache" name="cache" {{ placeholder2 }}>
             <label for="cache"> quick &nbsp&nbsp load </label>
             <br>
@@ -296,7 +293,7 @@ P01 -- ArRESTed Development
           break;
         }
       };
-      if (!oneCheck) { document.getElementById("movies").checked = true};
+      if (!oneCheck) { document.getElementById("OMDB").checked = true};
     }
 
     var spawnPiece = function() {

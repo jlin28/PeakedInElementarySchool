@@ -28,7 +28,6 @@ def menu():
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
-    setting1=''
     cache=''
     reverseStatus = ''
     selected_categories = []
@@ -39,9 +38,6 @@ def menu():
             difficulties[0] = ''
             difficulties[session['difficulty']] = 'checked'
 
-        if 'setting1' in session:
-            setting1 = 'checked'
-
         if 'cache' in session:
             cache = 'checked'
 
@@ -51,15 +47,11 @@ def menu():
     # CREATES NEW GAME
     if request.method == 'POST':
         session.clear()
-        print(request.form)
         data = request.form
 
         # ADDS SETTINGS TO SESSION
         if 'difficulty' in data:
             session['difficulty'] = int(data['difficulty'])
-
-        if 'setting1' in data:
-            session['setting1'] = 'checked'
 
         if 'cache' in data:
             session['cache'] = 'checked'
@@ -110,7 +102,6 @@ def menu():
                             dEasy = difficulties[0],
                             dMed = difficulties[1],
                             dHard = difficulties[2],
-                            placeholder1=setting1,
                             quickload=cache,
                             categories=question_categories,
                             selected=selected_categories)
@@ -311,15 +302,11 @@ def game(gamemode, difficulty):
                     return get_random_question(cat)
         if 'remove' in data:
             position = data['remove']
-            print(position)
 
             if turn % 2 != 0:
                 remove_piece(int(position[1]), gridlabel.index(position[0]))
             else:
                 remove_piece(7-int(position[1]), 7-gridlabel.index(position[0]))
-            print('remove:')
-            print(str(7-int(position[1])) + "," + str(7-gridlabel.index(position[0])))
-            print(get_internal_board())
 
     if gamemode == 'singleplayer':
         display_board = get_display_board(get_internal_board(), 'white')

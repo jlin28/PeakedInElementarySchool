@@ -24,7 +24,7 @@ def menu():
     else: curTime = 1
 
     # ALL POSSIBLE QUESTION TYPES
-    question_categories = ['OMDB', 'Countries', 'Spanish', 'Superhero', 'Synonyms','RickAndMorty']
+    question_categories = ['OMDB', 'Countries', 'Spanish', 'Synonyms','RickAndMorty']
 
     # SETS DEFAULT SETTINGS
     difficulties = ['checked', '', '']
@@ -42,7 +42,7 @@ def menu():
         if 'setting1' in session:
             setting1 = 'checked'
 
-        if 'setting2' in session:
+        if 'cache' in session:
             cache = 'checked'
 
         if 'reverseTime' in session:
@@ -73,7 +73,7 @@ def menu():
             if cat in data:
                 selected_categories.append(cat)
         session['categories'] = selected_categories.copy()
-        
+
         if 'singleplayer' in data:
             reset_board()
             create_game_data()
@@ -121,7 +121,7 @@ def menu():
 def game(gamemode, difficulty):
     global en_passant, castling_state
     turn = session['turns']
-    
+
     gridlabel = ['a','b','c','d','e','f','g','h']
 
     cache = 'cache' in session
@@ -153,7 +153,7 @@ def game(gamemode, difficulty):
         if 'select' in data:
             validarr = ""
             position = [gridlabel.index(data['select'][0]), int(data['select'][1])]
-    
+
             if gamemode == 'singleplayer':
                 # SINGLEPLAYER: always use white's perspective
                 for x,y in legal_squares(get_display_board(get_internal_board()), position[1], position[0], en_passant):
@@ -181,7 +181,7 @@ def game(gamemode, difficulty):
                 start_y = gridlabel.index(positions[0][0])
                 end_x = int(positions[1][1])
                 end_y = gridlabel.index(positions[1][0])
-                
+
                 result = simulate_move(get_internal_board(),
                     start_x, start_y,
                     end_x, end_y,
@@ -191,17 +191,17 @@ def game(gamemode, difficulty):
                 newBoard = result[0]
                 en_passant = result[1]
                 castling_state = result[2]
-                
+
                 set_board(newBoard)
                 session['turns'] += 1
                 turn = session['turns']
                 make_board_state(turn, newBoard) # Store internal board
-                
+
                 # Check if human won
                 gameover = game_over(newBoard, 'black')
                 if gameover[0]:
                     return redirect(url_for('result', winner=gameover[1], totalturns=turn))
-                
+
                 # AI (black) moves
                 ai_move = apiCall("chess", "black", difficulty=["Easy", "Medium", "Hard"][difficulty])
                 result = simulate_move(newBoard,
@@ -213,20 +213,20 @@ def game(gamemode, difficulty):
                 ai_board = result[0]
                 en_passant = result[1]
                 castling_state = result[2]
-                
+
                 set_board(ai_board)
                 session['turns'] += 1
                 turn = session['turns']
                 make_board_state(turn, ai_board)  # Store internal board
-                
+
                 # Check if AI won
                 gameover = game_over(ai_board, 'white')
                 if gameover[0]:
                     return redirect(url_for('result', winner=gameover[1], totalturns=turn))
-                
+
                 # Return display board for white
                 return get_display_board(ai_board, 'white')
-                
+
             else:
                 # MULTIPLAYER
                 if turn % 2 == 0:  # Black's turn
@@ -244,7 +244,7 @@ def game(gamemode, difficulty):
                     end_y = gridlabel.index(positions[1][0])
                     color = 'white'
                     color_to_move = 'black'
-                
+
                 result = simulate_move(get_internal_board(),
                     start_x, start_y,
                     end_x, end_y,
@@ -254,7 +254,7 @@ def game(gamemode, difficulty):
                 newBoard = result[0]
                 en_passant = result[1]
                 castling_state = result[2]
-                
+
                 set_board(newBoard)
                 session['turns'] += 1
                 turn = session['turns']
@@ -281,16 +281,16 @@ def game(gamemode, difficulty):
                 ai_board = result[0]
                 en_passant = result[1]
                 castling_state = result[2]
-                
+
                 set_board(ai_board)
                 session['turns'] += 1
                 turn = session['turns']
                 make_board_state(turn, ai_board)
-                
+
                 gameover = game_over(ai_board, 'white')
                 if gameover[0]:
                     return redirect(url_for('result', winner=gameover[1], totalturns=turn))
-                
+
                 return get_display_board(ai_board, 'white')
             else:
                 # Multiplayer skip
@@ -327,7 +327,7 @@ def game(gamemode, difficulty):
     else:
         current_color = 'white' if turn % 2 != 0 else 'black'
         display_board = get_display_board(get_internal_board(), current_color)
-    
+
     return render_template('game.html',
                                 board = display_board,
                                 turn = turn,

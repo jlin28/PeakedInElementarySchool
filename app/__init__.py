@@ -193,6 +193,7 @@ def game(gamemode, difficulty):
                 set_board(newBoard)
                 session['turns'] += 1
                 turn = session['turns']
+                color = 'black' if turn % 2 != 0 else 'white'
                 make_board_state(turn, newBoard) # Store internal board
 
                 # Check if human won
@@ -294,6 +295,7 @@ def game(gamemode, difficulty):
                 session['turns'] += 1
                 turn = session['turns']
                 next_color = 'white' if turn % 2 != 0 else 'black'
+                make_board_state(turn, get_internal_board())
                 return get_display_board(get_internal_board(), next_color)
 
         if 'trivia' in data:
@@ -347,6 +349,7 @@ def result(winner, totalturns):
         if 'previous_board' in data:
             if data['direction'] == 'prev':
                 turn -= 1
+                print(turn)
             return get_board_state(turn)
 
         if 'restart' in request.form:

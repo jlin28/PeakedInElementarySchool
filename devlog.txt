@@ -450,6 +450,12 @@ QUESTIONS
     - get_question and get_random_question functions done
     - tried to implement trivia questions in __init__.py
 
+evanK -- 2025-12-18 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - added handling for singleplayer in flask code
+    - added way to pass in selected categories to game
+
 joyceL -- 2025-12-18 12:30
 REPLAY SYSTEM AND DISPLAYS
 * NEW CHANGES:
@@ -477,12 +483,23 @@ CHESS ENGINE
 * NEW CHANGES:
     - Completed getNextMove(), need to update api call with real color to move (currently always white)
 
+evanK -- 2025-12-19 11:46
+FLASK FRAMEWORK
+* NEW CHANGES:
+    - fixed board creation in skip
+    - added quick load setting in menu
+
 joyceL -- 2025-12-20 05:19
 TRIVIA
 * NEW CHANGES:
     - formatting trivia popup
 * ERRORS/BUGS:
     - errors are thrown when trying to pull question
+
+evanK -- 2025-12-20 19:46
+SINGLEPLAYER
+* NEW CHANGES:
+    - changed bot move to api call to properly get next bot move
 
 zixiQ -- 2025-12-20 20:27
 CHESS ENGINE
@@ -516,6 +533,11 @@ QUESTIONS
 zixiQ -- 2025-12-21 18:10
 * NEW CHANGES
     - singleplayer implemented properly
+
+evanK -- 2025-12-21 21:46
+REPLAY
+* NEW CHANGES:
+    - fixed errors and inconsistencies in replay
 
 joyceL -- 2025-12-21 22:52
 FINAL STRETCH

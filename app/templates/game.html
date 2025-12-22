@@ -796,7 +796,9 @@ P01 -- ArRESTed Development
                 correct = false;
                 triviad = true;
 
-                if (inCheck != "") { unhighlightKing(inCheck) };
+                unhighlightKing(inCheck);
+                inCheck = "";
+                
                 if (checkmated != "") {
                   removePiece();
                   checkmated = "";
@@ -838,7 +840,8 @@ P01 -- ArRESTed Development
 
                 if (correct) { select(position) }
                 else {
-                  if (inCheck != "") { unhighlightKing(inCheck) };
+                  unhighlightKing(inCheck);
+                  inCheck = "";
 
                   if (checkmated != "") {
                     removePiece();

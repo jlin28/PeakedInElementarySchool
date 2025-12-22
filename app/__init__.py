@@ -48,8 +48,6 @@ def menu():
         if 'reverseTime' in session:
             reverseStatus = 'checked'
 
-        selected_categories = []
-
     # CREATES NEW GAME
     if request.method == 'POST':
         session.clear()

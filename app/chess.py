@@ -475,6 +475,31 @@ def promotions(board):
             all_promotions.append((7, i, (4, 1, 3, 2)))
     return all_promotions
 
+def apply_promotion(board, promotion_choice=None):
+    promos = promotions(board)
+    
+    if not promos:
+        return board
+
+    piece_map = {
+        "q": 4,
+        "r": 1,
+        "b": 3,
+        "n": 2
+    }
+
+    for r, c, options in promos:
+        if promotion_choice is None:
+            board[r][c] = options[0]   # auto-queen
+        else:
+            base = piece_map.get(promotion_choice.lower(), 4)
+            if options[0] > 0:
+                board[r][c] = base
+            else:
+                board[r][c] = -base
+
+    return board
+
 # Convert board position to FEN for chess engine api
 def board_to_fen(board, color_to_move, castling_state, en_passant):
     piece_map = {

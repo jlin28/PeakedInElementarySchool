@@ -362,7 +362,11 @@ P01 -- ArRESTed Development
 
     var stopMove = function(delay, sprite, classes) {
       setTimeout(function() {
-          turn = turn + 1;
+          if (window.location.href.includes('singleplayer')) {
+            turn = turn + 2;
+          } else {  
+            turn = turn + 1;
+          }
           sprite.src = '/static/sprites/' + classes[1] + '/' + classes[3] + '/idle.png';
           selected = null;
           triviad = false;
@@ -402,15 +406,14 @@ P01 -- ArRESTed Development
           let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = prev.className.split(" ");
 
-          unhighlightLegalSquares(validMoves);
           prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
-        } else {
-          if (turn % 2 == 0) { inCheck = 'black' }
-          else { inCheck = 'white' };
-          unhighlightKing(inCheck);
-          inCheck = "";
         }
       }
+      unhighlightLegalSquares(validMoves);
+      if (turn % 2 == 0) { inCheck = 'black' }
+      else { inCheck = 'white' };
+      unhighlightKing(inCheck);
+      inCheck = "";
 
       xhttp.open('POST', window.location.href, true);
       xhttp.setRequestHeader("skip", 'aa');
@@ -423,7 +426,11 @@ P01 -- ArRESTed Development
       }
 
       setTimeout(function() {
-          turn = turn + 1;
+          if (window.location.href.includes('singleplayer')) {
+            turn = turn + 2;
+          } else {
+            turn = turn + 1;
+          }
           triviad = false;
 
           selected = null;

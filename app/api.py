@@ -148,13 +148,13 @@ def getCountry():
     return data
 
 def getNextMove(fen, difficulty):
-    depth = 5
+    depth = 4
     if difficulty == "Easy":
-        depth = 3
+        depth = 2
     elif difficulty == "Medium":
-        depth = 5
+        depth = 4
     elif difficulty == "Hard":
-        depth = 7
+        depth = 6
     data_dict = {
         "fen": fen,
         "depth": depth

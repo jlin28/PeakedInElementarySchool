@@ -68,7 +68,7 @@ def set_board(board):
 
 def remove_piece(r,c):
     global current_pos
-    current_pos[r][c] = 0;
+    current_pos[r][c] = 0
     print("internal:")
     print(current_pos)
 
@@ -103,7 +103,7 @@ def game_over(board, color_to_move = None):
     if king_count == 2 and non_rook_queen_pieces <= 3:
         return (True, "gray") # winner color is gray for draws
 
-    # Stalemate if side to move has no legal moves
+    # Check for stalemate (no legal moves and not in check)
     has_legal_move = False
     for r in range(8):
         for c in range(8):
@@ -115,8 +115,13 @@ def game_over(board, color_to_move = None):
                     break
         if has_legal_move:
             break
+    
     if not has_legal_move:
-        return (True, "gray") # draw
+        # No legal moves - check if it's checkmate
+        if in_check(board, color_to_move):
+            # Checkmate (no legal moves, IN check) = game continues!
+            # Don't end the game - let frontend handle skip turn
+            return (False, None)
 
     # Game is not over
     return (False, None)

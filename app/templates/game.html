@@ -406,6 +406,7 @@ P01 -- ArRESTed Development
           let prev = selected.querySelector("." + selected.className.split(" ")[1] + " img");
           let classnames = prev.className.split(" ");
 
+          unhighlightKing(inCheck);
           unhighlightLegalSquares(validMoves);
           prev.src = '/static/sprites/' + classnames[1] + '/' + classnames[3] + '/idle.png';
         } else {

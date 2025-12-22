@@ -703,8 +703,6 @@ P01 -- ArRESTed Development
       xhttpcheck.onload = function() {
         if (this.status == 200) {
           inCheck = this.responseText;
-          console.log("inCheck:");
-          console.log(inCheck);
           if (inCheck != "checkmate") {
             highlightKing(inCheck);
           } else {
@@ -734,9 +732,7 @@ P01 -- ArRESTed Development
 
     var highlightKing = function(color) {
       if (color != "") {
-        console.log(color);
         square = document.getElementsByClassName("center " + color + " piece king")[0].parentElement.className.split(" ")[2];
-        console.log(square);
         document.getElementsByClassName('col glow ' + square)[0].style.backgroundColor = 'rgba(205, 92, 92, 0.5)';
       }
     }
@@ -852,7 +848,6 @@ P01 -- ArRESTed Development
                   };
                   skipTurn();
                 };
-                console.log("Trivia answered:", correct ? "correct" : "incorrect");
               }, 1500
             );
           };
@@ -879,7 +874,6 @@ P01 -- ArRESTed Development
     }
 
     var removePiece = function() {
-      console.log("im running");
       let remove = new XMLHttpRequest();
 
       let position = selected.className.split(" ")[2];

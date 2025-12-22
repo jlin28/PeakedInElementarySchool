@@ -173,9 +173,14 @@ P01 -- ArRESTed Development
       overflow: auto;
     }
 
-    .triviaImg {
-      margin: -60px;
-      transform: scale(50%);
+    #triviaImage {
+      display: flex;
+      justify-content: center;
+
+      width: 100%;
+      height: 35%;
+
+      overflow: hidden;
     }
 
     #timer {
@@ -304,7 +309,7 @@ P01 -- ArRESTed Development
       <div id="timer">
         <p id='seconds'></p>
       </div>
-      <h3 style="padding-top: 10px;" id="triviaQuestion"></h3>
+      <h3 id="triviaQuestion"></h3>
       <div id="triviaImage"></div>
       <div class="container" id="triviaAnswers"></div>
     </div>

@@ -791,7 +791,7 @@ P01 -- ArRESTed Development
             document.getElementById('seconds').innerHTML = timeMode;
             answersEl.innerHTML = "";
             qImg.innerHTML = "";
-            qEl.innerText = "Wrong :("
+            qEl.innerText = "Out of Time!"
 
             setTimeout(function() {
               qEl.innerText = "";
@@ -800,6 +800,7 @@ P01 -- ArRESTed Development
                 correct = false;
                 triviad = true;
 
+                if (inCheck != "") { unhighlightKing(inCheck) };
                 if (checkmated != "") {
                   removePiece();
                   checkmated = "";
@@ -841,6 +842,8 @@ P01 -- ArRESTed Development
 
                 if (correct) { select(position) }
                 else {
+                  if (inCheck != "") { unhighlightKing(inCheck) };
+
                   if (checkmated != "") {
                     removePiece();
                     checkmated = "";

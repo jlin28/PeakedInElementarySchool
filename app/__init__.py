@@ -48,8 +48,6 @@ def menu():
         if 'reverseTime' in session:
             reverseStatus = 'checked'
 
-        selected_categories = []
-
     # CREATES NEW GAME
     if request.method == 'POST':
         session.clear()
@@ -219,10 +217,9 @@ def game(gamemode, difficulty):
                 turn = session['turns']
                 make_board_state(turn, ai_board)  # Store internal board
 
-                # Check if AI won
-                gameover = game_over(ai_board, 'white')
-                if gameover[0]:
-                    return redirect(url_for('result', winner=gameover[1], totalturns=turn))
+                # Check if AI checkmated human
+                if in_checkmate(ai_board, 'white')[0]:
+                    return redirect(url_for('result', winner='black', totalturns=turn))
 
                 # Return display board for white
                 return get_display_board(ai_board, 'white')
